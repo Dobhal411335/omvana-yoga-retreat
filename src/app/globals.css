@@ -182,7 +182,6 @@
   /* ── Text selection ── */
   ::selection {
     background: color-mix(in srgb, var(--primary) 20%, transparent);
-    color: var(--heading);
   }
 
   /* ── Scrollbar: minimal, warm ── */
