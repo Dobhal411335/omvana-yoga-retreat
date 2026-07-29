@@ -172,40 +172,40 @@ const Page = () => {
 
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                     <h1 className="text-3xl md:text-4xl px-12 font-semibold">Manage Menu Section</h1>
-                    <form onSubmit={handleSubmit(onSubmit)} className="flex items-end justify-center gap-4 my-20">
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex items-end justify-center gap-4 my-12 bg-card p-6 rounded-xl border border-border shadow-sm max-w-5xl mx-auto">
                         <div className="flex flex-col justify-center gap-2">
-                            <Label htmlFor="menu">Menu</Label>
+                            <Label htmlFor="menu" className="text-foreground font-medium">Menu Title</Label>
                             <Input
                                 name="title"
                                 id="title"
                                 placeholder="Enter Menu Title"
-                                className="md:w-96 border-2 border-blue-600 focus:border-dashed focus:border-blue-500 focus:outline-none focus-visible:ring-0"
+                                className="md:w-96"
                                 {...register("title")}
                             />
                         </div>
-                        <Button className="bg-blue-600 hover:bg-blue-500" type="submit">
-                            Add
+                        <Button type="submit">
+                            Add Menu
                         </Button>
                     </form>
 
-                    <div className="bg-blue-100 p-4 rounded-lg shadow max-w-5xl mx-auto w-full text-center">
+                    <div className="bg-card p-6 rounded-xl border border-border shadow-sm max-w-5xl mx-auto w-full text-center">
                         <div className="min-w-[100px] md:min-w-0">
                             <Table className="w-full min-w-max lg:min-w-0">
                                 <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="text-center !text-black w-1/3">Menu Title</TableHead>
-                                        <TableHead className="text-center !text-black w-1/3">Order</TableHead>
-                                        <TableHead className="w-1/3 !text-black text-center">Action</TableHead>
+                                    <TableRow className="border-border hover:bg-transparent">
+                                        <TableHead className="text-center text-heading font-semibold w-1/3">Menu Title</TableHead>
+                                        <TableHead className="text-center text-heading font-semibold w-1/3">Order</TableHead>
+                                        <TableHead className="w-1/3 text-heading font-semibold text-center">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {menuItems.map((item) => (
-                                        <TableRow key={item._id}>
-                                            <TableCell className="border font-semibold border-blue-600">{item.title}</TableCell>
-                                            <TableCell className="border font-semibold border-blue-600">{item.order}</TableCell>
-                                            <TableCell className="border font-semibold border-blue-600">
+                                        <TableRow key={item._id} className="border-border">
+                                            <TableCell className="font-medium text-foreground">{item.title}</TableCell>
+                                            <TableCell className="font-medium text-foreground">{item.order}</TableCell>
+                                            <TableCell>
                                                 <div className="flex items-center justify-center gap-6">
-                                                    <Button size="icon" onClick={() => handleEdit(item)} variant="outline">
+                                                    <Button size="icon" onClick={() => handleEdit(item)} variant="outline" className="border-border text-foreground hover:bg-accent">
                                                         <Pencil className="w-4 h-4" />
                                                     </Button>
                                                     <Button size="icon" onClick={() => deleteMenuItem(item._id)} variant="destructive">
@@ -216,9 +216,8 @@ const Page = () => {
                                                             id={`switch-${item._id}`}
                                                             checked={item.active}
                                                             onCheckedChange={() => toggleSwitch(item._id, item.active)}
-                                                            className={`rounded-full transition-colors ${item.active ? "!bg-green-500" : "!bg-red-500"}`}
                                                         />
-                                                        <Label htmlFor={`switch-${item._id}`} className="text-black">
+                                                        <Label htmlFor={`switch-${item._id}`} className="text-muted-foreground text-xs font-medium">
                                                             {item.active ? "ON" : "OFF"}
                                                         </Label>
                                                     </div>
@@ -238,15 +237,15 @@ const Page = () => {
                                 </DialogHeader>
                                 <form onSubmit={handleSubmit(handleUpdate)}>
                                     <div className="flex flex-col gap-2">
-                                        <Label>Title</Label>
-                                        <Input {...register("title")} />
+                                        <Label className="text-foreground">Title</Label>
+                                        <Input {...register("title")} className="bg-background" />
                                     </div>
                                     <div className="flex flex-col gap-2 mt-4">
-                                        <Label>Order</Label>
-                                        <Input {...register("order")} min={0} max={menuItems.length + 1} type="number" />
+                                        <Label className="text-foreground">Order</Label>
+                                        <Input {...register("order")} min={0} max={menuItems.length + 1} type="number" className="bg-background" />
                                     </div>
                                     <DialogFooter>
-                                        <Button className="bg-blue-600 hover:bg-blue-500 mt-4" type="submit">Save Changes</Button>
+                                        <Button className="mt-4" type="submit">Save Changes</Button>
                                     </DialogFooter>
                                 </form>
                             </DialogContent>

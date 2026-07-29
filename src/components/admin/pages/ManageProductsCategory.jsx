@@ -255,19 +255,19 @@ const ManageProductsCategory = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)} className="font-barlow flex flex-col items-center justify-center gap-4 my-8 md:my-20 px-4">
-                <div className="flex flex-col justify-center gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center gap-6 my-8 md:my-12 px-4 bg-card p-6 rounded-xl border border-border shadow-sm max-w-2xl mx-auto">
+                <div className="flex flex-col justify-center gap-6 w-full">
                     <div className="flex flex-col gap-2">
-                        <Label>Select Menu Type</Label>
+                        <Label className="text-foreground font-medium">Select Menu Type</Label>
                         <Select onValueChange={setSelectedMenu}>
-                            <SelectTrigger className="border-2 border-blue-600 focus:border-blue-500 focus:ring-0 focus:outline-none focus-visible:outline-none focus-visible:ring-0">
+                            <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select Menu" />
                             </SelectTrigger>
-                            <SelectContent className="border-2 font-barlow border-blue-600" >
+                            <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Menu</SelectLabel>
                                     {menuItems.map((item) => (
-                                        <SelectItem className="focus:bg-blue-100" key={item._id} value={item.title} {...register("title")}>
+                                        <SelectItem key={item._id} value={item.title} {...register("title")}>
                                             {item.title}
                                         </SelectItem>
                                     ))}
@@ -276,22 +276,22 @@ const ManageProductsCategory = () => {
                         </Select>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label htmlFor="subMenu.title">Create Sub Menu</Label>
+                        <Label htmlFor="subMenu.title" className="text-foreground font-medium">Create Sub Menu</Label>
                         <Input
                             name="subMenu.title"
                             id="subMenu.title"
                             placeholder="Enter Sub Menu Title"
-                            className="md:w-96 border-2 border-blue-600 focus:border-dashed focus:border-blue-500 focus:outline-none focus-visible:ring-0"
+                            className="w-full"
                             {...register("subMenu.title")}
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <Label>Upload Category Profile Image</Label>
+                        <Label className="text-foreground font-medium">Upload Category Profile Image</Label>
                         {profileImage && (
                             <div className="relative">
-                                <Image className="w-32 h-32 object-cover rounded-full" src={profileImage?.url} quality={50} alt="Profile" width={128} height={128} />
-                                <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(profileImage?.key, "profile")}><X className="w-6 h-6" /></button>
+                                <Image className="w-32 h-32 object-cover rounded-full border border-border" src={profileImage?.url} quality={50} alt="Profile" width={128} height={128} />
+                                <button type="button" className="absolute top-0 right-0 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(profileImage?.key, "profile")}><X className="w-4 h-4" /></button>
                             </div>
                         )}
                         <input
@@ -323,7 +323,7 @@ const ManageProductsCategory = () => {
                         />
                         <button
                             type="button"
-                            className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md mt-2 text-sm font-medium transition-colors"
                             onClick={() => profileFileInputRef.current && profileFileInputRef.current.click()}
                             disabled={!selectedMenu || !!profileImage}
                         >
@@ -332,11 +332,11 @@ const ManageProductsCategory = () => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <Label>Upload Banner</Label>
+                        <Label className="text-foreground font-medium">Upload Banner</Label>
                         {bannerImage && (
                             <div className="relative">
-                                <Image className="w-full object-cover rounded-lg" src={bannerImage?.url} quality={50} alt="Banner" width={600} height={400} />
-                                <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(bannerImage?.key, "banner")}><X className="w-6 h-6" /></button>
+                                <Image className="w-full object-cover rounded-lg border border-border" src={bannerImage?.url} quality={50} alt="Banner" width={600} height={400} />
+                                <button type="button" className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(bannerImage?.key, "banner")}><X className="w-4 h-4" /></button>
                             </div>
                         )}
                         <input
@@ -368,7 +368,7 @@ const ManageProductsCategory = () => {
                         />
                         <button
                             type="button"
-                            className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+                            className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md mt-2 text-sm font-medium transition-colors"
                             onClick={() => bannerFileInputRef.current && bannerFileInputRef.current.click()}
                             disabled={!selectedMenu || !!bannerImage}
                         >
@@ -376,20 +376,20 @@ const ManageProductsCategory = () => {
                         </button>
                     </div>
                 </div>
-                <button className="bg-blue-600 p-2 rounded-lg hover:bg-blue-500 text-lg text-white" type="submit">
+                <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-md mt-4 text-sm font-medium transition-colors" type="submit">
                     Add SubMenu
                 </button>
             </form>
 
-            <div className="bg-blue-100 p-4 rounded-lg shadow max-w-5xl mx-auto w-full overflow-x-auto lg:overflow-visible text-center px-4">
+            <div className="bg-card p-6 rounded-xl border border-border shadow-sm max-w-5xl mx-auto w-full overflow-x-auto lg:overflow-visible text-center mb-12">
                 <div className="min-w-[200px] md:min-w-0">
                     <Table className="w-full">
                         <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-center !text-black w-1/3">Add Product</TableHead>
-                                <TableHead className="text-center !text-black w-1/3">Sub Menu Title</TableHead>
-                                <TableHead className="text-center !text-black w-1/3">Order</TableHead>
-                                <TableHead className="w-1/3 !text-black text-center">Action</TableHead>
+                            <TableRow className="border-border hover:bg-transparent">
+                                <TableHead className="text-center text-heading font-semibold w-1/3">Add Product</TableHead>
+                                <TableHead className="text-center text-heading font-semibold w-1/3">Sub Menu Title</TableHead>
+                                <TableHead className="text-center text-heading font-semibold w-1/3">Order</TableHead>
+                                <TableHead className="w-1/3 text-heading font-semibold text-center">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -398,29 +398,29 @@ const ManageProductsCategory = () => {
                                     menuItems
                                         .filter(item => item.title === selectedMenu)
                                         .flatMap(menuItem => menuItem.subMenu.sort((a, b) => a.order - b.order).map((subItem) => (
-                                            <TableRow key={subItem._id}>
-                                                <TableCell className="border font-semibold border-blue-600">
-                                                    <Link href={`/admin/manage_packages_category/addSubMenuPackage/${subItem._id}`} variant="outline" className="bg-white border-2 border-blue-500 p-2 rounded-full text-blue-600 hover:text-blue-500 focus:text-blue-500 flex items-center justify-center">
-                                                        <span className="xl:mr-6 mr-2 bg-blue-100 rounded py-1 px-3">{subItem?.packages?.length !== 0 ? subItem?.packages?.length : 0}</span>
-                                                        <Plus className="w-4 h-4" />
-                                                        <span>Add Package</span>
+                                        <TableRow key={subItem._id} className="border-border">
+                                                <TableCell className="font-medium text-foreground">
+                                                    <Link href={`/admin/manage_packages_category/addSubMenuPackage/${subItem._id}`} className="bg-background border border-border p-2 rounded-full text-primary hover:text-primary/80 flex items-center justify-center transition-colors">
+                                                        <span className="xl:mr-6 mr-2 bg-muted text-muted-foreground rounded py-1 px-3 text-xs">{subItem?.packages?.length !== 0 ? subItem?.packages?.length : 0}</span>
+                                                        <Plus className="w-4 h-4 mr-1" />
+                                                        <span className="text-sm">Add Package</span>
                                                     </Link>
                                                 </TableCell>
-                                                <TableCell className="border font-semibold border-blue-600">{subItem?.title}</TableCell>
-                                                <TableCell className="border font-semibold border-blue-600">{subItem?.order}</TableCell>
-                                                <TableCell className="border font-semibold border-blue-600">
-                                                    <div className="flex items-center justify-center gap-6">
+                                                <TableCell className="font-medium text-foreground">{subItem?.title}</TableCell>
+                                                <TableCell className="font-medium text-foreground">{subItem?.order}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center justify-center gap-4">
                                                         <button
                                                             type="button"
                                                             onClick={() => handleEdit(subItem)}
-                                                            className="bg-blue-600 hover:bg-blue-500 p-2 rounded-full text-white"
+                                                            className="p-2 rounded-full border border-border text-foreground hover:bg-accent transition-colors"
                                                         >
                                                             <Pencil className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             type="button"
                                                             onClick={() => deleteMenuItem(subItem._id)}
-                                                            className="bg-red-500 hover:bg-red-600 p-2 rounded-full text-white"
+                                                            className="p-2 rounded-full border border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground transition-colors"
                                                         >
                                                             <Trash2 className="w-4 h-4" />
                                                         </button>
@@ -429,9 +429,8 @@ const ManageProductsCategory = () => {
                                                                 id={`switch-${subItem._id}`}
                                                                 checked={subItem.active}
                                                                 onCheckedChange={() => toggleSwitch(subItem._id, subItem.active)}
-                                                                className={`rounded-full transition-colors ${subItem.active ? "!bg-green-500" : "!bg-red-500"}`}
                                                             />
-                                                            <Label htmlFor={`switch-${subItem._id}`} className="text-black">
+                                                            <Label htmlFor={`switch-${subItem._id}`} className="text-muted-foreground text-xs font-medium">
                                                                 {subItem.active ? "ON" : "OFF"}
                                                             </Label>
                                                         </div>
@@ -440,15 +439,15 @@ const ManageProductsCategory = () => {
                                             </TableRow>
                                         )))
                                 ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={4} className="border font-semibold border-blue-600 text-center">
+                                    <TableRow className="border-border">
+                                        <TableCell colSpan={4} className="font-medium text-foreground text-center">
                                             No Sub Menu Available
                                         </TableCell>
                                     </TableRow>
                                 )
                             ) : (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="border font-semibold border-blue-600 text-center">
+                                <TableRow className="border-border">
+                                    <TableCell colSpan={4} className="font-medium text-foreground text-center">
                                         No Menu Selected
                                     </TableCell>
                                 </TableRow>
@@ -472,18 +471,18 @@ const ManageProductsCategory = () => {
                                     <Input  {...register("subMenu.order")} min={0} max={menuItems.find(item => item.title === selectedMenu)?.subMenu.length + 1} type="number" />
                                 </div>
                                 <div className="flex flex-col gap-2 mt-4">
-                                    <Label>Upload Banner</Label>
+                                    <Label className="text-foreground">Upload Banner</Label>
                                     {bannerImage && !editItem && (
                                         <div className="relative h-32">
-                                            <Image className="h-full w-full object-contain object-center rounded-lg" src={bannerImage?.url} quality={50} alt="Banner" width={400} height={192} />
-                                            <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(bannerImage?.key, "banner")}><X className="w-6 h-6" /></button>
+                                            <Image className="h-full w-full object-contain object-center rounded-lg border border-border" src={bannerImage?.url} quality={50} alt="Banner" width={400} height={192} />
+                                            <button type="button" className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(bannerImage?.key, "banner")}><X className="w-4 h-4" /></button>
                                         </div>
                                     )}
                                     {/* Edit dialog banner image */}
                                     {editBannerImage && editItem && typeof editBannerImage.url === 'string' && editBannerImage.url.trim() !== '' ? (
                                         <div className="relative h-32">
-                                            <Image className="h-full w-full object-contain object-center rounded-lg" src={editBannerImage.url} quality={50} alt="Banner" width={400} height={192} />
-                                            <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(editBannerImage.key, "editBanner")}><X className="w-6 h-6" /></button>
+                                            <Image className="h-full w-full object-contain object-center rounded-lg border border-border" src={editBannerImage.url} quality={50} alt="Banner" width={400} height={192} />
+                                            <button type="button" className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(editBannerImage.key, "editBanner")}><X className="w-4 h-4" /></button>
                                         </div>
                                     ) : null}
                                     <input
@@ -519,7 +518,7 @@ const ManageProductsCategory = () => {
                                     />
                                     <button
                                         type="button"
-                                        className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md mt-2 text-sm font-medium transition-colors"
                                         onClick={() => bannerFileInputRef.current && bannerFileInputRef.current.click()}
                                         disabled={!!bannerImage}
                                     >
@@ -527,18 +526,18 @@ const ManageProductsCategory = () => {
                                     </button>
                                 </div>
                                 <div className="flex flex-col gap-2 mt-4">
-                                    <Label>Upload Profile Image</Label>
+                                    <Label className="text-foreground">Upload Profile Image</Label>
                                     {profileImage && !editItem && (
                                         <div className="relative h-32">
-                                            <Image className="h-full w-full object-contain object-center rounded-lg" src={profileImage?.url} quality={50} alt="Profile" width={400} height={192} />
-                                            <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(profileImage?.key, "profile")}><X className="w-6 h-6" /></button>
+                                            <Image className="h-full w-full object-contain object-center rounded-lg border border-border" src={profileImage?.url} quality={50} alt="Profile" width={400} height={192} />
+                                            <button type="button" className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(profileImage?.key, "profile")}><X className="w-4 h-4" /></button>
                                         </div>
                                     )}
                                     {/* Edit dialog profile image */}
                                     {editProfileImage && editItem && typeof editProfileImage.url === 'string' && editProfileImage.url.trim() !== '' ? (
                                         <div className="relative h-32">
-                                            <Image className="h-full w-full object-contain object-center rounded-lg" src={editProfileImage.url} quality={50} alt="Profile" width={400} height={192} />
-                                            <button type="button" className="absolute top-2 right-2 bg-red-500 text-white rounded-full" onClick={() => handleRemoveImage(editProfileImage.key, "editProfile")}><X className="w-6 h-6" /></button>
+                                            <Image className="h-full w-full object-contain object-center rounded-lg border border-border" src={editProfileImage.url} quality={50} alt="Profile" width={400} height={192} />
+                                            <button type="button" className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1" onClick={() => handleRemoveImage(editProfileImage.key, "editProfile")}><X className="w-4 h-4" /></button>
                                         </div>
                                     ) : null}
                                     <input
@@ -574,7 +573,7 @@ const ManageProductsCategory = () => {
                                     />
                                     <button
                                         type="button"
-                                        className="bg-blue-600 text-white px-4 py-2 rounded mt-2"
+                                        className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md mt-2 text-sm font-medium transition-colors"
                                         onClick={() => profileImageFileInputRef.current && profileImageFileInputRef.current.click()}
                                         disabled={editItem ? !!editProfileImage : !!profileImage}
                                     >
@@ -582,7 +581,7 @@ const ManageProductsCategory = () => {
                                     </button>
                                 </div>
                                 <DialogFooter>
-                                    <button className="bg-blue-600 rounded px-4 py-2 text-white font-semibold hover:bg-blue-500 mt-4" type="submit">Save Changes</button>
+                                    <button className="bg-primary text-primary-foreground rounded-md px-4 py-2 font-medium hover:bg-primary/90 mt-4 transition-colors" type="submit">Save Changes</button>
                                 </DialogFooter>
                             </form>
                         </DialogContent>

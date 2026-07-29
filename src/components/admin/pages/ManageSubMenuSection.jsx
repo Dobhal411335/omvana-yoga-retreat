@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pencil, Trash2 } from "lucide-react"
@@ -39,10 +40,9 @@ const ManageSubMenuSection = () => {
         }
     }
 
-    const handleSubcategoryChange = (e) => {
-        const subcategoryId = e.target.value
-        setPackageForm({ ...packageForm, subCategoryId: subcategoryId })
-        setSelectedSubcategory(subcategoryId)
+    const handleSubcategoryChange = (value) => {
+        setPackageForm({ ...packageForm, subCategoryId: value })
+        setSelectedSubcategory(value)
     }
 
     const handleAddCategory = async (e) => {
@@ -258,11 +258,11 @@ const ManageSubMenuSection = () => {
 
     const selectedSubcategoryPackages = getPackagesForSelectedSubcategory()
     return (
-        <div className="p-6">
+        <div className="p-6 md:p-12 max-w-7xl mx-auto">
             {/* Add Forms Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {/* Add Category Form */}
-                <div className="border bg-white  shadow-xl p-4 rounded-lg">
+                <div className="bg-card border border-border shadow-sm p-6 rounded-xl">
                     <form onSubmit={handleAddCategory} className="flex flex-col justify-between h-full gap-4">
                         <div>
                             <h2 className="text-lg font-semibold mb-4">Add Category</h2>
@@ -275,61 +275,76 @@ const ManageSubMenuSection = () => {
                             />
 
                         </div>
-                        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add Category</Button>
+                        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Add Category</Button>
                     </form>
                 </div>
 
                 {/* Add SubCategory Form */}
-                <div className="border p-4 shadow-xl rounded-lg">
+                <div className="bg-card border border-border shadow-sm p-6 rounded-xl">
                     <form onSubmit={handleAddSubCategory} className="flex flex-col justify-between h-full gap-4">
                         <div className="space-y-2">
                             <h2 className="text-lg font-semibold mb-4">Add SubCategory</h2>
                             <Label>Select Category</Label>
-                            <select
+                            <Select
                                 value={subCategoryForm.categoryId}
-                                onChange={(e) => setSubCategoryForm({ ...subCategoryForm, categoryId: e.target.value })}
-                                className="w-full p-2 border rounded"
+                                onValueChange={(value) => setSubCategoryForm({ ...subCategoryForm, categoryId: value })}
                                 required
                             >
-                                <option value="">Select a category</option>
-                                {categories && categories.map(cat => (
-                                    <option key={cat._id} value={cat._id}>{cat.catTitle}</option>
-                                ))}
-                            </select>
+                                <SelectTrigger className="w-full border-border bg-background focus:ring-primary">
+                                    <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent className="border-border bg-popover">
+                                    <SelectGroup>
+                                        {categories && categories.map(cat => (
+                                            <SelectItem key={cat._id} value={cat.catTitle} className="focus:bg-accent focus:text-accent-foreground font-medium">
+                                                {cat.catTitle}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                             <div>
                                 <Label>SubCategory Title</Label>
                                 <Input
                                     value={subCategoryForm.subCatTitle}
                                     onChange={(e) => setSubCategoryForm({ ...subCategoryForm, subCatTitle: e.target.value })}
+                                    className={"mt-2"}
                                     placeholder="Enter SubCategory Title"
                                     required
                                 />
                             </div>
 
                         </div>
-                        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add SubCategory</Button>
+                        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Add SubCategory</Button>
                     </form>
                 </div>
 
                 {/* Add Package Form */}
-                <div className="border p-4 shadow-xl rounded-lg">
+                <div className="bg-card border border-border shadow-sm p-6 rounded-xl">
                     <form onSubmit={handleAddPackage} className="flex flex-col justify-between h-full gap-4">
                         <div className="space-y-2">
                             <h2 className="text-lg font-semibold mb-4">Add Package</h2>
                             <Label>Select SubCategory</Label>
-                            <select
+                            <Select
                                 value={packageForm.subCategoryId}
-                                onChange={handleSubcategoryChange}
-                                className="w-full p-2 border rounded"
+                                onValueChange={handleSubcategoryChange}
                                 required
                             >
-                                <option value="">Select a subcategory</option>
-                                {categories.map(cat => (
-                                    cat.subCat?.map(sub => (
-                                        <option key={sub._id} value={sub._id}>{cat.catTitle} - {sub.title}</option>
-                                    ))
-                                ))}
-                            </select>
+                                <SelectTrigger className="w-full border-border bg-background focus:ring-primary">
+                                    <SelectValue placeholder="Select a subcategory" />
+                                </SelectTrigger>
+                                <SelectContent className="border-border bg-popover">
+                                    <SelectGroup>
+                                        {categories.map(cat => (
+                                            cat.subCat?.map(sub => (
+                                                <SelectItem key={sub._id} value={sub._id} className="focus:bg-accent focus:text-accent-foreground font-medium">
+                                                    {cat.catTitle} - {sub.title}
+                                                </SelectItem>
+                                            ))
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                             <div>
                                 <Label>Package Title</Label>
                                 <Input
@@ -349,28 +364,28 @@ const ManageSubMenuSection = () => {
                             </div>
 
                         </div>
-                        <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add Package</Button>
+                        <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">Add Package</Button>
                     </form>
                 </div>
             </div>
 
             <div className="flex gap-4 mb-6">
                 <Button
-                    className={`${activeTab === 'categories' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-white text-blue-600'}`}
+                    className={`${activeTab === 'categories' ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent' : 'bg-background text-foreground hover:bg-accent border-border'}`}
                     variant={activeTab === 'categories' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('categories')}
                 >
                     Categories
                 </Button>
                 <Button
-                    className={`${activeTab === 'subcategories' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-white text-blue-600'}`}
+                    className={`${activeTab === 'subcategories' ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent' : 'bg-background text-foreground hover:bg-accent border-border'}`}
                     variant={activeTab === 'subcategories' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('subcategories')}
                 >
                     Subcategories
                 </Button>
                 <Button
-                    className={`${activeTab === 'packages' ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-white text-blue-600'}`}
+                    className={`${activeTab === 'packages' ? 'bg-primary text-primary-foreground hover:bg-primary/90 border-transparent' : 'bg-background text-foreground hover:bg-accent border-border'}`}
                     variant={activeTab === 'packages' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('packages')}
                 >
@@ -380,28 +395,27 @@ const ManageSubMenuSection = () => {
 
             {/* Categories Table */}
             {activeTab === 'categories' && (
-                <div className="border rounded-lg overflow-hidden mt-8">
+                <div className="bg-card border border-border rounded-xl overflow-hidden mt-8 shadow-sm">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Category Title</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
+                            <TableRow className="bg-muted/20 hover:bg-transparent border-b border-border">
+                                <TableHead className="text-heading font-semibold">Category Title</TableHead>
+                                <TableHead className="text-heading font-semibold">Status</TableHead>
+                                <TableHead className="text-heading font-semibold">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {categories.map((category) => (
-                                <TableRow key={category._id}>
-                                    <TableCell className="font-medium">{category.catTitle}</TableCell>
+                                <TableRow key={category._id} className="border-b border-border hover:bg-muted/10 transition-colors">
+                                    <TableCell className="font-medium text-foreground">{category.catTitle}</TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
                                             <Switch
                                                 id={`switch-${category._id}`}
                                                 checked={category.active}
                                                 onCheckedChange={() => toggleActive(category, 'category', category._id,)}
-                                                className={`rounded-full transition-colors ${category.active ? "!bg-green-500" : "!bg-red-500"}`}
                                             />
-                                            <Label htmlFor={`switch-${category._id}`} className="text-black">
+                                            <Label htmlFor={`switch-${category._id}`} className="text-muted-foreground text-xs font-medium">
                                                 {category.active ? "ON" : "OFF"}
                                             </Label>
                                         </div>
@@ -431,31 +445,30 @@ const ManageSubMenuSection = () => {
 
             {/* Subcategories Table */}
             {activeTab === 'subcategories' && (
-                <div className="border rounded-lg overflow-hidden mt-8">
+                <div className="bg-card border border-border rounded-xl overflow-hidden mt-8 shadow-sm">
                     <Table>
                         <TableHeader>
-                            <TableRow>
-                                <TableHead>Category</TableHead>
-                                <TableHead>Subcategory Title</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Actions</TableHead>
+                            <TableRow className="bg-muted/20 hover:bg-transparent border-b border-border">
+                                <TableHead className="text-heading font-semibold">Category</TableHead>
+                                <TableHead className="text-heading font-semibold">Subcategory Title</TableHead>
+                                <TableHead className="text-heading font-semibold">Status</TableHead>
+                                <TableHead className="text-heading font-semibold">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {categories.map((category) => (
                                 category.subCat?.map((subCategory) => (
-                                    <TableRow key={`subcat-${subCategory._id}`}>
-                                        <TableCell>{category.catTitle}</TableCell>
-                                        <TableCell>{subCategory.title}</TableCell>
+                                    <TableRow key={`subcat-${subCategory._id}`} className="border-b border-border hover:bg-muted/10 transition-colors">
+                                        <TableCell className="font-medium text-foreground">{category.catTitle}</TableCell>
+                                        <TableCell className="font-medium text-foreground">{subCategory.title}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
                                                 <Switch
                                                     id={`switch-${subCategory._id}`}
                                                     checked={subCategory.active}
                                                     onCheckedChange={() => toggleActive(subCategory, 'subcategory', category._id)}
-                                                    className={`rounded-full transition-colors ${subCategory.active ? "!bg-green-500" : "!bg-red-500"}`}
                                                 />
-                                                <Label htmlFor={`switch-${subCategory._id}`} className="text-black">
+                                                <Label htmlFor={`switch-${subCategory._id}`} className="text-muted-foreground text-xs font-medium">
                                                     {subCategory.active ? "ON" : "OFF"}
                                                 </Label>
                                             </div>
@@ -486,38 +499,37 @@ const ManageSubMenuSection = () => {
 
             {/* Packages Table */}
             {activeTab === 'packages' && (
-                <div className="border rounded-lg overflow-hidden mt-8">
+                <div className="bg-card border border-border rounded-xl overflow-hidden mt-8 shadow-sm">
                     {/* Desktop Table */}
                     <div className="hidden md:block">
                         <Table>
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead>Subcategory</TableHead>
-                                    <TableHead>Package Title</TableHead>
-                                    <TableHead>URL</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Actions</TableHead>
+                                <TableRow className="bg-muted/20 hover:bg-transparent border-b border-border">
+                                    <TableHead className="text-heading font-semibold">Category</TableHead>
+                                    <TableHead className="text-heading font-semibold">Subcategory</TableHead>
+                                    <TableHead className="text-heading font-semibold">Package Title</TableHead>
+                                    <TableHead className="text-heading font-semibold">URL</TableHead>
+                                    <TableHead className="text-heading font-semibold">Status</TableHead>
+                                    <TableHead className="text-heading font-semibold">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {selectedSubcategory ? (
                                     selectedSubcategoryPackages.length > 0 ? (
                                         selectedSubcategoryPackages.map((pkg) => (
-                                            <TableRow key={`pkg-${pkg._id}`}>
-                                                <TableCell>{pkg.categoryTitle}</TableCell>
-                                                <TableCell>{pkg.subcategoryTitle}</TableCell>
-                                                <TableCell>{pkg.title}</TableCell>
-                                                <TableCell className="truncate max-w-xs">{pkg.url}</TableCell>
+                                            <TableRow key={`pkg-${pkg._id}`} className="border-b border-border hover:bg-muted/10 transition-colors">
+                                                <TableCell className="font-medium text-foreground">{pkg.categoryTitle}</TableCell>
+                                                <TableCell className="font-medium text-foreground">{pkg.subcategoryTitle}</TableCell>
+                                                <TableCell className="font-medium text-foreground">{pkg.title}</TableCell>
+                                                <TableCell className="truncate max-w-xs font-medium text-foreground">{pkg.url}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         <Switch
                                                             id={`switch-${pkg._id}`}
                                                             checked={pkg.active}
                                                             onCheckedChange={() => toggleActive(pkg, 'package', selectedSubcategory)}
-                                                            className={`rounded-full transition-colors ${pkg.active ? "!bg-green-500" : "!bg-red-500"}`}
                                                         />
-                                                        <Label htmlFor={`switch-${pkg._id}`} className="text-black">
+                                                        <Label htmlFor={`switch-${pkg._id}`} className="text-muted-foreground text-xs font-medium">
                                                             {pkg.active ? "ON" : "OFF"}
                                                         </Label>
                                                     </div>
@@ -563,7 +575,7 @@ const ManageSubMenuSection = () => {
                         {selectedSubcategory ? (
                             selectedSubcategoryPackages.length > 0 ? (
                                 selectedSubcategoryPackages.map((pkg) => (
-                                    <div key={`mobile-pkg-${pkg._id}`} className="border rounded-lg p-4">
+                                    <div key={`mobile-pkg-${pkg._id}`} className="border border-border bg-card shadow-sm rounded-xl p-4">
                                         <div className="space-y-2">
                                             <div className="flex justify-between">
                                                 <span className="font-medium">Category:</span>

@@ -460,11 +460,11 @@ const CompanyBasicInformation = () => {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-600 ml-1">Instagram</Label>
-                  <Input name="instagramLink" value={formData.instagramLink} onChange={handleScalarChange} placeholder="https://instagram.com/..." type="url" required className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
+                  <Input name="instagramLink" value={formData.instagramLink} onChange={handleScalarChange} placeholder="https://instagram.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
                 </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-600 ml-1">YouTube</Label>
-                  <Input name="youtubeLink" value={formData.youtubeLink} onChange={handleScalarChange} placeholder="https://youtube.com/..." type="url" required className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
+                  <Input name="youtubeLink" value={formData.youtubeLink} onChange={handleScalarChange} placeholder="https://youtube.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
                 </div>
               </CardContent>
             </Card>

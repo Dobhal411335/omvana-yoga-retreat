@@ -396,7 +396,7 @@ const InstaFbPost = ({}) => {
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader className="bg-slate-50/80 border-b border-slate-100">
-                                        <TableRow className="hover:bg-transparent border-0">
+                                        <TableRow className="border-0 hover:bg-transparent">
                                             <TableHead className="text-slate-500 font-medium h-12 w-16 text-center">#</TableHead>
                                             <TableHead className="text-slate-500 font-medium h-12 w-32 text-center">Thumbnail</TableHead>
                                             <TableHead className="text-slate-500 font-medium h-12">Post Link</TableHead>

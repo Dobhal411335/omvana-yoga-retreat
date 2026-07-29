@@ -110,16 +110,16 @@ const ComingSoonEnquiries = ({ }) => {
     };
 
     return (
-        <div className="my-20 font-barlow w-full max-w-7xl mx-auto flex flex-col gap-8 items-center justify-center bg-blue-100 p-4 rounded-lg">
+        <div className="my-20 font-barlow w-full max-w-7xl mx-auto flex flex-col gap-8 items-center justify-center bg-card border border-border p-6 rounded-xl shadow-sm">
             {/* Month Filter */}
             <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h2 className="text-xl font-bold">Coming Soon Package Enquiries</h2>
+                <h2 className="text-xl font-bold text-heading">Coming Soon Package Enquiries</h2>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm">Filter by month:</span>
+                    <span className="text-sm font-medium text-muted-foreground">Filter by month:</span>
                     <select
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="border rounded-md px-3 py-1 text-sm"
+                        className="border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary rounded-md px-3 py-1 text-sm"
                     >
                         <option value="all">All Months</option>
                         {Object.keys(monthGroups).map(month => (
@@ -129,21 +129,22 @@ const ComingSoonEnquiries = ({ }) => {
                 </div>
             </div>
 
-            <Table className="w-full mx-auto">
-                <TableHeader>
-                    <TableRow className={"border-blue-600"}>
-                        <TableHead className="w-[150px]">Date</TableHead>
-                        <TableHead>Package</TableHead>
-                        <TableHead>Full Name</TableHead>
-                        <TableHead>Contact</TableHead>
-                        <TableHead>Email</TableHead>
-                        <TableHead>Travel Date</TableHead>
-                        <TableHead className="w-[120px]">Action</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {currentItems.length > 0 ? currentItems.map((enquiry) => (
-                        <TableRow key={enquiry._id} className="border-blue-400">
+            <div className="w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+                <Table className="w-full mx-auto">
+                    <TableHeader className="bg-muted/20 hover:bg-transparent">
+                        <TableRow className="border-b border-border">
+                            <TableHead className="w-[150px] text-heading font-semibold">Date</TableHead>
+                            <TableHead className="text-heading font-semibold">Package</TableHead>
+                            <TableHead className="text-heading font-semibold">Full Name</TableHead>
+                            <TableHead className="text-heading font-semibold">Contact</TableHead>
+                            <TableHead className="text-heading font-semibold">Email</TableHead>
+                            <TableHead className="text-heading font-semibold">Travel Date</TableHead>
+                            <TableHead className="w-[120px] text-heading font-semibold">Action</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {currentItems.length > 0 ? currentItems.map((enquiry) => (
+                            <TableRow key={enquiry._id} className="border-b border-border hover:bg-muted/10 transition-colors">
                             <TableCell>{new Date(enquiry.createdAt).toLocaleDateString('en-In', { day: 'numeric', month: 'long', year: 'numeric', })}</TableCell>
                             <TableCell>{enquiry.packageId?.title || '-'}</TableCell>
                             <TableCell>{enquiry.firstName + " " + enquiry.lastName}</TableCell>
@@ -175,7 +176,9 @@ const ComingSoonEnquiries = ({ }) => {
                         </TableRow>
                     )}
                 </TableBody>
-            </Table>
+                </TableBody>
+                </Table>
+            </div>
 
             {/* Pagination */}
             {filteredEnquiry.length > itemsPerPage && (
@@ -195,7 +198,7 @@ const ComingSoonEnquiries = ({ }) => {
                                 variant={currentPage === page ? "default" : "outline"}
                                 size="sm"
                                 onClick={() => handlePageChange(page)}
-                                className={`w-10 h-10 p-0 ${currentPage === page ? "bg-blue-600 text-white" : "text-blue-600"}`}
+                                className={`w-10 h-10 p-0 ${currentPage === page ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-foreground hover:bg-accent border-border"}`}
                             >
                                 {page}
                             </Button>
@@ -248,7 +251,7 @@ const ComingSoonEnquiries = ({ }) => {
                                     </div>
                                     <Badge
                                         variant="outline"
-                                        className="bg-blue-50 mr-8 text-blue-700 border-blue-200 flex items-center gap-1 text-xs w-fit"
+                                        className="bg-muted mr-8 text-muted-foreground border-border flex items-center gap-1 text-xs w-fit"
                                     >
                                         <Calendar className="w-3 h-3" />
                                         {new Date(selectedEnquiry.createdAt).toLocaleDateString('en-In', { day: 'numeric', month: 'long', year: 'numeric', })}
@@ -258,60 +261,60 @@ const ComingSoonEnquiries = ({ }) => {
                             <Separator className="my-4 sm:my-6" />
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Package
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.packageId?.title || '-'}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.packageId?.title || '-'}</p>
                                 </div>
                             </div>
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Travel Date
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.travelDate ? new Date(selectedEnquiry.travelDate).toLocaleDateString('en-In', { day: 'numeric', month: 'long', year: 'numeric', }) : '-'}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.travelDate ? new Date(selectedEnquiry.travelDate).toLocaleDateString('en-In', { day: 'numeric', month: 'long', year: 'numeric', }) : '-'}</p>
                                 </div>
                             </div>
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Address
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.address}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.address}</p>
                                 </div>
                             </div>
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Counts (Adults/Children/Infants)
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.adults} / {selectedEnquiry.children} / {selectedEnquiry.infants}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.adults} / {selectedEnquiry.children} / {selectedEnquiry.infants}</p>
                                 </div>
                             </div>
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Start From
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.startFrom}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.startFrom}</p>
                                 </div>
                             </div>
                             <div className="mt-4 sm:mt-6">
                                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
+                                    <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                     Which Location
                                 </h3>
-                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <p className="italic text-sm sm:text-base text-gray-700">{selectedEnquiry.whichLocation}</p>
+                                <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-muted/30 rounded-lg border border-border">
+                                    <p className="italic text-sm sm:text-base text-muted-foreground">{selectedEnquiry.whichLocation}</p>
                                 </div>
                             </div>
                         </div>
-                        <DialogFooter className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t flex-col sm:flex-row gap-2 sm:gap-3">
+                        <DialogFooter className="px-4 sm:px-6 py-3 sm:py-4 bg-muted/20 border-t border-border flex-col sm:flex-row gap-2 sm:gap-3">
                             <Button variant="outline" onClick={() => setIsOpen(false)} className="sm:order-1 w-full sm:w-auto">
                                 Close
                             </Button>

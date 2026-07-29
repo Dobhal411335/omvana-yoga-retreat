@@ -224,45 +224,45 @@ const AddPackage = ({ id }) => {
 
     return (
         <>
-            <form className="flex flex-col items-center justify-center gap-8 my-20 bg-blue-100 w-full max-w-xl md:max-w-7xl mx-auto p-4 rounded-lg" onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex md:flex-row flex-col items-center md:items-end gap-6">
+            <form className="flex flex-col items-center justify-center gap-8 my-20 bg-card border border-border shadow-sm w-full max-w-xl md:max-w-7xl mx-auto p-6 md:p-8 rounded-xl" onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex md:flex-row flex-col items-center md:items-end gap-6 w-full">
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="packageCode" className="font-semibold">Package Code</label>
-                        <Input name="packageCode" className="w-32 border-2 border-blue-600 focus:border-dashed focus:border-blue-500 focus:outline-none focus-visible:ring-0 font-bold" readOnly value={packageCode} />
+                        <label htmlFor="packageCode" className="font-medium text-foreground text-sm">Package Code</label>
+                        <Input name="packageCode" className="w-32 border-border bg-muted focus-visible:ring-primary font-medium" readOnly value={packageCode} />
+                    </div>
+                    <div className="flex flex-col gap-2 flex-1">
+                        <label htmlFor="packageName" className="font-medium text-foreground text-sm">Package Name</label>
+                        <Input name="packageName" className="w-full font-medium border-border focus-visible:ring-primary bg-background" {...register('packages.packageName')} />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="packageName" className="font-semibold">Package Name</label>
-                        <Input name="packageName" className="w-full border-2 font-bold border-blue-600 focus:border-dashed focus:border-blue-500 focus:outline-none focus-visible:ring-0" {...register('packages.packageName')} />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="price" className="font-semibold">Package Price</label>
-                        <NumericFormat thousandSeparator={true} prefix="₹" name="price" value={priceValue} className="px-2 font-bold py-1 w-full border-2 rounded-md border-blue-600 focus:border-dashed focus:border-blue-500 bg-transparent focus:outline-none focus-visible:ring-0" onValueChange={(values) => {
+                        <label htmlFor="price" className="font-medium text-foreground text-sm">Package Price</label>
+                        <NumericFormat thousandSeparator={true} prefix="₹" name="price" value={priceValue} className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium" onValueChange={(values) => {
                             const value = values.floatValue || 0;
                             setPriceValue(value);
                             setValue("packages.price", value);
                         }} />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="priceUnit" className="font-semibold">Price Unit</label>
-                        <Select value={selectedPriceUnit} name="priceUnit" className="p-2 border border-gray-300 rounded-md" onValueChange={(value) => {
+                        <label htmlFor="priceUnit" className="font-medium text-foreground text-sm">Price Unit</label>
+                        <Select value={selectedPriceUnit} name="priceUnit" onValueChange={(value) => {
                             setSelectedPriceUnit(value);
                             setValue("packages.priceUnit", value);
                         }}>
-                            <SelectTrigger className="w-52 border-2 bg-transparent border-blue-600 focus:border-blue-500 focus:ring-0 focus:outline-none focus-visible:outline-none focus-visible:ring-0">
+                            <SelectTrigger className="w-52 border-border bg-background focus:ring-primary">
                                 <SelectValue placeholder="Select Price Unit" />
                             </SelectTrigger>
-                            <SelectContent className="border-2 border-blue-600 bg-blue-100">
+                            <SelectContent className="border-border bg-popover">
                                 <SelectGroup>
-                                    <SelectItem className="focus:bg-blue-300 font-bold" value="Per Person">Per Person</SelectItem>
-                                    <SelectItem className="focus:bg-blue-300 font-bold" value="2 Person">2 Person</SelectItem>
-                                    <SelectItem className="focus:bg-blue-300 font-bold" value="Group">Group</SelectItem>
+                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Per Person">Per Person</SelectItem>
+                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="2 Person">2 Person</SelectItem>
+                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Group">Group</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-500">
+                    <Button type="submit" disabled={isSubmitting} className="bg-primary text-primary-foreground hover:bg-primary/90">
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                         {editingPackageId ? "Update Package" : "Add Package"}
                     </Button>
@@ -272,39 +272,38 @@ const AddPackage = ({ id }) => {
                 </div>
             </form>
 
-            <div className="bg-blue-100 p-4 rounded-lg shadow max-w-5xl mx-auto w-full overflow-x-auto lg:overflow-visible text-center">
+            <div className="bg-card border border-border rounded-xl shadow-sm max-w-5xl mx-auto w-full overflow-hidden text-center mb-20">
                 <Table className="w-full min-w-max lg:min-w-0">
-                    <TableHeader>
+                    <TableHeader className="bg-muted/20 hover:bg-transparent border-b border-border">
                         <TableRow>
-                            <TableHead className="text-center !text-black w-1/2">Package Name</TableHead>
-                            <TableHead className="text-center !text-black w-1/4">Order</TableHead>
-                            <TableHead className="text-center !text-black w-1/2">isTrending</TableHead>
-                            <TableHead className="w-1/2 !text-black text-center">Action</TableHead>
+                            <TableHead className="text-center text-heading font-semibold w-1/2">Package Name</TableHead>
+                            <TableHead className="text-center text-heading font-semibold w-1/4">Order</TableHead>
+                            <TableHead className="text-center text-heading font-semibold w-1/2">Trending</TableHead>
+                            <TableHead className="w-1/2 text-heading font-semibold text-center">Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {subMenuItems?.packages?.length > 0 ? (
                             subMenuItems?.packages?.map((pkg) => (
-                                <TableRow key={pkg._id}>
-                                    <TableCell className="border font-semibold border-blue-600">{pkg.packageName}</TableCell>
-                                    <TableCell className="border font-semibold border-blue-600">{pkg.order}</TableCell>
-                                    <TableCell className="border font-semibold border-blue-600">
+                                <TableRow key={pkg._id} className="border-b border-border hover:bg-muted/10 transition-colors">
+                                    <TableCell className="font-medium text-foreground py-3">{pkg.packageName}</TableCell>
+                                    <TableCell className="font-medium text-foreground py-3">{pkg.order}</TableCell>
+                                    <TableCell className="py-3">
                                         <div className="flex items-center justify-center gap-6">
                                             <Switch
                                                 id={`switch-${pkg._id}`}
                                                 checked={pkg.isTrending}
                                                 onCheckedChange={() => toggleIsTrending(pkg._id, pkg.isTrending)}
-                                                className={`rounded-full transition-colors ${pkg.isTrending ? "!bg-green-500" : "!bg-red-500"}`}
                                             />
                                         </div>
                                     </TableCell>
-                                    <TableCell className="border font-semibold border-blue-600">
-                                        <div className="flex items-center justify-center gap-6">
-                                            <Button size="icon" variant="outline" onClick={() => startEdit(pkg)} title="Edit data here">
+                                    <TableCell className="py-3">
+                                        <div className="flex items-center justify-center gap-4">
+                                            <Button size="icon" variant="outline" className="hover:bg-accent text-muted-foreground border-border" onClick={() => startEdit(pkg)} title="Edit data here">
                                                 <Edit className="w-4 h-4" />
                                             </Button>
 
-                                            <Button size="icon" variant="outline" asChild title="Edit full package page">
+                                            <Button size="icon" variant="outline" className="hover:bg-accent text-muted-foreground border-border" asChild title="Edit full package page">
                                                 <Link href={`/admin/editPackage/${pkg._id}`}>
                                                     <Pencil className="w-4 h-4" />
                                                 </Link>
@@ -313,14 +312,13 @@ const AddPackage = ({ id }) => {
                                             <Button size="icon" disabled={isLoading} onClick={() => deletePackage(pkg._id)} variant="destructive">
                                                 {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                                             </Button>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 border-l border-border pl-4">
                                                 <Switch
                                                     id={`switch-${pkg._id}`}
                                                     checked={pkg.active}
                                                     onCheckedChange={() => toggleSwitch(pkg._id, pkg.active)}
-                                                    className={`rounded-full transition-colors ${pkg.active ? "!bg-green-500" : "!bg-red-500"}`}
                                                 />
-                                                <Label htmlFor={`switch-${pkg._id}`} className="text-black">
+                                                <Label htmlFor={`switch-${pkg._id}`} className="text-muted-foreground text-xs font-medium">
                                                     {pkg.active ? "ON" : "OFF"}
                                                 </Label>
                                             </div>
@@ -329,8 +327,8 @@ const AddPackage = ({ id }) => {
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan="4" className="text-center border font-semibold border-blue-600">
+                            <TableRow className="border-b border-border">
+                                <TableCell colSpan="4" className="text-center font-medium text-muted-foreground py-6">
                                     No packages available.
                                 </TableCell>
                             </TableRow>

@@ -259,36 +259,36 @@ const ComingSoon = ({ }) => {
     const getPackageUrl = (pkg) => `/piligrimage/${pkg._id}`;
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen w-full">
-            <form className="flex flex-col items-center justify-center gap-8 bg-blue-100 max-w-4xl w-full p-4 rounded-lg shadow" style={{ marginTop: 40, marginBottom: 40 }} onSubmit={handleSubmit(onSubmit)}>
-                <h2 className="text-3xl font-semibold">Add Coming Soon Package</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <div className="flex flex-col items-center justify-center min-h-screen w-full p-4 md:p-8">
+            <form className="flex flex-col items-center justify-center gap-8 bg-card border border-border max-w-5xl w-full p-6 md:p-10 rounded-xl shadow-sm" style={{ marginTop: 40, marginBottom: 40 }} onSubmit={handleSubmit(onSubmit)}>
+                <h2 className="text-3xl font-semibold text-heading">Add Coming Soon Package</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                     <div className="flex flex-col gap-2">
-                        <label className="font-semibold">Package Title</label>
-                        <Input className="border-2 border-blue-600" placeholder="Package Title" {...register("title")} />
+                        <label className="font-semibold text-foreground">Package Title</label>
+                        <Input className="border-border bg-background focus-visible:ring-primary" placeholder="Package Title" {...register("title")} />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label className="font-semibold">Location</label>
-                        <Input className="border-2 border-blue-600" placeholder="Location" {...register("location")} />
+                        <label className="font-semibold text-foreground">Location</label>
+                        <Input className="border-border bg-background focus-visible:ring-primary" placeholder="Location" {...register("location")} />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label className="font-semibold">Days of Tour</label>
-                        <Input className="border-2 border-blue-600" type="number" placeholder="Days of Tour" {...register("days")} />
+                        <label className="font-semibold text-foreground">Days of Tour</label>
+                        <Input className="border-border bg-background focus-visible:ring-primary" type="number" placeholder="Days of Tour" {...register("days")} />
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label className="font-semibold">Tour Type</label>
-                        <Input className="border-2 border-blue-600" placeholder="Tour Type" {...register("tourType")} />
+                        <label className="font-semibold text-foreground">Tour Type</label>
+                        <Input className="border-border bg-background focus-visible:ring-primary" placeholder="Tour Type" {...register("tourType")} />
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                    <div className="space-y-2 w-full">
-                        <label className="font-semibold">Thumbnail Image</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                    <div className="space-y-3 w-full">
+                        <label className="font-semibold text-foreground">Thumbnail Image</label>
                         <div className="grid grid-cols-1 w-full gap-4">
                             {bannerUrl ? (
-                                <div className="relative aspect-video rounded-lg h-40 w-full overflow-hidden border-2 border-blue-600 group">
+                                <div className="relative aspect-video rounded-lg h-40 w-full overflow-hidden border border-border group">
                                     <Image src={bannerUrl} alt="Banner Preview" fill sizes="100vw" className="object-contain w-full" />
                                     <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                        <button type="button" onClick={handleRemoveBanner} className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"><X className="w-4 h-4" /></button>
+                                        <button type="button" onClick={handleRemoveBanner} className="p-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"><X className="w-4 h-4" /></button>
                                     </div>
                                 </div>
                             ) : (
@@ -305,7 +305,7 @@ const ComingSoon = ({ }) => {
                         <Button
                             type="button"
                             variant="outline"
-                            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-500 hover:text-white"
+                            className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
                             onClick={() => bannerInputRef.current && bannerInputRef.current.click()}
                             disabled={bannerLoading || bannerUrl}
                         >
@@ -313,14 +313,14 @@ const ComingSoon = ({ }) => {
                             {bannerLoading ? "Uploading..." : "Upload Banner"}
                         </Button>
                     </div>
-                    <div className="space-y-2 w-full">
-                        <label className="font-semibold">Banner Image</label>
+                    <div className="space-y-3 w-full">
+                        <label className="font-semibold text-foreground">Banner Image</label>
                         <div className="grid grid-cols-1 w-full gap-4">
                             {thumbUrl ? (
-                                <div className="relative aspect-video rounded-lg h-40 w-full overflow-hidden border-2 border-blue-600 group">
+                                <div className="relative aspect-video rounded-lg h-40 w-full overflow-hidden border border-border group">
                                     <Image src={thumbUrl} alt="Thumb Preview" fill sizes="100vw" className="object-contain w-full" />
                                     <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                                        <button type="button" onClick={handleRemoveThumb} className="p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"><X className="w-4 h-4" /></button>
+                                        <button type="button" onClick={handleRemoveThumb} className="p-2 bg-destructive text-destructive-foreground rounded-full hover:bg-destructive/90 transition-colors"><X className="w-4 h-4" /></button>
                                     </div>
                                 </div>
                             ) : (
@@ -337,7 +337,7 @@ const ComingSoon = ({ }) => {
                         <Button
                             type="button"
                             variant="outline"
-                            className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white hover:bg-blue-500 hover:text-white"
+                            className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
                             onClick={() => thumbInputRef.current && thumbInputRef.current.click()}
                             disabled={thumbLoading || thumbUrl}
                         >
@@ -346,26 +346,28 @@ const ComingSoon = ({ }) => {
                         </Button>
                     </div>
                 </div>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-500" disabled={isLoading}>
+                <div className="flex gap-4">
+                    <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={isLoading}>
                     {editId ? (isLoading ? "Updating..." : "Update Package") : (isLoading ? "Saving..." : "Create Coming Soon")}
-                </Button>
-                {editId && (
-                    <Button type="button" className="ml-2 bg-gray-400 hover:bg-gray-500" onClick={() => {
-                        setEditId(null);
-                        reset();
-                        setBannerUrl(""); setBannerKey(""); setThumbUrl(""); setThumbKey("");
-                    }}>
-                        Cancel Edit
                     </Button>
-                )}
-                <div className="bg-blue-100 p-4 rounded-lg shadow max-w-5xl mx-auto w-full overflow-x-auto lg:overflow-visible text-center mt-8">
+                    {editId && (
+                        <Button type="button" className="ml-2 bg-muted text-muted-foreground hover:bg-accent" onClick={() => {
+                            setEditId(null);
+                            reset();
+                            setBannerUrl(""); setBannerKey(""); setThumbUrl(""); setThumbKey("");
+                        }}>
+                            Cancel Edit
+                        </Button>
+                    )}
+                </div>
+                <div className="w-full overflow-hidden rounded-xl border border-border bg-background shadow-sm text-center mt-8">
                     <Table className="w-full min-w-max lg:min-w-0">
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-center !text-black w-1/4">Title</TableHead>
-                                <TableHead className="text-center !text-black w-1/4">Location</TableHead>
-                                <TableHead className="text-center !text-black w-1/4">Link</TableHead>
-                                <TableHead className="w-1/4 !text-black text-center">Action</TableHead>
+                        <TableHeader className="bg-muted/20 hover:bg-transparent">
+                            <TableRow className="border-b border-border">
+                                <TableHead className="text-center text-heading font-semibold w-1/4">Title</TableHead>
+                                <TableHead className="text-center text-heading font-semibold w-1/4">Location</TableHead>
+                                <TableHead className="text-center text-heading font-semibold w-1/4">Link</TableHead>
+                                <TableHead className="w-1/4 text-heading font-semibold text-center">Action</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -373,14 +375,15 @@ const ComingSoon = ({ }) => {
                                 <TableRow><TableCell colSpan="4">Loading...</TableCell></TableRow>
                             ) : comingSoonPackages.length > 0 ? (
                                 comingSoonPackages.map(pkg => (
-                                    <TableRow key={pkg._id}>
-                                        <TableCell className="border font-semibold border-blue-600">{pkg.title}</TableCell>
-                                        <TableCell className="border font-semibold border-blue-600">{pkg.location}</TableCell>
-                                        <TableCell className="border font-semibold border-blue-600">
+                                    <TableRow key={pkg._id} className="border-b border-border hover:bg-muted/10 transition-colors">
+                                        <TableCell className="font-medium text-foreground py-3">{pkg.title}</TableCell>
+                                        <TableCell className="font-medium text-foreground py-3">{pkg.location}</TableCell>
+                                        <TableCell className="py-3">
                                             <div className="flex items-center justify-center gap-2">
                                                 <Button
                                                     size="icon"
                                                     variant="ghost"
+                                                    className="hover:bg-accent text-muted-foreground"
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         copyToClipboard(`${window.location.origin}${getPackageUrl(pkg)}`)
@@ -388,12 +391,11 @@ const ComingSoon = ({ }) => {
                                                 >
                                                     <Copy className="w-4 h-4" />
                                                 </Button>
-                                                {/* <span className="text-xs break-all">{getPackageUrl(pkg)}</span> */}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="border font-semibold border-blue-600">
-                                            <div className="flex items-center justify-center gap-6">
-                                                <Button size="icon" variant="outline" type="button" onClick={() => {
+                                        <TableCell className="py-3">
+                                            <div className="flex items-center justify-center gap-4">
+                                                <Button size="icon" variant="outline" className="border-border hover:bg-accent transition-colors" type="button" onClick={() => {
                                                     setEditId(pkg._id);
                                                     setValue("title", pkg.title);
                                                     setValue("location", pkg.location);
@@ -414,8 +416,8 @@ const ComingSoon = ({ }) => {
                                     </TableRow>
                                 ))
                             ) : (
-                                <TableRow>
-                                    <TableCell colSpan="4" className="text-center border font-semibold border-blue-600">
+                                <TableRow className="border-b border-border">
+                                    <TableCell colSpan="4" className="text-center font-medium text-muted-foreground py-6">
                                         No packages available.
                                     </TableCell>
                                 </TableRow>

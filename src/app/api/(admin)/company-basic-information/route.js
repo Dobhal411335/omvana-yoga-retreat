@@ -68,15 +68,6 @@ export async function POST(request) {
     if (!normalizedPayload.companyDomainName) {
       return NextResponse.json({ success: false, error: 'Company domain name is required' }, { status: 400 })
     }
-
-    if (!String(normalizedPayload.instagramLink || '').trim()) {
-      return NextResponse.json({ success: false, error: 'Instagram link is required' }, { status: 400 })
-    }
-
-    if (!String(normalizedPayload.youtubeLink || '').trim()) {
-      return NextResponse.json({ success: false, error: 'Youtube link is required' }, { status: 400 })
-    }
-
     const invalidContactNumber = normalizedPayload.contactNumbers.find((number) => String(number).length !== 10)
     if (invalidContactNumber) {
       return NextResponse.json({ success: false, error: 'Each contact number must be exactly 10 digits' }, { status: 400 })

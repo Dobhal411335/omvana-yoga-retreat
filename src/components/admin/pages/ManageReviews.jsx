@@ -204,16 +204,16 @@ const ManageReviews = () => {
     const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage);
     // console.log(currentReviews)
     return (
-        <div className="w-full max-w-[1100px] mx-auto rounded-[14px] shadow-md px-4 py-6 md:py-8">
+        <div className="w-full max-w-5xl mx-auto rounded-xl shadow-sm border border-border bg-card px-6 py-8 my-12">
             {/* Filter Row */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-6">
             {/* Existing status filter */}
             <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <label className="block text-sm font-medium text-foreground mb-1">Status</label>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border bg-background rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                         {statusOptions.map(option => (
                             <option key={option.value} value={option.value}>
@@ -225,11 +225,11 @@ const ManageReviews = () => {
 
                 {/* New type filter */}
                 <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <label className="block text-sm font-medium text-foreground mb-1">Type</label>
                     <select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 border border-border bg-background rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     >
                         {typeOptions.map(option => (
                             <option key={option.value} value={option.value}>
@@ -241,12 +241,12 @@ const ManageReviews = () => {
             </div>
       
             {/* Table */}
-            <div className="overflow-x-auto bg-white rounded-xl">
+            <div className="overflow-x-auto bg-card rounded-xl border border-border shadow-sm">
                 <table className="min-w-full border-separate border-spacing-0">
                     <thead>
                         <tr>
                             {columns.map((col) => (
-                                <th key={col} className="py-3 px-4 border border-black  font-semibold text-left text-base">{col}</th>
+                                <th key={col} className="py-3 px-4 border-b border-border font-semibold text-heading text-left text-sm">{col}</th>
                             ))}
                         </tr>
                     </thead>
@@ -257,48 +257,47 @@ const ManageReviews = () => {
                             </tr>
                         ) : currentReviews.length > 0 ? (
                             currentReviews.map((review) => (
-                                <tr key={review._id} className="hover:bg-gray-100 transition">
+                                <tr key={review._id} className="hover:bg-muted/10 transition-colors border-b border-border last:border-0">
                                     {/* Date */}
-                                    <td className="align-middle min-w-[150px] px-5">{review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric' }) : "-"}</td>
+                                    <td className="align-middle min-w-[150px] px-5 py-3 border-b border-border">{review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric' }) : "-"}</td>
                                     {/* Title */}
-                                    <td className="align-middle truncate max-w-[180px] px-5">{review.title || '-'}</td>
+                                    <td className="align-middle truncate max-w-[180px] px-5 py-3 border-b border-border">{review.title || '-'}</td>
                                     {/* Name */}
-                                    <td className="align-middle min-w-[120px] px-5">{review.name || '-'}</td>
+                                    <td className="align-middle min-w-[120px] px-5 py-3 border-b border-border">{review.name || '-'}</td>
                                     {/* Type */}
-                                    <td className="align-middle px-5">{review.type || '-'}</td>
+                                    <td className="align-middle px-5 py-3 border-b border-border">{review.type || '-'}</td>
                                     {/* Rating */}
-                                    <td className="align-middle px-5">{review.rating || '-'}</td>
+                                    <td className="align-middle px-5 py-3 border-b border-border">{review.rating || '-'}</td>
                                     {/* Thumb */}
-                                    <td className="align-middle px-5">
+                                    <td className="align-middle px-5 py-3 border-b border-border">
                                         {review.thumb && review.thumb.url ? (
                                             <img
                                                 src={review.thumb.url}
                                                 alt="thumb"
-                                                className="w-10 h-10 object-cover rounded border shadow"
+                                                className="w-10 h-10 object-cover rounded border shadow-sm border-border"
                                             />
                                         ) : '-'}
                                     </td>
                                     {/* Approved */}
-                                    <td className="align-middle px-5">
+                                    <td className="align-middle px-5 py-3 border-b border-border">
                                         <Switch
                                             checked={!!review.approved}
                                             onCheckedChange={() => handleToggleApproved(review)}
-                                            className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-300"
                                         />
                                     </td>
                                     {/* Active Status */}
-                                    <td className="align-middle px-5">
+                                    <td className="align-middle px-5 py-3 border-b border-border">
                                         <Switch
                                             checked={!review.deleted && review.active}
                                             onCheckedChange={() => handleAction(review._id, review.active ? 'inactive' : 'active')}
-                                            className={`data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-300 ${review.deleted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            className={`${review.deleted ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             disabled={review.deleted}
                                             title={review.deleted ? 'Cannot activate deleted review' : ''}
                                         />
                                     </td>
                                     {/* View */}
-                                    <td className="align-middle px-5">
-                                        <button className="icon-btn hover:bg-gray-200 rounded p-1" onClick={() => setSelectedReview(review)}>
+                                    <td className="align-middle px-5 py-3 border-b border-border">
+                                        <button className="icon-btn hover:bg-accent rounded p-2 transition-colors" onClick={() => setSelectedReview(review)}>
                                             <EyeIcon size={20} />
                                         </button>
                                     </td>
