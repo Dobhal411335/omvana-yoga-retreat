@@ -36,7 +36,6 @@ const Page = () => {
 
         data.active = true
         data.order = menuItems.length + 1
-        data.showOnFrontend=true
 
         try {
             const result = await fetch("/api/admin/website-manage/addMenu", {
@@ -196,7 +195,6 @@ const Page = () => {
                                     <TableRow>
                                         <TableHead className="text-center !text-black w-1/3">Menu Title</TableHead>
                                         <TableHead className="text-center !text-black w-1/3">Order</TableHead>
-                                        <TableHead className="text-center !text-black w-1/6">Frontend</TableHead>
                                         <TableHead className="w-1/3 !text-black text-center">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -205,30 +203,6 @@ const Page = () => {
                                         <TableRow key={item._id}>
                                             <TableCell className="border font-semibold border-blue-600">{item.title}</TableCell>
                                             <TableCell className="border font-semibold border-blue-600">{item.order}</TableCell>
-                                            <TableCell className="border font-semibold border-blue-600">
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <Switch
-                                                        id={`frontend-switch-${item._id}`}
-                                                        checked={Boolean(item.showOnFrontend)}
-                                                        onCheckedChange={async () => {
-                                                            const nextValue = !item.showOnFrontend;
-                                                            const response = await fetch(`/api/admin/website-manage/addMenu`, {
-                                                                method: "PUT",
-                                                                headers: { "Content-Type": "application/json" },
-                                                                body: JSON.stringify({ id: item._id, showOnFrontend: nextValue }),
-                                                            });
-
-                                                            if (response.ok) {
-                                                                setMenuItems(menuItems.map((menuItem) => menuItem._id === item._id ? { ...menuItem, showOnFrontend: nextValue } : menuItem));
-                                                            }
-                                                        }}
-                                                        className={`rounded-full transition-colors ${item.showOnFrontend ? "!bg-green-500" : "!bg-red-500"}`}
-                                                    />
-                                                    <Label htmlFor={`frontend-switch-${item._id}`} className="text-black">
-                                                        {item.showOnFrontend ? "Yes" : "No"}
-                                                    </Label>
-                                                </div>
-                                            </TableCell>
                                             <TableCell className="border font-semibold border-blue-600">
                                                 <div className="flex items-center justify-center gap-6">
                                                     <Button size="icon" onClick={() => handleEdit(item)} variant="outline">

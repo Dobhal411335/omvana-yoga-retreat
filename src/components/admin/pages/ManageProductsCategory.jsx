@@ -27,7 +27,7 @@ const ManageProductsCategory = () => {
     const [selectedMenu, setSelectedMenu] = useState("")
     const [editItem, setEditItem] = useState(null)
     const [bannerImage, setBannerImage] = useState(null)
-    const [showOnFrontend, setShowOnFrontend] = useState(true)
+
     // const [profileImage, setProfileImage] = useState(null)
     // Separate state for edit dialog
     const [editBannerImage, setEditBannerImage] = useState(null);
@@ -104,13 +104,11 @@ const ManageProductsCategory = () => {
 
         const url = data.subMenu.title ? data.subMenu.title.replace(/\s+/g, '_').toLowerCase() : ""
 
-        data.section = "frontend"
         data.subMenu = {
             title: data.subMenu.title,
             url: url,
             profileImage: profileImage,
             active: true,
-            showOnFrontend: showOnFrontend,
             order: (menuItems.find(item => item.title === selectedMenu)?.subMenu.length || 0) + 1,
             banner: bannerImage,
             // gallery: galleryImages
@@ -133,7 +131,7 @@ const ManageProductsCategory = () => {
                 setSelectedMenu("")
                 setBannerImage(null)
                 setProfileImage(null)
-                setShowOnFrontend(true)
+
                 toast.success("Sub Menu added successfully!", { style: { borderRadius: "10px", border: "2px solid green" } })
                 window.location.reload()
             }
@@ -287,14 +285,7 @@ const ManageProductsCategory = () => {
                             {...register("subMenu.title")}
                         />
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Switch
-                            checked={showOnFrontend}
-                            onCheckedChange={setShowOnFrontend}
-                            className={`rounded-full transition-colors ${showOnFrontend ? "!bg-green-500" : "!bg-red-500"}`}
-                        />
-                        <Label>Show on Frontend</Label>
-                    </div>
+
                     <div className="flex flex-col gap-2">
                         <Label>Upload Category Profile Image</Label>
                         {profileImage && (

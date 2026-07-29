@@ -6,7 +6,7 @@ export async function PUT(req, { params }) {
     await connectDB()
     try {
         const { id } = await params
-        const { categoryId, title, showOnFrontend } = await req.json()
+        const { categoryId, title } = await req.json()
 
         const category = await SubMenuFixed.findOne({ _id: categoryId })
         if (!category) {
@@ -15,7 +15,7 @@ export async function PUT(req, { params }) {
 
         const subCategory = category.subCat.id(id)
         subCategory.title = title
-        subCategory.showOnFrontend = showOnFrontend
+
         await category.save()
 
         return NextResponse.json({ message: "Subcategory updated successfully" })

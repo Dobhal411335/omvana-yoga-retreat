@@ -6,7 +6,7 @@ export async function PUT(req, { params }) {
     await connectDB()
     try {
         const { id } = await params
-        const { subCategoryId, title, url, showOnFrontend } = await req.json()
+        const { subCategoryId, title, url } = await req.json()
 
         const category = await SubMenuFixed.findOne({ "subCat._id": subCategoryId })
         if (!category) {
@@ -17,7 +17,7 @@ export async function PUT(req, { params }) {
         const pkg = subCategory.subCatPackage.id(id)
         pkg.title = title
         pkg.url = url
-        pkg.showOnFrontend = showOnFrontend
+
         await category.save()
 
         return NextResponse.json({ message: "Package updated successfully" })

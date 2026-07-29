@@ -27,6 +27,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "dayjs": "^1.11.21",
     "dotenv-safe": "^9.1.0",
     "framer-motion": "^12.43.0",

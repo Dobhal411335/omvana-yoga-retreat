@@ -273,13 +273,7 @@ const ManageSubMenuSection = () => {
                                 placeholder="Enter Category Title"
                                 required
                             />
-                            <div className="flex items-center gap-2 pt-2">
-                                <Switch
-                                    checked={categoryForm.showOnFrontend}
-                                    onCheckedChange={(checked) => setCategoryForm({ ...categoryForm, showOnFrontend: checked })}
-                                />
-                                <Label>Show on Frontend</Label>
-                            </div>
+
                         </div>
                         <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add Category</Button>
                     </form>
@@ -311,13 +305,7 @@ const ManageSubMenuSection = () => {
                                     required
                                 />
                             </div>
-                            <div className="flex items-center gap-2 pt-2">
-                                <Switch
-                                    checked={subCategoryForm.showOnFrontend}
-                                    onCheckedChange={(checked) => setSubCategoryForm({ ...subCategoryForm, showOnFrontend: checked })}
-                                />
-                                <Label>Show on Frontend</Label>
-                            </div>
+
                         </div>
                         <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add SubCategory</Button>
                     </form>
@@ -359,13 +347,7 @@ const ManageSubMenuSection = () => {
                                     placeholder="Enter Package URL"
                                 />
                             </div>
-                            <div className="flex items-center gap-2 pt-2">
-                                <Switch
-                                    checked={packageForm.showOnFrontend}
-                                    onCheckedChange={(checked) => setPackageForm({ ...packageForm, showOnFrontend: checked })}
-                                />
-                                <Label>Show on Frontend</Label>
-                            </div>
+
                         </div>
                         <Button type="submit" className="bg-blue-600 hover:bg-blue-700">Add Package</Button>
                     </form>

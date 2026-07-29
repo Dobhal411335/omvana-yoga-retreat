@@ -15,11 +15,11 @@ export async function GET(req) {
 
     const output = frontendOnly
         ? menu
-            .filter((item) => item.active && item.showOnFrontend !== false)
+            .filter((item) => item.active)
             .map((item) => ({
                 ...item.toObject(),
                 subMenu: Array.isArray(item.subMenu)
-                    ? item.subMenu.filter((subItem) => subItem.active && subItem.showOnFrontend !== false)
+                    ? item.subMenu.filter((subItem) => subItem.active)
                     : [],
             }))
         : menu

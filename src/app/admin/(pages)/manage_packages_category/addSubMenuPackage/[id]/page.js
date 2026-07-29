@@ -1,4 +1,4 @@
-import AddPackage from "@/components/Admin/AddPackage"
+import AddPackage from "@/components/Admin/pages/AddPackage"
 const page = async ({ params }) => {
     const { id } = await params
 

@@ -99,49 +99,11 @@ const sections = [
   },
 
   {
-    id: "packages",
-    label: "Retreat Packages",
+    id: "Manage Reviews",
+    label: "Manage Reviews",
     icon: Package,
     items: [
-      { label: "All Packages", href: "/admin/packages", icon: Package },
-      { label: "Create Package", href: "/admin/packages/create", icon: FilePlus },
-      { label: "Package Categories", href: "/admin/packages/categories", icon: FileStack },
-    ],
-  },
-  {
-    id: "gallery",
-    label: "Manage Gallery",
-    icon: Images,
-    items: [
-      { label: "Gallery Overview", href: "/admin/gallery", icon: Images },
-      { label: "Upload Images", href: "/admin/gallery/upload", icon: ImagePlus },
-    ],
-  },
-  {
-    id: "testimonials",
-    label: "Testimonials",
-    icon: Star,
-    items: [
-      { label: "Add Testimonial", href: "/admin/testimonials/create", icon: MessageCirclePlus },
-      { label: "Approve or Reject", href: "/admin/testimonials", icon: CheckSquare },
-    ],
-  },
-  {
-    id: "policies",
-    label: "Site Policies",
-    icon: ShieldCheck,
-    items: [
-      { label: "Create Policy", href: "/admin/policies/create", icon: FilePlus },
-      { label: "Policy Details", href: "/admin/policies", icon: FileSearch },
-    ],
-  },
-  {
-    id: "profile",
-    label: "Profile & Team",
-    icon: UserCircle,
-    items: [
-      { label: "Admin Profile", href: "/admin/profile", icon: UserCog },
-      { label: "Team Members", href: "/admin/team", icon: Users },
+      { label: "Approve or Reject Reviews", href: "/admin/manage_reviews", icon: Package },
     ],
   },
 ];
@@ -203,11 +165,11 @@ function SectionAccordion({ section, pathname, collapsed }) {
           title={section.label}
           onClick={() => setOpen((v) => !v)}
           className={cn(
-            "flex w-full items-center justify-center rounded-xl p-[15px] transition-all duration-300",
+            "flex w-full items-center justify-center rounded-xl p-3.75 transition-all duration-300",
             active ? "bg-primary/20 text-primary" : "text-white/40 hover:bg-white/5 hover:text-white/70",
           )}
         >
-          <SectionIcon className="size-[20px] shrink-0" />
+          <SectionIcon className="size-5 shrink-0" />
         </button>
       </div>
     );
@@ -227,7 +189,7 @@ function SectionAccordion({ section, pathname, collapsed }) {
       >
         <SectionIcon
           className={cn(
-            "size-[17px] shrink-0",
+            "size-4.25 shrink-0",
             active ? "text-primary" : "text-white/40",
           )}
         />
@@ -281,7 +243,7 @@ export function AdminSidebar() {
     <aside
       className={cn(
         "relative flex h-screen flex-col bg-footer transition-all duration-300 selection:bg-primary/30 selection:text-white",
-        collapsed ? "w-[64px]" : "w-[300px]",
+        collapsed ? "w-16" : "w-75",
       )}
     >
       {/* ── Brand ── */}
@@ -343,7 +305,7 @@ export function AdminSidebar() {
         >
           <Globe
             className={cn(
-              "size-[17px] shrink-0",
+              "size-4.25 shrink-0",
               pathname === "/admin" ? "text-primary" : "text-white/40",
             )}
           />

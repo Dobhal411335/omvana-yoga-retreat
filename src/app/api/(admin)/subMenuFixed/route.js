@@ -11,16 +11,16 @@ export async function GET(req) {
         const menuItems = await SubMenuFixed.find({})
         const output = frontendOnly
             ? menuItems
-                .filter((item) => item.active && item.showOnFrontend !== false)
+                .filter((item) => item.active)
                 .map((item) => ({
                     ...item.toObject(),
                     subCat: Array.isArray(item.subCat)
                         ? item.subCat
-                            .filter((subCat) => subCat.active && subCat.showOnFrontend !== false)
+                            .filter((subCat) => subCat.active)
                             .map((subCat) => ({
                                 ...subCat,
                                 subCatPackage: Array.isArray(subCat.subCatPackage)
-                                    ? subCat.subCatPackage.filter((pkg) => pkg.active && pkg.showOnFrontend !== false)
+                                    ? subCat.subCatPackage.filter((pkg) => pkg.active)
                                     : [],
                             }))
                         : [],
@@ -37,12 +37,11 @@ export async function POST(req) {
     await connectDB()
     try {
         const body = await req.json()
-        const { type, catTitle, categoryId, subCatTitle, subCategoryId, title, url,showOnFrontend } = body
+        const { type, catTitle, categoryId, subCatTitle, subCategoryId, title, url } = body
         if (type === "category") {
             const newCategory = new SubMenuFixed({
                 catTitle,
-                active: true,
-                showOnFrontend
+                active: true
             })
             await newCategory.save()
             return NextResponse.json({ message: "Category added successfully" })
@@ -56,8 +55,7 @@ export async function POST(req) {
 
             category.subCat.push({
                 title: subCatTitle,
-                active: true,
-                showOnFrontend
+                active: true
             })
             await category.save()
             return NextResponse.json({ message: "Subcategory added successfully" })
@@ -73,8 +71,7 @@ export async function POST(req) {
             subCategory.subCatPackage.push({
                 title,
                 url,
-                active: true,
-                showOnFrontend
+                active: true
             })
             await category.save()
             return NextResponse.json({ message: "Package added successfully" })
