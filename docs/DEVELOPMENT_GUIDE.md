@@ -100,7 +100,7 @@ Winston
 
 Notifications
 
-Sonner
+React-hot toast
 
 ---
 

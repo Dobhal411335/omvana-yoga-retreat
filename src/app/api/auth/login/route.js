@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import connectDB from "@/lib/mongodb";
-import Admin from "@/models/Admin";
+import connectDB from "@/lib/connectDB";
+import Admin from "@/models/Admin/Admin";
 import { signToken, setAuthCookie } from "@/lib/auth";
 import { logLogin } from "@/lib/logger";
 

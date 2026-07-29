@@ -15,26 +15,28 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
       <div className="container flex h-20 items-center justify-between">
         <Logo />
+        <div className="flex items-center gap-8">
 
-        <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-          {websiteNavigation.map((link) => (
+          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+            {websiteNavigation.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="font-body text-sm font-medium text-foreground transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden lg:flex">
             <Link
-              key={link.label}
-              href={link.href}
-              className="font-body text-sm text-foreground transition-colors hover:text-primary"
+              href="/contact"
+              className="inline-flex h-10 items-center justify-center rounded-[var(--radius-button)] bg-heading px-6 font-body text-sm text-white transition-colors hover:bg-heading/80"
             >
-              {link.label}
+              Reserve a stay
             </Link>
-          ))}
-        </nav>
-
-        <div className="hidden lg:flex">
-          <Link
-            href="/contact"
-            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-button)] bg-heading px-6 font-body text-sm text-white transition-colors hover:bg-heading/80"
-          >
-            Reserve a stay
-          </Link>
+          </div>
         </div>
 
         <button

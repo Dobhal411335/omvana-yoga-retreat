@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import connectDB from "@/lib/mongodb";
-import Admin from "@/models/Admin";
+import connectDB from "@/lib/connectDB";
+import Admin from "@/models/Admin/Admin";
 
 /*
  * POST /api/setup/create-admin
@@ -16,6 +16,7 @@ const DISABLED = process.env.DISABLE_SETUP === "true";
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export async function POST(request) {

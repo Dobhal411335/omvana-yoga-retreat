@@ -1,6 +1,6 @@
 "use client";
 
-import { Toaster } from "sonner";
+import { Toaster } from "react-hot-toast";
 
 export function ToasterProvider() {
   return (

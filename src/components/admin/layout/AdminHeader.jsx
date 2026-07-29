@@ -70,27 +70,8 @@ export function AdminHeader() {
         {/* Date */}
         <div className="hidden items-center gap-1.5 rounded-lg bg-background px-3 py-1.5 md:flex">
           <Calendar className="size-3.5 text-muted" aria-hidden="true" />
-          <span className="font-ui text-xs text-muted">{today}</span>
+          <span className="font-ui text-[14px] text-muted">{today}</span>
         </div>
-
-        {/* Search (UI only) */}
-        <button
-          className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-background"
-          aria-label="Search"
-        >
-          <Search className="size-4 text-muted" />
-        </button>
-
-        {/* Notifications (UI only) */}
-        <button
-          className="relative flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-background"
-          aria-label="Notifications"
-        >
-          <Bell className="size-4 text-muted" />
-          {/* Badge */}
-          <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-primary" />
-        </button>
-
         {/* Admin profile */}
         <button className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 transition-colors hover:bg-background">
           <div className="flex size-7 items-center justify-center rounded-full bg-primary/15">

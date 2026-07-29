@@ -1,5 +1,5 @@
 export const site = {
-  name: "Omvana Retreat",
+  name: "Omvana Yoga Retreat",
   description: "A calm foundation for the Omvana Retreat website and CMS.",
   defaultLocale: "en",
 };

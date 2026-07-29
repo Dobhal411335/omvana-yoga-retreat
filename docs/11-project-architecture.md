@@ -97,7 +97,7 @@ dayjs
 
 Notifications
 
-Sonner
+React-hot toast
 
 Tables
 
