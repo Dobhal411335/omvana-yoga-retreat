@@ -1,7 +1,7 @@
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 import Package from "@/models/Piligrimage/Package";
-import MenuBar from "@/models/MenuBar";
+import MenuBar from "@/models/Admin/MenuBar";
 import { deleteFileFromCloudinary } from "@/utils/cloudinary/index";
 
 const slugify = (str) => {

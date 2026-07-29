@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import ComingSoon from "@/models/ComingSoon";
+import ComingSoon from "@/models/Admin/ComingSoon";
 import { nanoid } from "nanoid";
 import { deleteFileFromCloudinary } from "@/utils/cloudinary/index";
 

@@ -1,4 +1,4 @@
-import TopAdvertismentBanner from "@/components/Admin/pages/TopAdvertismentBanner"
+import TopAdvertismentBanner from "@/components/admin/pages/TopAdvertismentBanner"
 const TopAdvertismentBannerPage = () => {
     return (
         <TopAdvertismentBanner />

@@ -1,4 +1,4 @@
-import ManageMenu from "@/components/Admin/pages/ManageMenu"
+import ManageMenu from "@/components/admin/pages/ManageMenu"
 const ManageMenuPage = () => {
     return (
         <ManageMenu />

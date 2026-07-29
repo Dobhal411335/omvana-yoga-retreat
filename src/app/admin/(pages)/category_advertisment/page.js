@@ -1,4 +1,4 @@
-import CategoryAdvertisment from '@/components/Admin/pages/CategoryAdvertisment'
+import CategoryAdvertisment from '@/components/admin/pages/CategoryAdvertisment'
 
 const page = () => {
     return (

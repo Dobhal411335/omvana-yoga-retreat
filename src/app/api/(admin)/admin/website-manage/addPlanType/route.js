@@ -1,6 +1,6 @@
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
-import Plan from "@/models/Plan";
+import Plan from "@/models/Admin/Plan";
 
 const capitalizeFirstLetter = (str) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();

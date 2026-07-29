@@ -1,6 +1,6 @@
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
-import Plan from "@/models/Plan";
+import Plan from "@/models/Admin/Plan";
 
 export async function PATCH(req) {
     await connectDB();

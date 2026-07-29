@@ -1,4 +1,4 @@
-import FeaturedOffered from "@/components/Admin/pages/FeaturedOffer"
+import FeaturedOffered from "@/components/admin/pages/FeaturedOffer"
 const  FeaturedOfferedBannerPage = () => {
     return (
       <FeaturedOffered /> 

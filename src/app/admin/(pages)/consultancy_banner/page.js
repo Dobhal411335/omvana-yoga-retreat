@@ -1,4 +1,4 @@
-import ConsultancyBanner from "@/components/Admin/pages/ConsultancyBanner"
+import ConsultancyBanner from "@/components/admin/pages/ConsultancyBanner"
 const page = () => {
 
     return (

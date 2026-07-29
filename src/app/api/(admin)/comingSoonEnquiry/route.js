@@ -1,6 +1,6 @@
 import connectDB from "@/lib/connectDB";
-import ComingSoonEnquiry from "@/models/ComingSoonEnquiry";
-import "@/models/ComingSoon";
+import ComingSoonEnquiry from "@/models/Admin/ComingSoonEnquiry";
+import "@/models/Admin/ComingSoon";
 
 export async function POST(req) {
   try {

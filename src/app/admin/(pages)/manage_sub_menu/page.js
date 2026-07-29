@@ -1,4 +1,4 @@
-import ManageSubMenuSection from "@/components/Admin/pages/ManageSubMenuSection"
+import ManageSubMenuSection from "@/components/admin/pages/ManageSubMenuSection"
 const page = () => {
     return (<ManageSubMenuSection />
 

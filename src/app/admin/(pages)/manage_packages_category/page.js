@@ -1,4 +1,4 @@
-import ManageProductsCategory from "@/components/Admin/pages/ManageProductsCategory"
+import ManageProductsCategory from "@/components/admin/pages/ManageProductsCategory"
 const page = () => {
     return (
         <ManageProductsCategory />

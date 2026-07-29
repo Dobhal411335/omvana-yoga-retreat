@@ -1,5 +1,5 @@
 import connectDB from "@/lib/connectDB";
-import FilterBanner from "@/models/FilterBanner";
+import FilterBanner from "@/models/Admin/FilterBanner";
 import { NextResponse } from "next/server";
 
 // GET all filter banners

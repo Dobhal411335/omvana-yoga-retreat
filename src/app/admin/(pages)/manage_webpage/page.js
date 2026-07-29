@@ -1,4 +1,4 @@
-import CreateWebpage from "@/components/Admin/pages/CreateWebpage"
+import CreateWebpage from "@/components/admin/pages/CreateWebpage"
 
 const page = () => {
 

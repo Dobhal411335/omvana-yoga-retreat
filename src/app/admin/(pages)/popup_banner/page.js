@@ -1,4 +1,4 @@
-import PopUpBanner from "@/components/Admin/pages/PopUpBanner"
+import PopUpBanner from "@/components/admin/pages/PopUpBanner"
 const PopUpBannerPage = () => {
     return (
         <PopUpBanner />

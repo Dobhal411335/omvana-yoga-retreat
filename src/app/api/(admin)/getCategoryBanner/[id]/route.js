@@ -1,8 +1,8 @@
 
 import connectDB from "@/lib/connectDB";
-import MenuBar from "@/models/MenuBar";
+import MenuBar from "@/models/Admin/MenuBar";
 import mongoose from 'mongoose';
-import Package from '@/models/Piligrimage/Package';
+import Package from '@/models/Admin/Package';
 import { NextResponse } from "next/server";
 
 export const GET = async (req, { params }) => {

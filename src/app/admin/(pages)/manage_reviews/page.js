@@ -1,4 +1,4 @@
-import ManageReviews from "@/components/Admin/pages/ManageReviews"
+import ManageReviews from "@/components/admin/pages/ManageReviews"
 const page = async () => {
     return (
         <ManageReviews />
