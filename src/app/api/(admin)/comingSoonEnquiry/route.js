@@ -6,7 +6,6 @@ export async function POST(req) {
   try {
     await connectDB();
     const data = await req.json();
-    if (!data.section) data.section = "frontend";
     const enquiry = await ComingSoonEnquiry.create(data);
     return new Response(JSON.stringify(enquiry), { status: 201 });
   } catch (error) {
@@ -17,13 +16,7 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     await connectDB();
-    const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-    const section = url.searchParams.get('section');
-    const query = {};
-    if (section) {
-        query.section = section;
-    }
-    const enquiries = await ComingSoonEnquiry.find(query)
+    const enquiries = await ComingSoonEnquiry.find({})
       .populate("packageId")
       .sort({ createdAt: -1 })
       .lean();

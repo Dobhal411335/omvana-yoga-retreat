@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from "@/lib/connectDB";
-import FeaturedPackageCard from "@/models/FeaturedPackageCard";
+import FeaturedPackageCard from "@/models/Admin/FeaturedPackageCard";
 import cloudinary from 'cloudinary';
 
 // Cloudinary configuration
@@ -23,13 +23,7 @@ const shuffleArray = (array) => {
 export const GET = async (req) => {
     try {
         await connectDB();
-        const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-        const section = url.searchParams.get('section');
-        const query = {};
-        if (section) {
-            query.section = section;
-        }
-        const packages = await FeaturedPackageCard.find(query);
+        const packages = await FeaturedPackageCard.find({});
         const shuffledPackages = shuffleArray(packages);
         return NextResponse.json({
             success: true,
@@ -48,7 +42,7 @@ export const POST = async (req) => {
     try {
         await connectDB();
         const body = await req.json();
-        const { title, image, link, section } = body;
+        const { title, image, link } = body;
 
         if (!title || !image) {
             return NextResponse.json(
@@ -92,8 +86,7 @@ export const POST = async (req) => {
                 url: imageUrl,
                 public_id: imagePublicId
             },
-            section: section || "frontend"
-        });
+            });
 
         await newPackage.save();
 

@@ -17,19 +17,17 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import toast from "react-hot-toast"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Link from "next/link"
 import Image from "next/image"
-import { deleteFileFromCloudinary } from "@/utils/Utapi"
 import { useRef } from "react"
-import ProductProfile from './ProductProfile';
-const ManageProductsCategory = ({ section = "frontend" }) => {
+const ManageProductsCategory = () => {
     const { handleSubmit, register, setValue, reset } = useForm()
     const [menuItems, setMenuItems] = useState([])
     const [selectedMenu, setSelectedMenu] = useState("")
     const [editItem, setEditItem] = useState(null)
     const [bannerImage, setBannerImage] = useState(null)
-    const [showOnFrontend, setShowOnFrontend] = useState(section === "frontend")
+    const [showOnFrontend, setShowOnFrontend] = useState(true)
     // const [profileImage, setProfileImage] = useState(null)
     // Separate state for edit dialog
     const [editBannerImage, setEditBannerImage] = useState(null);
@@ -78,14 +76,11 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
     // const profileFileInputRef = useRef(null);
     // console.log(menuItems)
     useEffect(() => {
-        setShowOnFrontend(section === "frontend")
-    }, [section])
-    useEffect(() => {
-        fetch(`/api/getAllMenuItems?section=${section}`)
+        fetch(`/api/getAllMenuItems`)
             .then(res => res.json())
             .then(data => setMenuItems(data))
         // console.log(menuItems)
-    }, [section])
+    }, [])
 
 
     const onSubmit = async (data) => {
@@ -109,16 +104,13 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
 
         const url = data.subMenu.title ? data.subMenu.title.replace(/\s+/g, '_').toLowerCase() : ""
 
-        data.id = menuItems.filter(item => item.title === selectedMenu)[0]._id
-        data.section = section
+        data.section = "frontend"
         data.subMenu = {
             title: data.subMenu.title,
             url: url,
             profileImage: profileImage,
             active: true,
-            showOnFrontend: section === "frontend"
-                ? true
-                : showOnFrontend,
+            showOnFrontend: showOnFrontend,
             order: (menuItems.find(item => item.title === selectedMenu)?.subMenu.length || 0) + 1,
             banner: bannerImage,
             // gallery: galleryImages
@@ -128,7 +120,7 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
             const result = await fetch("/api/admin/website-manage/addSubMenu", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, section }),
+                body: JSON.stringify(data),
             })
 
             const res = await result.json()
@@ -141,7 +133,7 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
                 setSelectedMenu("")
                 setBannerImage(null)
                 setProfileImage(null)
-                setShowOnFrontend(section === "frontend")
+                setShowOnFrontend(true)
                 toast.success("Sub Menu added successfully!", { style: { borderRadius: "10px", border: "2px solid green" } })
                 window.location.reload()
             }
@@ -163,7 +155,6 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
                 body: JSON.stringify({
                     id: data.id,
                     subMenuId: editItem._id,
-                    section,
                     subMenu: { title: data.subMenu.title, order: data.subMenu.order, banner: editBannerImage, profileImage: editProfileImage }
                 }),
             })
@@ -189,7 +180,7 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
             const response = await fetch(`/api/admin/website-manage/addSubMenu`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, subMenuId, section, active: !currentStatus }),
+                body: JSON.stringify({ id, subMenuId, active: !currentStatus }),
             })
 
             if (response.ok) {
@@ -243,7 +234,7 @@ const ManageProductsCategory = ({ section = "frontend" }) => {
             const response = await fetch(`/api/admin/website-manage/addSubMenu`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, subMenuId, section }),
+                body: JSON.stringify({ id, subMenuId }),
             })
 
             const res = await response.json()

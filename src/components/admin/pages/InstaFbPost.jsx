@@ -49,7 +49,7 @@ const Instagram = ({ className, ...props }) => (
   </svg>
 );
 
-const InstaFbPost = ({ section = "frontend" }) => {
+const InstaFbPost = ({}) => {
     const [posts, setPosts] = useState([]);
     const [editPost, setEditPost] = useState(null);
     const [activeTab, setActiveTab] = useState("instagram"); // "instagram" | "facebook"
@@ -73,7 +73,7 @@ const InstaFbPost = ({ section = "frontend" }) => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const url = activeTab === "instagram" ? `${instaUrl}?section=${section}` : `${fbUrl}?section=${section}`;
+                const url = activeTab === "instagram" ? `${instaUrl}` : `${fbUrl}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 setPosts(data);
@@ -82,7 +82,7 @@ const InstaFbPost = ({ section = "frontend" }) => {
             }
         };
         fetchPosts();
-    }, [activeTab, section]);
+    }, [activeTab]);
 
     const handleTabChange = (tab) => {
         if (activeTab === tab) return;
@@ -136,8 +136,7 @@ const InstaFbPost = ({ section = "frontend" }) => {
                     image: formData.image.url,
                     url: formData.link,
                     id: editPost,
-                    type: activeTab,
-                    section: section,
+                    type: activeTab
                 }),
             });
             
@@ -148,7 +147,7 @@ const InstaFbPost = ({ section = "frontend" }) => {
                 setEditPost(null);
                 
                 // Refresh posts
-                const updatedPosts = await fetch(`${activeTab === "instagram" ? instaUrl : fbUrl}?section=${section}`).then((res) => res.json());
+                const updatedPosts = await fetch(`${activeTab === "instagram" ? instaUrl : fbUrl}`).then((res) => res.json());
                 setPosts(updatedPosts);
                 
                 setFormData({ image: { url: "", key: "" }, link: "" });

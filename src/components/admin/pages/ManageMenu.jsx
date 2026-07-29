@@ -4,26 +4,24 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Switch } from "@/components/ui/switch"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Pencil, Trash2 } from "lucide-react"
-import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 
-const Page = ({ section = "frontend" }) => {
-    const { data: session } = useSession()
+const Page = () => {
+
     const { handleSubmit, register, setValue } = useForm()
     const [menuItems, setMenuItems] = useState([])
     const [editItem, setEditItem] = useState(null);
 
     useEffect(() => {
-        fetch(`/api/getAllMenuItems?section=${section}`)
+        fetch(`/api/getAllMenuItems`)
             .then(res => res.json())
             .then(data => setMenuItems(data))
-    }, [section])
+    }, [])
 
     const onSubmit = async (data) => {
         if (!data.title) {
@@ -38,8 +36,7 @@ const Page = ({ section = "frontend" }) => {
 
         data.active = true
         data.order = menuItems.length + 1
-        data.section = section;
-        data.showOnFrontend=section==="frontend"
+        data.showOnFrontend=true
 
         try {
             const result = await fetch("/api/admin/website-manage/addMenu", {
@@ -80,7 +77,7 @@ const Page = ({ section = "frontend" }) => {
             const response = await fetch(`/api/admin/website-manage/addMenu`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: editItem._id, section, ...data }),
+                body: JSON.stringify({ id: editItem._id, ...data }),
             });
 
             if (response.ok) {
@@ -116,7 +113,7 @@ const Page = ({ section = "frontend" }) => {
             const response = await fetch(`/api/admin/website-manage/addMenu`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, section, active: !currentStatus }),
+                body: JSON.stringify({ id, active: !currentStatus }),
             });
 
             const result = await response.json();
@@ -149,7 +146,7 @@ const Page = ({ section = "frontend" }) => {
             const response = await fetch(`/api/admin/website-manage/addMenu`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, section }),
+                body: JSON.stringify({ id }),
             });
 
             if (response.ok) {
@@ -172,11 +169,6 @@ const Page = ({ section = "frontend" }) => {
             console.error("Error deleting menu item:", error);
         }
     }
-
-    if (session?.user?.isSubAdmin && section === "frontend") {
-        return window.location.replace("/admin/send_promotional_emails")
-    }
-
     return (
 
                 <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
@@ -223,7 +215,7 @@ const Page = ({ section = "frontend" }) => {
                                                             const response = await fetch(`/api/admin/website-manage/addMenu`, {
                                                                 method: "PUT",
                                                                 headers: { "Content-Type": "application/json" },
-                                                                body: JSON.stringify({ id: item._id, section, showOnFrontend: nextValue }),
+                                                                body: JSON.stringify({ id: item._id, showOnFrontend: nextValue }),
                                                             });
 
                                                             if (response.ok) {

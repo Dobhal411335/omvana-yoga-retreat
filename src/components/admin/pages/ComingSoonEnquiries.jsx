@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from ".
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 
-const ComingSoonEnquiries = ({ section = "frontend" }) => {
+const ComingSoonEnquiries = ({}) => {
     const [allEnquiry, setAllEnquiry] = useState([]);
     const [filteredEnquiry, setFilteredEnquiry] = useState([]);
     const [selectedEnquiry, setSelectedEnquiry] = useState(null);
@@ -36,7 +36,7 @@ const ComingSoonEnquiries = ({ section = "frontend" }) => {
     useEffect(() => {
         const fetchEnquiries = async () => {
             try {
-                const response = await fetch(`/api/comingSoonEnquiry?section=${section}`);
+                const response = await fetch(`/api/comingSoonEnquiry`);
                 const data = await response.json();
                 // console.log(data)
                 if (Array.isArray(data)) {

@@ -9,9 +9,8 @@ import { Button } from "@/components/ui/button";
 import { X, UploadCloud, LayoutTemplate, Package, PencilIcon, Trash2Icon, Link as LinkIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import imageCompression from 'browser-image-compression';
 
-const ManageFeaturedPackages = ({section="frontend"}) => {
+const ManageFeaturedPackages = ({}) => {
     const fileInputRef = useRef(null);
     const [packages, setPackages] = useState([]);
     const [editingPackage, setEditingPackage] = useState(null);
@@ -29,7 +28,7 @@ const ManageFeaturedPackages = ({section="frontend"}) => {
 
     const fetchPackages = async () => {
         try {
-            const response = await fetch(`/api/featured-packages?section=${section}`);
+            const response = await fetch(`/api/featured-packages`);
             const data = await response.json();
 
             if (data.success && Array.isArray(data.data)) {
@@ -77,8 +76,7 @@ const ManageFeaturedPackages = ({section="frontend"}) => {
             const dataToSend = {
                 title: formData.title,
                 link: formData.link,
-                image: formData.image,
-                section: section
+                image: formData.image
             };
 
             const url = editingPackage
@@ -175,15 +173,8 @@ const ManageFeaturedPackages = ({section="frontend"}) => {
         if (!file) return;
         setUploading(true);
         try {
-            const options = {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1920,
-                useWebWorker: true,
-            };
-            const compressedFile = await imageCompression(file, options);
-            
             const formDataUpload = new FormData();
-            formDataUpload.append('file', compressedFile);
+            formDataUpload.append('file', file);
             const res = await fetch('/api/cloudinary', {
                 method: 'POST',
                 body: formDataUpload

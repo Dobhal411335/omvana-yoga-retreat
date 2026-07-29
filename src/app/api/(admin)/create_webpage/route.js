@@ -12,13 +12,7 @@ const sanitizeTemplateType = (templateType) => {
 export async function GET(req) {
   try {
     await connectDB();
-    const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-    const section = url.searchParams.get('section');
-    const query = {};
-    if (section) {
-        query.section = section;
-    }
-    const webpages = await Webpage.find(query).sort({ createdAt: -1 });
+    const webpages = await Webpage.find({}).sort({ createdAt: -1 });
     return NextResponse.json(webpages, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch webpages", message: error.message }, { status: 500 });

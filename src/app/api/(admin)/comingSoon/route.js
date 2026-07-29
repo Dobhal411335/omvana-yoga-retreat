@@ -25,7 +25,6 @@ export async function POST(req) {
       thumbUrl,
       thumbKey,
       url,
-      section: formData.section || "frontend",
     });
     return NextResponse.json({ success: true, url, data: comingSoon });
   } catch (err) {
@@ -36,13 +35,7 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     await connectDB();
-    const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-    const section = url.searchParams.get('section');
-    const query = {};
-    if (section) {
-        query.section = section;
-    }
-    const packages = await ComingSoon.find(query).sort({ createdAt: -1 });
+    const packages = await ComingSoon.find({}).sort({ createdAt: -1 });
     return NextResponse.json({ success: true, data: packages });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });

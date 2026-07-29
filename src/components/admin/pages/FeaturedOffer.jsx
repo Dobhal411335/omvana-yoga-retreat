@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { PencilIcon, Trash2Icon, LayoutTemplate, MapPin, UploadCloud, Link as LinkIcon, Home, DollarSign, Building } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-const FeaturedOffer = ({ section = "frontend" }) => {
+const FeaturedOffer = ({}) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [offerToDelete, setOfferToDelete] = useState(null);
     const [banners, setBanners] = useState([]);
@@ -33,7 +33,7 @@ const FeaturedOffer = ({ section = "frontend" }) => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const response = await fetch(`/api/addFeaturedOffer?section=${section}`);
+                const response = await fetch(`/api/addFeaturedOffer`);
                 const data = await response.json();
                 setBanners(data);
             } catch (error) {
@@ -96,7 +96,7 @@ const FeaturedOffer = ({ section = "frontend" }) => {
                 setEditBanner(null);
 
                 // Refresh list
-                const updatedBanners = await fetch(`/api/addFeaturedOffer?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/addFeaturedOffer`).then((res) => res.json());
                 setBanners(updatedBanners);
 
                 // Reset form
@@ -144,7 +144,7 @@ const FeaturedOffer = ({ section = "frontend" }) => {
             if (response.ok) {
                 toast.success("Offer deleted successfully", { style: { borderRadius: "10px", border: "1px solid #dcfce7", background: "#f0fdf4", color: "#166534" } });
                 setBanners((prev) => prev.filter((banner) => banner._id !== id));
-                const updatedBanners = await fetch(`/api/addFeaturedOffer?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/addFeaturedOffer`).then((res) => res.json());
                 setBanners(updatedBanners);
             } else {
                 toast.error(data.error, { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });

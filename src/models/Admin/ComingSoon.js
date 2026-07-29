@@ -10,7 +10,6 @@ const ComingSoonSchema = new mongoose.Schema({
   thumbUrl: { type: String, required: true },
   thumbKey: { type: String },
   url: { type: String, required: true, unique: true },
-  section:{type:String,required:true},
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -1,14 +1,12 @@
 import connectDB from "@/lib/connectDB"
-import SubMenuFixed from "@/models/SubMenuFixed"
+import SubMenuFixed from "@/models/Admin/SubMenuFixed"
 import { NextResponse } from "next/server"
-import { getAdminSectionFilter, normalizeAdminSection } from "@/lib/admin-section"
 
 export async function PUT(req, { params }) {
     await connectDB()
     try {
         const { id } = await params
-        const { type, parentId, active, section } = await req.json()
-        const normalizedSection = normalizeAdminSection(section)
+        const { type, parentId, active } = await req.json()
 
         if (type === "category") {
             const category = await SubMenuFixed.findByIdAndUpdate(
@@ -23,7 +21,7 @@ export async function PUT(req, { params }) {
         }
 
         if (type === "subcategory") {
-            const category = await SubMenuFixed.findOne({ _id: parentId, ...getAdminSectionFilter(normalizedSection) })
+            const category = await SubMenuFixed.findOne({ _id: parentId })
             if (!category) {
                 return NextResponse.json({ error: "Category not found" }, { status: 404 })
             }
@@ -35,7 +33,7 @@ export async function PUT(req, { params }) {
         }
 
         if (type === "package") {
-            const category = await SubMenuFixed.findOne({ "subCat._id": parentId, ...getAdminSectionFilter(normalizedSection) })
+            const category = await SubMenuFixed.findOne({ "subCat._id": parentId })
             if (!category) {
                 return NextResponse.json({ error: "Subcategory not found" }, { status: 404 })
             }

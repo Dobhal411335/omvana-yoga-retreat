@@ -12,7 +12,6 @@ const ComingSoonEnquirySchema = new mongoose.Schema({
   travelDate: Date,
   startFrom: String,
   whichLocation: String,
-  section:{type:String,required:true},
   createdAt: { type: Date, default: Date.now }
 });
 export default mongoose.models.ComingSoonEnquiry || mongoose.model("ComingSoonEnquiry", ComingSoonEnquirySchema);

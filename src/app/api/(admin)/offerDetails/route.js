@@ -1,5 +1,5 @@
 import connectDB from "@/lib/connectDB";
-import OfferDetails from "@/models/OfferDetails";
+import OfferDetails from "@/models/Admin/OfferDetails";
 import { NextResponse } from "next/server";
 
 // GET — returns the single offer details document (or empty defaults)

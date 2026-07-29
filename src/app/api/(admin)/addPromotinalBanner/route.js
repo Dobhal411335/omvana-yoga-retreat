@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import PromotinalBanner from "@/models/PromotinalBanner";
+import PromotinalBanner from "@/models/Admin/PromotinalBanner";
 import { deleteFileFromCloudinary } from "@/utils/cloudinary/index";
 
 
 export async function GET(req) {
     await connectDB();
     try {
-        const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-        const section = url.searchParams.get('section');
-        const query = {};
-        if (section) {
-            query.section = section;
-        }
-        const banners = await PromotinalBanner.find(query).sort({ createdAt: -1 });
+        const banners = await PromotinalBanner.find({}).sort({ createdAt: -1 });
         return NextResponse.json(banners, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch banners" }, { status: 500 });
@@ -23,13 +17,12 @@ export async function GET(req) {
 export async function POST(req) {
     await connectDB();
     try {
-        const { buttonLink, image, section } = await req.json();
+        const { buttonLink, image } = await req.json();
 
         const newBanner = new PromotinalBanner({ 
             buttonLink, 
             image,
-            section: section || "frontend" 
-        });
+            });
         await newBanner.save();
         return NextResponse.json(newBanner, { status: 201 });
     } catch (error) {
@@ -40,7 +33,7 @@ export async function POST(req) {
 export async function PATCH(req) {
     await connectDB();
     try {
-        const { id, buttonLink, image, section } = await req.json();
+        const { id, buttonLink, image } = await req.json();
         
         const updateData = {};
         if (buttonLink !== undefined) updateData.buttonLink = buttonLink;

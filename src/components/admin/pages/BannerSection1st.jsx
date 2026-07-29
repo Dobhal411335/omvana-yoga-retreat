@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { PencilIcon, Trash2Icon, LayoutTemplate, UploadCloud, Link as LinkIcon, Image as ImageIcon, Smartphone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-const BannerSection1st = ({section="frontend"}) => {
+const BannerSection1st = ({}) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bannerToDelete, setBannerToDelete] = useState(null);
     const [banners, setBanners] = useState([]);
@@ -31,7 +31,7 @@ const BannerSection1st = ({section="frontend"}) => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const response = await fetch(`/api/bannerSection1st?section=${section}`);
+                const response = await fetch(`/api/bannerSection1st`);
                 const data = await response.json();
                 setBanners(data);
             } catch (error) {
@@ -118,7 +118,7 @@ const BannerSection1st = ({section="frontend"}) => {
                 toast.success(`Banner ${editBanner ? "updated" : "added"} successfully`, { style: { borderRadius: "10px", border: "1px solid #dcfce7", background: "#f0fdf4", color: "#166534" } });
                 setEditBanner(null);
 
-                const updatedBanners = await fetch(`/api/bannerSection1st?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/bannerSection1st`).then((res) => res.json());
                 setBanners(updatedBanners);
 
                 setFormData({

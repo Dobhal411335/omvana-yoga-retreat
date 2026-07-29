@@ -23,6 +23,8 @@ export const metadata = {
   description: "Foundation for the Omvana Retreat website and CMS.",
 };
 
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 export default function RootLayout({ children }) {
   return (
     <html
@@ -31,7 +33,9 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ToasterProvider />
-        {children}
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </body>
     </html>
   );

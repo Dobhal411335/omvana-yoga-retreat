@@ -14,7 +14,7 @@ const TiptapEditor = ({ value, onChange }) => (
     <textarea className="w-full min-h-[150px] border-slate-200 bg-slate-50/50 rounded-xl p-4 focus:ring-blue-500 focus:border-blue-500" value={value} onChange={e => onChange(e.target.value)} placeholder="Rich text editor coming soon..." />
 );
 
-const Blogs = ({ section = "frontend" }) => {
+const Blogs = ({}) => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [imageUploading, setImageUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -39,7 +39,7 @@ const Blogs = ({ section = "frontend" }) => {
     const fetchBlogs = async () => {
         try {
             setLoadingReviews(true);
-            const res = await fetch(`/api/blogs?section=${section}`);
+            const res = await fetch(`/api/blogs`);
             if (!res.ok) throw new Error('Failed to fetch blogs');
             const data = await res.json();
             setBlogs(data.blogs || []);
@@ -198,7 +198,6 @@ const Blogs = ({ section = "frontend" }) => {
                 shortDescription,
                 longDescription,
                 images: selectedImages.map(img => ({ url: img.url, key: img.key })),
-                section: section,
             };
             let res, data;
             if (editMode && editingBlogId) {

@@ -1,15 +1,13 @@
 import connectDB from "@/lib/connectDB";
-import MenuBar from "@/models/MenuBar";
+import MenuBar from "@/models/Admin/MenuBar";
 import { NextResponse } from "next/server";
-import { getAdminSectionFilter } from "@/lib/admin-section";
-import Package from "@/models/Piligrimage/Package"
+import Package from "@/models/Admin/Package"
 export async function GET(req) {
     await connectDB();
-    const { searchParams } = new URL(req.url)
-    const section = searchParams.get("section")
+    const { searchParams } = new URL(req.url);
     const frontendOnly = searchParams.get("frontendOnly") === "1" || searchParams.get("frontendOnly") === "true"
 
-    const menu = await MenuBar.find(getAdminSectionFilter(section))
+    const menu = await MenuBar.find({})
         .populate({
             path: 'subMenu.packages',
         })

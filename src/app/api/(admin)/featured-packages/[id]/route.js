@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from "@/lib/connectDB";
-import FeaturedPackageCard from "@/models/FeaturedPackageCard";
+import FeaturedPackageCard from "@/models/Admin/FeaturedPackageCard";
 import cloudinary from 'cloudinary';
 
 // Cloudinary configuration
@@ -16,7 +16,7 @@ export const PUT = async (req, { params }) => {
         const { id } = await params; // Await the params
         
         const body = await req.json();
-        const { title, image, link, section } = body;
+        const { title, image, link } = body;
 
         let imageUrl = null;
         let imagePublicId = null;

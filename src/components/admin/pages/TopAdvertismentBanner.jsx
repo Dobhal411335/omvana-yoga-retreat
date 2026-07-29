@@ -11,7 +11,7 @@ import { PencilIcon, Trash2Icon, LayoutTemplate, Megaphone, Link as LinkIcon } f
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
 
-const TopAdvertismentBanner = ({section="frontend"}) => {
+const TopAdvertismentBanner = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bannerToDelete, setBannerToDelete] = useState(null);
     const [banners, setBanners] = useState([]);
@@ -25,7 +25,7 @@ const TopAdvertismentBanner = ({section="frontend"}) => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const response = await fetch(`/api/topAdvertismentBanner?section=${section}`);
+                const response = await fetch(`/api/topAdvertismentBanner`);
                 const data = await response.json();
                 setBanners(data);
             } catch (error) {
@@ -48,7 +48,6 @@ const TopAdvertismentBanner = ({section="frontend"}) => {
             const payload = {
                 ...formData,
                 id: editBanner,
-                section: section,
             };
             const response = await fetch("/api/topAdvertismentBanner", {
                 method,
@@ -63,7 +62,7 @@ const TopAdvertismentBanner = ({section="frontend"}) => {
                 setEditBanner(null);
 
                 // Refresh banner list
-                const updatedBanners = await fetch(`/api/topAdvertismentBanner?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/topAdvertismentBanner `).then((res) => res.json());
                 setBanners(updatedBanners);
 
                 // Reset form
@@ -106,7 +105,7 @@ const TopAdvertismentBanner = ({section="frontend"}) => {
 
                 setBanners((prev) => prev.filter((banner) => banner._id !== id));
 
-                const updatedBanners = await fetch(`/api/topAdvertismentBanner?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/topAdvertismentBanner`).then((res) => res.json());
                 setBanners(updatedBanners);
             } else {
                 toast.error(data.error, { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });

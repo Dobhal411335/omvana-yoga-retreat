@@ -44,7 +44,7 @@ export async function POST(req) {
       subSections: normalizeSubSections(body.subSections),
     });
 
-    return NextResponse.json({ message: "Navbar section created successfully", section }, { status: 201 });
+    return NextResponse.json({ message: "Navbar section created successfully" }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: error.message || "Failed to create navbar section" }, { status: 500 });
   }

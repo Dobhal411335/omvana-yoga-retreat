@@ -31,6 +31,9 @@ import {
   FileSearch,
   Users,
   UserCog,
+  MenuIcon,
+  Boxes,
+  Image as ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,23 +48,64 @@ const sections = [
     label: "Dashboard",
     icon: LayoutDashboard,
     items: [
-      { label: "Company Basic Info",  href: "/admin/company_basic_information",   icon: Building2    },
-      { label: "Manage MenuBar",      href: "/admin/navbar_section",               icon: Navigation   },
-      { label: "Banner Section",      href: "/admin/hero",                       icon: Layers       },
-      { label: "Social Media Post",   href: "/admin/insta_fb_post",          icon: Share2       },
-      { label: "Manage Webpages",     href: "/admin/create_webpage",                      icon: FileStack    },
-      { label: "Enquiry Page",        href: "/admin/enquiries",                icon: Inbox        },
-      { label: "Package Enquiry",     href: "/admin/enquiries/packages",       icon: PackageSearch },
+      { label: "Company Basic Info", href: "/admin/company_basic_information", icon: Building2 },
+      { label: "Manage Navbar", href: "/admin/navbar_section", icon: Navigation },
+      { label: "Social Media Post", href: "/admin/insta_fb_post", icon: Share2 },
+      { label: "Manage Webpages", href: "/admin/create_webpage", icon: FileStack },
+      { label: "Enquiry Page", href: "/admin/enquiries", icon: Inbox },
+      { label: "Package Enquiry", href: "/admin/enquiries/packages", icon: PackageSearch },
     ],
   },
+  {
+    id: "manage_banners",
+    label: "Manage Banners",
+    icon: ImageIcon,
+    items: [
+      { label: "Top Advertisment Banner", href: "/admin/top_advertisment_banner", icon: ImageIcon },
+      { label: "Promotional Banner", href: "/admin/promotional_banner", icon: ImageIcon },
+      { label: "Manage Banner", href: "/admin/change_banner_image", icon: ImageIcon },
+      { label: "Featured Offered Banner", href: "/admin/featured_offered_banner", icon: ImageIcon },
+      { label: "Offer Details", href: "/admin/offer_details", icon: ImageIcon },
+      { label: "Manage Featured Product", href: "/admin/manage_featured_packages", icon: ImageIcon },
+      { label: "Category Advertisment", href: "/admin/category_advertisment", icon: ImageIcon },
+      { label: "PopUp Banner", href: "/admin/popup_banner", icon: ImageIcon },
+      { label: "Consultancy Banner", href: "/admin/consultancy_banner", icon: ImageIcon },
+      { label: "Banner Section 1st", href: "/admin/banner_section_1st", icon: ImageIcon },
+      { label: "Banner Section 2nd", href: "/admin/banner_section_2nd", icon: ImageIcon },
+      { label: "Banner Section 3rd", href: "/admin/banner_section_3rd", icon: ImageIcon },
+    ],
+  },
+  {
+    id: "sub-dashboard",
+    label: "Sub-Dashboard",
+    icon: LayoutDashboard,
+    items: [
+      {
+        label: "Manage Menu Section",
+        href: "/admin/manage_menu",
+        icon: MenuIcon,
+      },
+      {
+        label: "Manage Sub Menu Section",
+        href: "/admin/manage_sub_menu",
+        icon: MenuIcon,
+      },
+      {
+        label: "Manage Packages",
+        href: "/admin/manage_packages_category",
+        icon: Boxes,
+      },
+    ],
+  },
+
   {
     id: "packages",
     label: "Retreat Packages",
     icon: Package,
     items: [
-      { label: "All Packages",        href: "/admin/packages",             icon: Package      },
-      { label: "Create Package",      href: "/admin/packages/create",      icon: FilePlus     },
-      { label: "Package Categories",  href: "/admin/packages/categories",  icon: FileStack    },
+      { label: "All Packages", href: "/admin/packages", icon: Package },
+      { label: "Create Package", href: "/admin/packages/create", icon: FilePlus },
+      { label: "Package Categories", href: "/admin/packages/categories", icon: FileStack },
     ],
   },
   {
@@ -69,8 +113,8 @@ const sections = [
     label: "Manage Gallery",
     icon: Images,
     items: [
-      { label: "Gallery Overview",    href: "/admin/gallery",              icon: Images       },
-      { label: "Upload Images",       href: "/admin/gallery/upload",       icon: ImagePlus    },
+      { label: "Gallery Overview", href: "/admin/gallery", icon: Images },
+      { label: "Upload Images", href: "/admin/gallery/upload", icon: ImagePlus },
     ],
   },
   {
@@ -78,8 +122,8 @@ const sections = [
     label: "Testimonials",
     icon: Star,
     items: [
-      { label: "Add Testimonial",     href: "/admin/testimonials/create",  icon: MessageCirclePlus },
-      { label: "Approve or Reject",   href: "/admin/testimonials",         icon: CheckSquare  },
+      { label: "Add Testimonial", href: "/admin/testimonials/create", icon: MessageCirclePlus },
+      { label: "Approve or Reject", href: "/admin/testimonials", icon: CheckSquare },
     ],
   },
   {
@@ -87,8 +131,8 @@ const sections = [
     label: "Site Policies",
     icon: ShieldCheck,
     items: [
-      { label: "Create Policy",       href: "/admin/policies/create",      icon: FilePlus     },
-      { label: "Policy Details",      href: "/admin/policies",             icon: FileSearch   },
+      { label: "Create Policy", href: "/admin/policies/create", icon: FilePlus },
+      { label: "Policy Details", href: "/admin/policies", icon: FileSearch },
     ],
   },
   {
@@ -96,8 +140,8 @@ const sections = [
     label: "Profile & Team",
     icon: UserCircle,
     items: [
-      { label: "Admin Profile",       href: "/admin/profile",              icon: UserCog      },
-      { label: "Team Members",        href: "/admin/team",                 icon: Users        },
+      { label: "Admin Profile", href: "/admin/profile", icon: UserCog },
+      { label: "Team Members", href: "/admin/team", icon: Users },
     ],
   },
 ];
@@ -117,7 +161,7 @@ function SubItem({ label, href, Icon, isActive }) {
     <Link
       href={href}
       className={cn(
-        "group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[14px] transition-all duration-150",
+        "group flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-[14px] transition-all duration-150",
         isActive
           ? "bg-primary/15 text-white"
           : "text-white/45 hover:bg-white/5 hover:text-white/75",
@@ -130,7 +174,7 @@ function SubItem({ label, href, Icon, isActive }) {
           isActive ? "text-primary" : "text-white/30 group-hover:text-white/60",
         )}
       />
-      <span className="truncate leading-none">{label}</span>
+      <span className="truncate leading-none py-px">{label}</span>
       {isActive && (
         <span className="ml-auto size-1.5 shrink-0 rounded-full bg-primary" />
       )}
@@ -191,13 +235,13 @@ function SectionAccordion({ section, pathname, collapsed }) {
           {section.label}
         </span>
         {open
-          ? <ChevronUp   className="size-3.5 shrink-0 text-white/30" />
+          ? <ChevronUp className="size-3.5 shrink-0 text-white/30" />
           : <ChevronDown className="size-3.5 shrink-0 text-white/30" />}
       </button>
 
       {/* ── Sub-items ── */}
       {open && (
-        <div className="ml-5 mt-0.5 border-l border-white/8 pl-2.5">
+        <div className="ml-5 mt-1 flex flex-col gap-1 border-l border-white/8 pl-2.5">
           {section.items.map((item) => (
             <SubItem
               key={item.href}
@@ -217,9 +261,9 @@ function SectionAccordion({ section, pathname, collapsed }) {
    Main sidebar
 ───────────────────────────────────────────────────── */
 export function AdminSidebar() {
-  const pathname   = usePathname();
-  const router     = useRouter();
-  const [collapsed,  setCollapsed]  = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
   async function handleLogout() {
@@ -237,7 +281,7 @@ export function AdminSidebar() {
     <aside
       className={cn(
         "relative flex h-screen flex-col bg-footer transition-all duration-300 selection:bg-primary/30 selection:text-white",
-        collapsed ? "w-[64px]" : "w-[260px]",
+        collapsed ? "w-[64px]" : "w-[300px]",
       )}
     >
       {/* ── Brand ── */}
@@ -270,10 +314,10 @@ export function AdminSidebar() {
           </div>
           <div className="min-w-0">
             <p className="truncate font-ui text-[13px] font-medium text-white/80">
-              Welcome, Admin
+              Welcome, Omvana Admin
             </p>
-            <p className="truncate font-ui text-[11px] text-white/35">
-              admin@omvana.in
+            <p className="truncate font-ui text-[11px] text-white/80">
+              care.@omvana.in
             </p>
           </div>
         </div>
@@ -350,7 +394,7 @@ export function AdminSidebar() {
       >
         {collapsed
           ? <ChevronRight className="size-3.5" />
-          : <ChevronLeft  className="size-3.5" />}
+          : <ChevronLeft className="size-3.5" />}
       </button>
     </aside>
   );

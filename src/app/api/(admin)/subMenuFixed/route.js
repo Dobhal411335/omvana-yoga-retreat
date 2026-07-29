@@ -1,16 +1,14 @@
 
 import connectDB from "@/lib/connectDB"
-import SubMenuFixed from "@/models/SubMenuFixed"
+import SubMenuFixed from "@/models/Admin/SubMenuFixed"
 import { NextResponse } from "next/server"
-import { getAdminSectionFilter, normalizeAdminSection } from "@/lib/admin-section"
 
 export async function GET(req) {
     await connectDB()
     const { searchParams } = new URL(req.url)
-    const section = searchParams.get("section")
     const frontendOnly = searchParams.get("frontendOnly") === "1" || searchParams.get("frontendOnly") === "true"
     try {
-        const menuItems = await SubMenuFixed.find(getAdminSectionFilter(section))
+        const menuItems = await SubMenuFixed.find({})
         const output = frontendOnly
             ? menuItems
                 .filter((item) => item.active && item.showOnFrontend !== false)
@@ -40,11 +38,9 @@ export async function POST(req) {
     try {
         const body = await req.json()
         const { type, catTitle, categoryId, subCatTitle, subCategoryId, title, url,showOnFrontend } = body
-        const section = normalizeAdminSection(body.section)
         if (type === "category") {
             const newCategory = new SubMenuFixed({
                 catTitle,
-                section,
                 active: true,
                 showOnFrontend
             })
@@ -53,7 +49,7 @@ export async function POST(req) {
         }
 
         if (type === "subcategory") {
-            const category = await SubMenuFixed.findOne({ _id: categoryId, ...getAdminSectionFilter(section) })
+            const category = await SubMenuFixed.findOne({ _id: categoryId })
             if (!category) {
                 return NextResponse.json({ error: "Category not found" }, { status: 404 })
             }
@@ -68,7 +64,7 @@ export async function POST(req) {
         }
 
         if (type === "package") {
-            const category = await SubMenuFixed.findOne({ "subCat._id": subCategoryId, ...getAdminSectionFilter(section) })
+            const category = await SubMenuFixed.findOne({ "subCat._id": subCategoryId })
             if (!category) {
                 return NextResponse.json({ error: "Subcategory not found" }, { status: 404 })
             }

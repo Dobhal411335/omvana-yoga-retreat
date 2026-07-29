@@ -4,13 +4,7 @@ import TopAdvertismentBanner from "@/models/Admin/TopAdvertisment";
 export async function GET(req) {
     await connectDB();
     try {
-        const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-        const section = url.searchParams.get('section');
-        const query = {};
-        if (section) {
-            query.section = section;
-        }
-        const banners = await TopAdvertismentBanner.find(query).sort({ createdAt: 1 });
+        const banners = await TopAdvertismentBanner.find({}).sort({ createdAt: 1 });
         return NextResponse.json(banners, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch banners" }, { status: 500 });
@@ -20,13 +14,12 @@ export async function GET(req) {
 export async function POST(req) {
     await connectDB();
     try {
-        const { title, buttonLink, section } = await req.json();
+        const { title, buttonLink } = await req.json();
 
 
         const newBanner = new TopAdvertismentBanner({ 
             buttonLink, 
-            title,
-            section: section || "frontend"
+            title
         });
         await newBanner.save();
         return NextResponse.json(newBanner, { status: 201 });

@@ -12,7 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { PencilIcon, Trash2Icon, LayoutTemplate, ImageIcon, Link as LinkIcon, UploadCloud, Smartphone, Monitor } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-const ChangeBannerImage = ({section="frontend"}) => {
+const ChangeBannerImage = ({}) => {
     const fileInputRef = useRef(null);
     const fileInputBackRef = useRef(null);
     
@@ -35,7 +35,7 @@ const ChangeBannerImage = ({section="frontend"}) => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const response = await fetch(`/api/addBanner?section=${section}`);
+                const response = await fetch(`/api/addBanner`);
                 const data = await response.json();
                 setBanners(data);
             } catch (error) {
@@ -123,7 +123,7 @@ const ChangeBannerImage = ({section="frontend"}) => {
                 setEditBanner(null);
 
                 // Refresh banner list
-                const updatedBanners = await fetch(`/api/addBanner?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/addBanner`).then((res) => res.json());
                 setBanners(updatedBanners);
 
                 // Reset form
@@ -171,7 +171,7 @@ const ChangeBannerImage = ({section="frontend"}) => {
                 toast.success("Banner deleted successfully", { style: { borderRadius: "10px", border: "1px solid #dcfce7", background: "#f0fdf4", color: "#166534" } });
                 setBanners((prev) => prev.filter((banner) => banner._id !== bannerToDelete));
                 
-                const updatedBanners = await fetch(`/api/addBanner?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/addBanner`).then((res) => res.json());
                 setBanners(updatedBanners);
             } else {
                 toast.error(data.error, { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });

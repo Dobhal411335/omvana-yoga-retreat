@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import BannerSection3rd from "@/models/BannerSection3rd";
+import BannerSection3rd from "@/models/Admin/BannerSection3rd";
 import { deleteFileFromCloudinary } from "@/utils/cloudinary/index";
 
 
 export async function GET(req) {
     await connectDB();
     try {
-        const url = new URL(req.url, `http://${req.headers.get('host') || 'localhost'}`);
-        const section = url.searchParams.get('section');
-        const query = {};
-        if (section) {
-            query.section = section;
-        }
-        const banners = await BannerSection3rd.find(query).sort({ createdAt: -1 });
+        const banners = await BannerSection3rd.find({}).sort({ createdAt: -1 });
         return NextResponse.json(banners, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch banners" }, { status: 500 });
@@ -23,9 +17,9 @@ export async function GET(req) {
 export async function POST(req) {
     await connectDB();
     try {
-        const { buttonLink, image, mobileImage, section } = await req.json();
+        const { buttonLink, image, mobileImage } = await req.json();
 
-        const newBanner = new BannerSection3rd({ buttonLink, image, mobileImage, section: section || "frontend" });
+        const newBanner = new BannerSection3rd({ buttonLink, image, mobileImage });
         await newBanner.save();
         return NextResponse.json(newBanner, { status: 201 });
     } catch (error) {
@@ -36,12 +30,11 @@ export async function POST(req) {
 export async function PATCH(req) {
     await connectDB();
     try {
-        const { id, buttonLink, image, mobileImage, section } = await req.json();
+        const { id, buttonLink, image, mobileImage } = await req.json();
         const updateData = {};
         if (buttonLink !== undefined) updateData.buttonLink = buttonLink;
         if (image !== undefined) updateData.image = image;
         if (mobileImage !== undefined) updateData.mobileImage = mobileImage;
-        if (section !== undefined) updateData.section = section;
 
         const updatedBanner = await BannerSection3rd.findByIdAndUpdate(id, updateData, { new: true });
         return NextResponse.json(updatedBanner, { status: 200 });

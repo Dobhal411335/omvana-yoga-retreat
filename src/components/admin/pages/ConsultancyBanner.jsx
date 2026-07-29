@@ -12,7 +12,7 @@ import { PencilIcon, Star, Trash2Icon, LayoutTemplate, UploadCloud, Link as Link
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
-const ConsultancyBanner = ({section="frontend"}) => {
+const ConsultancyBanner = ({}) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bannerToDelete, setBannerToDelete] = useState(null);
     const [banners, setBanners] = useState([]);
@@ -36,7 +36,7 @@ const ConsultancyBanner = ({section="frontend"}) => {
     useEffect(() => {
         const fetchBanners = async () => {
             try {
-                const response = await fetch(`/api/addConsultancyBanner?section=${section}`);
+                const response = await fetch(`/api/addConsultancyBanner`);
                 const data = await response.json();
                 setBanners(data);
             } catch (error) {
@@ -118,7 +118,7 @@ const ConsultancyBanner = ({section="frontend"}) => {
                 toast.success(`Consultancy banner ${editBanner ? "updated" : "added"} successfully`, { style: { borderRadius: "10px", border: "1px solid #dcfce7", background: "#f0fdf4", color: "#166534" } });
                 setEditBanner(null);
 
-                const updatedBanners = await fetch(`/api/addConsultancyBanner?section=${section}`).then((res) => res.json());
+                const updatedBanners = await fetch(`/api/addConsultancyBanner`).then((res) => res.json());
                 setBanners(updatedBanners);
 
                 setRating(0);

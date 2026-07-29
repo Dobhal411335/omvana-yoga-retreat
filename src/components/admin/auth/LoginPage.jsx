@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 /* ── Validation ────────────────────────────────────── */
 const schema = z.object({
@@ -62,13 +63,13 @@ function LeftPanel() {
     >
       {/* Subtle dark vignette for depth */}
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/30"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/10 via-transparent to-black/30"
         aria-hidden="true"
       />
 
       {/* Top content */}
       <motion.div variants={stagger} initial="hidden" animate="visible" className="relative z-10">
-        <motion.p variants={fadeUp} className="font-ui text-[11px] font-semibold uppercase tracking-[0.25em] text-white/30">
+        <motion.p variants={fadeUp} className="font-ui text-[12px] font-semibold uppercase tracking-[0.25em] text-white">
           Omvana Retreat CMS
         </motion.p>
 
@@ -85,7 +86,7 @@ function LeftPanel() {
 
         <motion.p
           variants={fadeUp}
-          className="mt-6 max-w-[280px] font-body text-sm leading-[1.85] text-white/40"
+          className="mt-6 max-w-70 font-body text-sm leading-[1.85] text-white/80"
         >
           Manage retreat packages, galleries, enquiries and website content
           from one calm workspace.
@@ -100,7 +101,7 @@ function LeftPanel() {
         className="relative z-10"
       >
         <blockquote>
-          <p className="font-heading text-lg italic leading-relaxed text-white/25">
+          <p className="font-heading text-lg italic leading-relaxed text-white">
             &ldquo;The quieter you become,
             <br />
             the more you can hear.&rdquo;
@@ -115,9 +116,13 @@ function LeftPanel() {
 function AdminLogo() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
-        <Mountain className="size-4 text-primary" />
-      </div>
+      <Image
+        width={150}
+        height={150}
+        src="/logo.png"
+        alt="Omvana Logo"
+        className="size-12 rounded-full object-cover"
+      />
       <div>
         <p className="font-heading text-base font-semibold text-heading">Omvana</p>
         <p className="font-ui text-[10px] uppercase tracking-widest text-muted/60">Retreat CMS</p>

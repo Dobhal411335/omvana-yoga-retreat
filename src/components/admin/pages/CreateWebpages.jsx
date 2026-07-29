@@ -125,7 +125,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
             setLoading(true);
             try {
                 // Always fetch all activities from the new API
-                const response = await fetch(`/api/create_webpage?section=${section}`);
+                const response = await fetch(`/api/create_webpage`);
                 const data = await response.json();
                 if (Array.isArray(data)) {
                     setActivities(data);
