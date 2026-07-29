@@ -1,6 +1,6 @@
 import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
-import Package from "@/models/Piligrimage/Package";
+import Package from "@/models/Admin/Package";
 import MenuBar from "@/models/Admin/MenuBar";
 import { deleteFileFromCloudinary } from "@/utils/cloudinary/index";
 

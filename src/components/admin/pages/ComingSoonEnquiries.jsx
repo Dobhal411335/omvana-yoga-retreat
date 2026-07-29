@@ -1,14 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { Calendar, Mail, MessageSquare, ScanSearch, Trash2, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
-import { Badge } from "../ui/badge";
-import { Separator } from "../ui/separator";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-const ComingSoonEnquiries = ({}) => {
+const ComingSoonEnquiries = ({ }) => {
     const [allEnquiry, setAllEnquiry] = useState([]);
     const [filteredEnquiry, setFilteredEnquiry] = useState([]);
     const [selectedEnquiry, setSelectedEnquiry] = useState(null);
@@ -232,7 +232,7 @@ const ComingSoonEnquiries = ({}) => {
                         }}
                         className="max-w-[95vw] font-barlow text-justify sm:max-w-lg md:max-w-2xl p-0 overflow-hidden"
                     >
-              
+
                         <DialogHeader>
                             <DialogTitle className="hidden" />
                         </DialogHeader>

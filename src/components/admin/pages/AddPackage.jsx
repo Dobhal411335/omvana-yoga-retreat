@@ -1,17 +1,17 @@
 'use client'
 
 import { useForm } from "react-hook-form"
-import { Input } from "../ui/input"
+import { Input } from "@/components/ui/input"
 import { NumericFormat } from "react-number-format"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { Button } from "../ui/button"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Link from "next/link"
 import { Edit, Loader2, Pencil, Trash2 } from "lucide-react"
-import { Switch } from "../ui/switch"
-import { Label } from "../ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 const generateCode = () => {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

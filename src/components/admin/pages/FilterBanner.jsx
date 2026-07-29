@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '../ui/select';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -243,15 +243,15 @@ const FilterBanner = () => {
                         <TableHead>Index</TableHead>
                         <TableHead>Button Link</TableHead>
                         <TableHead>Image</TableHead>
-                       
+
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {banners.length > 0 ? (
-                        banners.map((banner,idx) => (
+                        banners.map((banner, idx) => (
                             <TableRow key={banner._id}>
-                                <TableCell>{idx+1}</TableCell>
+                                <TableCell>{idx + 1}</TableCell>
                                 <TableCell>
                                     <TooltipProvider>
                                         <Tooltip>
