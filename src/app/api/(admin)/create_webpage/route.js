@@ -40,7 +40,6 @@ export async function POST(request) {
       slug,
       active: typeof body.active === "boolean" ? body.active : true,
       templateType: sanitizeTemplateType(body.templateType),
-      section: body.section || "frontend",
     });
 
     return NextResponse.json(webpage, { status: 201 });
@@ -64,7 +63,6 @@ export async function PATCH(request) {
     if (typeof body.slug === "string") update.slug = body.slug.trim().toLowerCase();
     if (typeof body.active === "boolean") update.active = body.active;
     if (typeof body.templateType === "string") update.templateType = sanitizeTemplateType(body.templateType);
-    if (typeof body.section === "string") update.section = body.section;
 
     const updated = await Webpage.findByIdAndUpdate(body.id, update, {
       new: true,

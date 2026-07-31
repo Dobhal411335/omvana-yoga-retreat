@@ -104,7 +104,6 @@ const ConsultancyBanner = ({}) => {
             const payload = {
                 ...formData,
                 id: editBanner,
-                section: section
             };
             const response = await fetch("/api/addConsultancyBanner", {
                 method,

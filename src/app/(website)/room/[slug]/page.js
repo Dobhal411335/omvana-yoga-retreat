@@ -27,9 +27,7 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const room = await getRoomBySlug(slug);
   return {
-    title: room?.title
-      ? `${room.title} | Omvana Yoga Retreat`
-      : "Room | Omvana Yoga Retreat",
+    title: room?.title || "Room",
     description:
       room?.heading ||
       "Explore accommodation options at Omvana Yoga Retreat.",

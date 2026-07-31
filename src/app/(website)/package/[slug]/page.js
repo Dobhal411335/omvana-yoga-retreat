@@ -74,7 +74,9 @@ const getFeaturedPackages = async () => {
 
         if (!res.ok) return []
         const data = await res.json()
-        return data || []
+        if (data?.success && Array.isArray(data.data)) return data.data
+        if (Array.isArray(data)) return data
+        return []
     } catch (error) {
         console.error("Error fetching featured packages:", error)
         return []

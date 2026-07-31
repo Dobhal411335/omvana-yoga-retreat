@@ -58,7 +58,7 @@ const ComingSoonEnquiries = ({ }) => {
             }
         };
         fetchEnquiries();
-    }, [section]);
+    }, []);
 
     useEffect(() => {
         if (selectedMonth === 'all') {

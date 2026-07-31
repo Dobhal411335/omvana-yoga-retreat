@@ -38,7 +38,6 @@ export async function PATCH(req) {
         const updateData = {};
         if (buttonLink !== undefined) updateData.buttonLink = buttonLink;
         if (image !== undefined) updateData.image = image;
-        if (section !== undefined) updateData.section = section;
         
         const updatedBanner = await PromotinalBanner.findByIdAndUpdate(id, updateData, { new: true });
         return NextResponse.json(updatedBanner, { status: 200 });

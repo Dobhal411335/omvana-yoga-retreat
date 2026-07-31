@@ -8,7 +8,7 @@ import { WebsiteStatus } from "@/components/admin/dashboard/WebsiteStatus";
 import { CmsGrid } from "@/components/admin/dashboard/CmsGrid";
 
 export const metadata = {
-  title: "Dashboard | Omvana Retreat CMS",
+  title: "Dashboard",
 };
 
 export default function DashboardPage() {

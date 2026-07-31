@@ -1,6 +1,8 @@
 export const site = {
   name: "Omvana Yoga Retreat",
-  description: "A calm foundation for the Omvana Retreat website and CMS.",
+  description:
+    "A quiet sanctuary in the Himalayan foothills. Yoga, meditation, temple walks, and Ganga Aarti — built for travellers who want to return softer than they came.",
+  url: "https://omvanayoga.com",
   defaultLocale: "en",
 };
 

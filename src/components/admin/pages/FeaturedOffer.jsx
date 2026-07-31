@@ -81,7 +81,6 @@ const FeaturedOffer = ({}) => {
             const payload = {
                 ...formData,
                 id: editBanner,
-                section: section,
             };
             const response = await fetch("/api/addFeaturedOffer", {
                 method,

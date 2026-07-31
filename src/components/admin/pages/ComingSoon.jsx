@@ -205,7 +205,6 @@ const ComingSoon = ({ }) => {
                         bannerKey,
                         thumbUrl,
                         thumbKey,
-                        section,
                     })
                 });
                 result = await res.json();
@@ -233,7 +232,6 @@ const ComingSoon = ({ }) => {
                         bannerKey,
                         thumbUrl,
                         thumbKey,
-                        section,
                     })
                 });
                 result = await res.json();

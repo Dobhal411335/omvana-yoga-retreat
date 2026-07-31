@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import { PencilIcon, Trash2Icon, LayoutTemplate, UploadCloud, Link as LinkIcon, Image as ImageIcon, Type, AlignLeft } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
-const PopUpBanner = ({}) => {
+const PopUpBanner = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [bannerToDelete, setBannerToDelete] = useState(null);
     const [banners, setBanners] = useState([]);

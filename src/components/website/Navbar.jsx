@@ -1,42 +1,119 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import * as NavigationMenu from "@radix-ui/react-navigation-menu";
+import { motion } from "framer-motion";
 
 import { Logo } from "@/components/common/Logo";
 import { websiteNavigation } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
+import TopAdvertisementMarquee from "@/components/admin/pages/TopAdvertisementMarquee";
+
+const ResponsiveNavbar = ({ sections = [] }) => {
+  const visibleSections = sections
+    .filter((section) => section?.active)
+    .sort((left, right) => (left.order || 0) - (right.order || 0));
+
+  if (!visibleSections.length) {
+    return null;
+  }
+
+  return (
+    <NavigationMenu.Root className="hidden relative z-[99] isolate lg:flex w-full justify-end">
+      <NavigationMenu.List className="relative z-[99] flex items-center justify-center gap-1 rounded-md px-1 py-1">
+        {visibleSections.map((section) => {
+          const hasSubSections = Array.isArray(section.subSections) && section.subSections.some((item) => item?.active);
+          const sortedSubSections = (section.subSections || [])
+            .filter((item) => item?.active)
+            .sort((left, right) => (left.order || 0) - (right.order || 0));
+
+          if (!hasSubSections) {
+            return (
+              <NavigationMenu.Item key={section._id || section.title}>
+                <Link
+                  href={section.url || "#"}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-[14px] text-black transition-colors hover:bg-surface text-nowrap hover:underline"
+                >
+                  {section.title}
+                </Link>
+              </NavigationMenu.Item>
+            );
+          }
+
+          return (
+            <NavigationMenu.Item key={section._id || section.title} className="relative flex justify-center">
+              <NavigationMenu.Trigger className="flex items-center gap-2 rounded-md px-4 py-2 text-[14px] text-black transition-colors hover:bg-surface text-nowrap data-[state=open]:bg-surface hover:underline">
+                {section.title}
+              </NavigationMenu.Trigger>
+              <NavigationMenu.Content asChild>
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{
+                    duration: 0.25,
+                    ease: "easeOut",
+                  }}
+                  className="absolute left-1/2 top-full mt-3 -translate-x-1/2 min-w-[240px] w-max rounded-xl border border-border bg-background p-2 shadow-2xl"
+                >
+                  <div className="grid gap-1">
+                    {sortedSubSections.map((subSection, index) => (
+                      <motion.div
+                        key={subSection._id || subSection.title}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{
+                          delay: index * 0.05,
+                          duration: 0.2,
+                        }}
+                      >
+                        <Link
+                          href={subSection.url || "#"}
+                          className="block rounded-md px-4 py-3 text-[14px] text-black hover:bg-primary transition-colors hover:text-white"
+                        >
+                          {subSection.title}
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </NavigationMenu.Content>
+            </NavigationMenu.Item>
+          );
+        })}
+      </NavigationMenu.List>
+    </NavigationMenu.Root>
+  );
+};
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [sections, setSections] = useState([]);
+
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch('/api/navbar-sections');
+        if (response.ok) {
+          const data = await response.json();
+          setSections(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch navbar sections:", error);
+      }
+    };
+    fetchSections();
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
+      <TopAdvertisementMarquee />
       <div className="container flex h-20 items-center justify-between px-10">
         <Logo />
         <div className="flex items-center gap-8">
-
-          <nav className="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
-            {websiteNavigation.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="font-body text-sm font-medium text-foreground transition-colors hover:text-primary"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="hidden lg:flex">
-            <Link
-              href="/contact"
-              className="inline-flex h-10 items-center justify-center rounded-[var(--radius-button)] bg-heading px-6 font-body text-sm text-white transition-colors hover:bg-heading/80"
-            >
-              Reserve a stay
-            </Link>
-          </div>
+          <ResponsiveNavbar sections={sections} />
         </div>
 
         <button
@@ -57,23 +134,37 @@ export function Navbar() {
       {open && (
         <div className="border-t border-border bg-surface px-6 py-6 lg:hidden">
           <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
-            {websiteNavigation.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="font-body text-sm text-foreground hover:text-primary"
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-            <Link
-              href="/contact"
-              className="mt-2 inline-flex h-10 items-center justify-center rounded-[var(--radius-button)] bg-heading px-6 font-body text-sm text-white"
-              onClick={() => setOpen(false)}
-            >
-              Reserve a stay
-            </Link>
+            {sections
+              .filter((section) => section?.active)
+              .sort((left, right) => (left.order || 0) - (right.order || 0))
+              .map((section) => (
+                <div key={section._id || section.title}>
+                  <Link
+                    href={section.url || "#"}
+                    className="font-body text-sm font-medium text-foreground hover:text-primary"
+                    onClick={() => setOpen(false)}
+                  >
+                    {section.title}
+                  </Link>
+                  {Array.isArray(section.subSections) && section.subSections.length > 0 && (
+                    <div className="mt-2 flex flex-col gap-2 pl-4">
+                      {section.subSections
+                        .filter((sub) => sub?.active)
+                        .sort((left, right) => (left.order || 0) - (right.order || 0))
+                        .map((sub) => (
+                          <Link
+                            key={sub._id || sub.title}
+                            href={sub.url || "#"}
+                            className="font-body text-sm text-foreground hover:text-primary block"
+                            onClick={() => setOpen(false)}
+                          >
+                            {sub.title}
+                          </Link>
+                        ))}
+                    </div>
+                  )}
+                </div>
+              ))}
           </nav>
         </div>
       )}

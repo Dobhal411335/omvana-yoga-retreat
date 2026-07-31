@@ -20,7 +20,7 @@ const generateCode = () => {
     return code;
 };
 
-const ComingSoon = ({ section = "frontend" }) => {
+const ComingSoon = () => {
     const { handleSubmit, register, reset, setValue } = useForm()
     const [editId, setEditId] = useState(null);
     const [url, setUrl] = useState("")
@@ -43,7 +43,7 @@ const ComingSoon = ({ section = "frontend" }) => {
     const fetchPackages = async () => {
         setTableLoading(true)
         try {
-            const res = await fetch(`/api/comingSoon?section=${section}`)
+            const res = await fetch(`/api/comingSoon`)
             const result = await res.json()
             setComingSoonPackages(result.data || [])
         } catch (err) {
@@ -205,7 +205,6 @@ const ComingSoon = ({ section = "frontend" }) => {
                         bannerKey,
                         thumbUrl,
                         thumbKey,
-                        section,
                     })
                 });
                 result = await res.json();
@@ -233,7 +232,6 @@ const ComingSoon = ({ section = "frontend" }) => {
                         bannerKey,
                         thumbUrl,
                         thumbKey,
-                        section,
                     })
                 });
                 result = await res.json();

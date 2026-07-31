@@ -76,7 +76,7 @@ const CategoryAdvertisment = ({}) => {
             const response = await fetch("/api/categoryAdvertisment", {
                 method,
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...formData, id: editBanner, section: section }),
+                body: JSON.stringify({ ...formData, id: editBanner }),
             });
 
             const data = await response.json();

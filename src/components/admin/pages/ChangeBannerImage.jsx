@@ -108,7 +108,6 @@ const ChangeBannerImage = ({}) => {
             const payload = {
                 ...formData,
                 id: editBanner,
-                section: section,
             };
             const response = await fetch("/api/addBanner", {
                 method,
@@ -136,7 +135,8 @@ const ChangeBannerImage = ({}) => {
                 toast.error(data.error, { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });
             }
         } catch (error) {
-            toast.error("Something went wrong", { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });
+            toast.error("Something went wrong", { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } },{error: error.message});
+            console.log(error);
         } finally {
             setSubmitting(false);
         }

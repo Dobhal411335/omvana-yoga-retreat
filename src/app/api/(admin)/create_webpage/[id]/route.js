@@ -68,7 +68,6 @@ const ALLOWED_UPDATE_FIELDS = new Set([
   "googleUrl",
   "mainProfileImage",
   "imageGallery",
-  "section",
   "notices",
   "boldParagraph",
   "searchLocations",

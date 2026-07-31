@@ -29,7 +29,7 @@ const getTemplateLabel = (templateType) => {
     return match ? match.label : "Design 1";
 };
 
-const CreateWebpages = ({ id, section = "frontend" }) => {
+const CreateWebpages = () => {
     // Editing state
     const [isEditing, setIsEditing] = useState(false);
     const [editId, setEditId] = useState(null);
@@ -139,7 +139,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
             }
         };
         fetchProducts();
-    }, [section]);
+    }, []);
 
     const deletePackage = async (id) => {
         if (!confirm("Are you sure you want to delete this webpage?")) return;
@@ -178,7 +178,6 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
                 slug,
                 active: typeof active === 'boolean' ? active : true,
                 templateType,
-                section,
             };
             let response, res;
             if (isEditing && editId) {

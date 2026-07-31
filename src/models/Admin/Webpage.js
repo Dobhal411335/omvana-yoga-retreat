@@ -108,7 +108,6 @@ const WebpageSchema = new Schema(
     title: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, trim: true, lowercase: true },
     active: { type: Boolean, default: true },
-    section: { type: String, required: true },
     templateType: {
       type: String,
       enum: ["design1", "design2", "design3", "design4", "design5", "design6", "design7"],
