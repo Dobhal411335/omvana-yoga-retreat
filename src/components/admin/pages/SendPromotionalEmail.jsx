@@ -162,13 +162,13 @@ export default function SendPromoEmailPage({ allUsers = [] }) {
 
                         <div className="space-y-3">
                             <Label className="text-slate-700 font-medium">Email Content</Label>
-                            <div className="rounded-xl overflow-hidden border border-slate-200 bg-white [&_.ql-toolbar]:border-0 [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50/50 [&_.ql-container]:border-0 [&_.ql-container]:min-h-[300px]">
+                            <div className="rounded-xl overflow-hidden border border-slate-200 bg-white [&_.ql-toolbar]:border-0 [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-slate-200 [&_.ql-toolbar]:bg-slate-50/50 [&_.ql-container]:border-0 [&_.ql-container]:min-h-75">
                                 <ReactQuill
                                     theme="snow"
                                     value={message}
                                     onChange={setMessage}
                                     modules={modules}
-                                    className="h-[300px]"
+                                    className="h-75"
                                     placeholder="Write your email content here..."
                                 />
                             </div>
@@ -207,7 +207,7 @@ export default function SendPromoEmailPage({ allUsers = [] }) {
                             <CardDescription className="text-slate-500 mt-1">Choose which users will receive this email.</CardDescription>
                         </div>
                     </CardHeader>
-                    <CardContent className="p-0">
+                    <CardContent className="p-2">
                         <div className="max-h-[500px] overflow-y-auto">
                             <Table>
                                 <TableHeader className="bg-slate-50/80 border-b border-slate-100 sticky top-0 z-10 shadow-sm">

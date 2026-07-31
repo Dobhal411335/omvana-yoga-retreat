@@ -19,9 +19,9 @@ const TEMPLATE_OPTIONS = [
     { value: "design2", label: "Design 2" },
     { value: "design3", label: "Design 3" },
     { value: "design4", label: "Design 4" },
-    { value: "design5", label: "Design 5" },
-    { value: "design6", label: "Design 6" },
-    { value: "design7", label: "Design 7" },
+    { value: "design5", label: "Blog Page Design" },
+    { value: "design6", label: "Team Page Design" },
+    { value: "design7", label: "Gallery Page Design" },
 ];
 
 const getTemplateLabel = (templateType) => {
@@ -229,7 +229,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
     };
     
     return (
-        <div className="w-full max-w-[1400px] mx-auto space-y-8 p-6 font-sans pb-24 mt-8">
+        <div className="w-full max-w-350 mx-auto space-y-8 p-6 font-sans pb-24 mt-8">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-2">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Manage Subpages</h1>
@@ -239,8 +239,8 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
 
             <div className="space-y-8" ref={formRef}>
                 {/* Form Card (Top) */}
-                <Card className="rounded-[20px] border-slate-100 shadow-sm bg-white overflow-hidden">
-                    <CardHeader className="border-b border-slate-50 bg-white/50 pb-6">
+                <Card className="overflow-hidden bg-white">
+                    <CardHeader className="pb-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Settings className="w-5 h-5 text-blue-600" />
@@ -272,7 +272,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
                                     <Input 
                                         name="productTitle" 
                                         placeholder="Enter Page Title..." 
-                                        className="h-11 rounded-xl border-slate-200 focus-visible:ring-blue-500 bg-slate-50/50" 
+                                        className="h-12 rounded-xl border-slate-200 focus-visible:ring-blue-500 bg-white" 
                                         value={title} 
                                         onChange={e => setTitle(e.target.value)} 
                                     />
@@ -281,8 +281,8 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
                                 <div className="space-y-3">
                                     <Label className="text-slate-700 font-medium">Frontend Design</Label>
                                     <Select value={templateType} onValueChange={setTemplateType}>
-                                        <SelectTrigger className="w-full h-11 border-slate-200 bg-slate-50/50 rounded-xl focus:ring-blue-500">
-                                            <SelectValue placeholder="Select Design" />
+                                        <SelectTrigger className="w-full h-12! border-slate-200 bg-white rounded-xl focus:ring-blue-500">
+                                            <SelectValue pla    ceholder="Select Design" />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
@@ -298,7 +298,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
                             </div>
                         </CardContent>
                         
-                        <CardFooter className="bg-slate-50/80 border-t border-slate-100 p-6 flex justify-end">
+                        <CardFooter className="border-t-0 bg-white p-6 flex justify-end">
                             <Button 
                                 type="submit" 
                                 disabled={isLoading}
@@ -324,7 +324,7 @@ const CreateWebpages = ({ id, section = "frontend" }) => {
                         <CardDescription className="text-slate-500 mt-1">Manage all created webpages and their statuses.</CardDescription>
                     </CardHeader>
                     
-                    <CardContent className="p-0">
+                    <CardContent className="p-2">
                         <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader className="bg-slate-50/80 border-b border-slate-100">

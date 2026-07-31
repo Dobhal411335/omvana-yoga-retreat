@@ -357,7 +357,7 @@ const NavbarSection = () => {
                 <CardDescription className="text-slate-500 mt-1">Currently active and hidden menu items.</CardDescription>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-2">
               <Table>
                 <TableHeader className="bg-slate-50/80 border-b border-slate-100">
                   <TableRow className="hover:bg-transparent border-0">

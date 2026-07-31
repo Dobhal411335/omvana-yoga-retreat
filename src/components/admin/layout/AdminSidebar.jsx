@@ -52,7 +52,7 @@ const sections = [
       { label: "Manage Navbar", href: "/admin/navbar_section", icon: Navigation },
       { label: "Social Media Post", href: "/admin/insta_fb_post", icon: Share2 },
       { label: "Manage Webpages", href: "/admin/create_webpage", icon: FileStack },
-      { label: "Enquiry Page", href: "/admin/enquiries", icon: Inbox },
+      { label: "Room Enquiry Page", href: "/admin/room_enquiries", icon: Inbox },
       { label: "Package Enquiry", href: "/admin/enquiries/packages", icon: PackageSearch },
     ],
   },
@@ -95,6 +95,11 @@ const sections = [
         href: "/admin/manage_packages_category",
         icon: Boxes,
       },
+      {
+        label: "Manage Rooms",
+        href: "/admin/manage_rooms",
+        icon: Boxes,
+      },
     ],
   },
 
@@ -103,6 +108,7 @@ const sections = [
     label: "Manage Reviews",
     icon: Package,
     items: [
+      { label: "Create Testimonials", href: "/admin/create_testimonials", icon: Package }, 
       { label: "Approve or Reject Reviews", href: "/admin/manage_reviews", icon: Package },
     ],
   },

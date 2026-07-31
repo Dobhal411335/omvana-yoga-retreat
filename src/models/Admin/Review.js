@@ -1,50 +1,57 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const ReviewSchema = new mongoose.Schema({
-  propertyId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'HotelRegistration',
-    required: true
+const ReviewSchema = new mongoose.Schema(
+  {
+    packageId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Package",
+      required: true,
+    },
+    packageName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: "",
+    },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+    },
+    title: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    message: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  guestName: {
-    type: String,
-    required: true
-  },
-  dateOfReview: {
-    type: Date,
-    required: true
-  },
-  travelType: {
-    type: String,
-    required: true,
-    enum: ['soloTraveler', 'couple', 'family', 'business', 'group', 'friends', 'other']
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 1,
-    max: 5
-  },
-  reviewTitle: {
-    type: String,
-    required: true
-  },
-  description: {
-    type: String,
-    required: true
-  },
-  images: [{
-    url: String,
-    key: String
-  }],
-  isPublished: {
-    type: Boolean,
-    default: true
-  }
-}, {
-  timestamps: true
-});
+  { timestamps: true }
+);
 
-const Review = mongoose.models.Review || mongoose.model('Review', ReviewSchema);
+ReviewSchema.index({ packageId: 1, status: 1, deleted: 1 });
 
-export default Review;
+export default mongoose.models.Review || mongoose.model("Review", ReviewSchema);

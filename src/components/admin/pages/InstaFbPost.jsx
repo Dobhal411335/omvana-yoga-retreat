@@ -392,7 +392,7 @@ const InstaFbPost = ({}) => {
                             </div>
                             <CardDescription className="text-slate-500 mt-1">Review and manage your embedded social media posts.</CardDescription>
                         </CardHeader>
-                        <CardContent className="p-0">
+                        <CardContent className="p-2">
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader className="bg-slate-50/80 border-b border-slate-100">

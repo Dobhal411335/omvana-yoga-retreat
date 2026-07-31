@@ -54,6 +54,10 @@ export async function PATCH(req) {
         }
 
         if (body.subMenuId) {
+            if (!body.subMenu || typeof body.subMenu !== "object") {
+                return NextResponse.json({ message: "Invalid submenu payload" }, { status: 400 });
+            }
+
             const updateFields = {};
 
             if (body.subMenu.title) {
@@ -67,7 +71,7 @@ export async function PATCH(req) {
                 updateFields["subMenu.$.url"] = body.subMenu.url;
             }
 
-            if (body.subMenu.order !== undefined) updateFields["subMenu.$.order"] = body.subMenu.order;
+            if (body.subMenu.order !== undefined) updateFields["subMenu.$.order"] = Number(body.subMenu.order);
             if (body.subMenu.active !== undefined) updateFields["subMenu.$.active"] = body.subMenu.active;
 
             if (body.subMenu.banner !== undefined) {
@@ -77,6 +81,9 @@ export async function PATCH(req) {
                 updateFields["subMenu.$.profileImage"] = body.subMenu.profileImage;
             }
 
+            if (Object.keys(updateFields).length === 0) {
+                return NextResponse.json({ message: "No fields to update" }, { status: 400 });
+            }
 
             const updatedMenu = await MenuBar.findOneAndUpdate(
                 { "subMenu._id": body.subMenuId },

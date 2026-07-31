@@ -1,163 +1,192 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Image from "next/image"
-import { format } from "date-fns"
-import { Star, Calendar, Package, MessageSquare, Mail, ImageDown, ImageIcon } from "lucide-react"
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import {
+  Calendar,
+  Loader2,
+  Mail,
+  MessageSquare,
+  Package,
+  Star,
+  Trash2,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
 
-// Helper function to convert rating to array of stars
-const getRatingStars = (rating) => {
-    const fullStars = Math.floor(rating)
-    const hasHalfStar = rating % 1 >= 0.5
-    const stars = []
-
-    // Add full stars
-    for (let i = 0; i < fullStars; i++) {
-        stars.push(<Star key={`full-${i}`} className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />)
-    }
-
-    // Add half star if needed
-    if (hasHalfStar) {
-        stars.push(
-            <div key="half" className="relative">
-                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-                <div className="absolute top-0 left-0 overflow-hidden w-1/2">
-                    <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400" />
-                </div>
-            </div>,
-        )
-    }
-
-    // Add empty stars
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0)
-    for (let i = 0; i < emptyStars; i++) {
-        stars.push(<Star key={`empty-${i}`} className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" />)
-    }
-
-    return stars
+function RatingStars({ rating = 0 }) {
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <Star
+          key={star}
+          className={cn(
+            "size-4",
+            star <= rating ? "fill-warning text-warning" : "text-border"
+          )}
+        />
+      ))}
+      <span className="ml-1 font-ui text-xs text-muted">({rating}/5)</span>
+    </div>
+  );
 }
 
-
-const ReviewDetails = ({ review, onClose, onUpdate }) => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-
-    if (!review) return null;
-
-    // Ensure we have proper data
-    const safeReview = {
-        ...review,
-        _id: review._id?.toString(),
-        product: typeof review.product === 'string' ? { _id: review.product } : (review.product || null),
-        artisan: typeof review.artisan === 'string' ? { _id: review.artisan } : (review.artisan || null),
-        thumb: review.thumb?.url ? review.thumb : null,
-        createdAt: review.createdAt || new Date().toISOString(),
-        updatedAt: review.updatedAt || new Date().toISOString()
-    };
-    // In ReviewDetails.jsx - Update the reviewTarget logic
-    const reviewType = review.type === 'product' ? 'Product' : 'Artisan';
-    const reviewTarget = review.type === 'product'
-        ? (review.product?.title || 'Product')
-        : (review.artisan?.name || 'Artisan');
-
-    // Format date if it exists and is valid
-    const formattedDate = safeReview.createdAt ? format(new Date(safeReview.createdAt), "MMM dd, yyyy") : "Date not available";
-
-    return (
-        <Dialog open={!!review} onOpenChange={onClose}>
-            <DialogContent className="max-w-[95vw] sm:max-w-lg md:max-w-2xl p-0 overflow-hidden">
-                <DialogTitle className="sr-only">Review Details</DialogTitle>
-
-                <div className="pt-4 sm:pt-4 px-4 sm:px-6 pb-4 sm:pb-6">
-                    <div className="flex flex-col items-center sm:flex-row sm:items-center gap-2 sm:gap-4">
-                        <div className="flex items-center justify-between w-full">
-                            <div>
-                                <h2 className="text-xl sm:text-2xl font-bold">{review.name}</h2>
-                            </div>
-                            <Badge
-                                variant="outline"
-                                className="bg-blue-50 mr-8 text-blue-700 border-blue-200 flex items-center gap-1 text-xs w-fit"
-                            >
-                                <Calendar className="w-3 h-3" />
-                                {formattedDate}
-                            </Badge>
-                        </div>
-                    </div>
-
-                    <Separator className="my-4 sm:my-6" />
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-6">
-                        <div>
-                            <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                <Package className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                                Review Title:
-                            </h3>
-                            <p className="text-base sm:text-lg font-medium mt-1 sm:mt-2 px-5">{review.title}</p>
-                        </div>
-
-                        <div>
-                            <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                                Rating
-                            </h3>
-                            <div className="flex items-center gap-2 mt-1 sm:mt-2">
-                                <div className="flex">{getRatingStars(review.rating)}</div>
-                                <span className="text-xs sm:text-sm text-gray-600">({review.rating}/5)</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                                Type:
-                            </h3>
-                            <div className="flex items-start flex-col gap-2 mt-1 sm:mt-2">
-                                <p className="text-md font-bold">Review From : {reviewType}</p>
-                                
-                                <h3 className="text-lg font-medium">Review for: {reviewTarget}</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-4 sm:mt-6">
-                        <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                            Thumb Image
-                        </h3>
-                        <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            {review.thumb && review.thumb.url ? (
-                                <Image
-                                    src={review.thumb?.url}
-                                    alt="thumb"
-                                    width={100}
-                                    height={100}
-                                    className="object-cover rounded border shadow"
-                                />
-                            ) : '-'}
-                        </div>
-                    </div>
-
-                    <div className="mt-4 sm:mt-6">
-                        <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
-                            <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                            Message
-                        </h3>
-                        <div className="mt-1 sm:mt-2 p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <p className="italic text-sm sm:text-base text-gray-700 max-h-24 overflow-y-auto">{review.description}</p>
-                        </div>
-                    </div>
-                </div>
-
-                <DialogFooter className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t flex-col sm:flex-row gap-2 sm:gap-3">
-                    <Button variant="outline" onClick={onClose} className="sm:order-1 w-full sm:w-auto">
-                        Close
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+function DetailBlock({ icon: Icon, label, children }) {
+  return (
+    <div>
+      <h3 className="flex items-center gap-2 font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+        {Icon ? <Icon className="size-3.5 text-primary" /> : null}
+        {label}
+      </h3>
+      <div className="mt-2 font-body text-sm text-heading">{children}</div>
+    </div>
+  );
 }
 
-export default ReviewDetails
+export default function ReviewDetails({
+  review,
+  onClose,
+  onApprove,
+  onReject,
+  onDelete,
+  updating = false,
+}) {
+  if (!review) return null;
+
+  const formattedDate = review.createdAt
+    ? new Date(review.createdAt).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    : "—";
+
+  const isApproved = review.status === "approved";
+
+  return (
+    <Dialog
+      open={!!review}
+      onOpenChange={(open) => {
+        if (!open) onClose?.();
+      }}
+    >
+      <DialogContent className="flex max-h-[min(90dvh,820px)] w-full max-w-[calc(100%-1.5rem)] flex-col gap-0 overflow-hidden rounded-dialog p-5 sm:max-w-2xl">
+        <DialogHeader className="shrink-0 border-b border-border/60 px-5 py-4 pr-12">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <DialogTitle className="font-heading text-2xl font-medium text-heading">
+                {review.name}
+              </DialogTitle>
+              <p className="mt-1 font-body text-sm text-muted">
+                Package review details
+              </p>
+            </div>
+            <Badge
+              variant="outline"
+              className="border-border font-ui text-[10px] uppercase tracking-wide text-muted"
+            >
+              <Calendar className="mr-1 size-3" />
+              {formattedDate}
+            </Badge>
+          </div>
+        </DialogHeader>
+
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-5">
+          <div className="rounded-card border border-border/60 bg-surface p-4">
+            <DetailBlock icon={Package} label="Package">
+              {review.packageName || review.package?.packageName || "—"}
+            </DetailBlock>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <DetailBlock icon={Star} label="Rating">
+              <RatingStars rating={review.rating} />
+            </DetailBlock>
+            <DetailBlock label="Status">
+              <span className="capitalize">{review.status || "pending"}</span>
+            </DetailBlock>
+            {review.email ? (
+              <DetailBlock icon={Mail} label="Email">
+                <a
+                  href={`mailto:${review.email}`}
+                  className="text-primary hover:underline"
+                >
+                  {review.email}
+                </a>
+              </DetailBlock>
+            ) : null}
+            {review.title ? (
+              <DetailBlock label="Title">
+                {review.title}
+              </DetailBlock>
+            ) : null}
+          </div>
+
+          <Separator />
+
+          <DetailBlock icon={MessageSquare} label="Review">
+            <div className="rounded-card border border-border/60 bg-surface p-4">
+              <p className="whitespace-pre-wrap font-body text-sm leading-relaxed text-heading italic">
+                {review.message || "—"}
+              </p>
+            </div>
+          </DetailBlock>
+        </div>
+
+        <DialogFooter className="shrink-0 flex-col gap-2 border-t border-border/60 bg-surface px-5 py-4 sm:flex-row sm:justify-between">
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={onDelete}
+            disabled={updating}
+          >
+            <Trash2 className="size-4" />
+            Delete
+          </Button>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Close
+            </Button>
+            {!isApproved ? (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onReject}
+                  disabled={updating}
+                >
+                  Reject
+                </Button>
+                <Button type="button" onClick={onApprove} disabled={updating}>
+                  {updating ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : null}
+                  Approve
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onApprove}
+                disabled={updating}
+              >
+                {updating ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : null}
+                Set pending
+              </Button>
+            )}
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -1,13 +1,15 @@
-
+import mongoose from "mongoose"
 import connectDB from "@/lib/connectDB"
 import SubMenuFixed from "@/models/Admin/SubMenuFixed"
 import { NextResponse } from "next/server"
 
+const isValidObjectId = (value) => mongoose.Types.ObjectId.isValid(value)
+
 export async function GET(req) {
-    await connectDB()
-    const { searchParams } = new URL(req.url)
-    const frontendOnly = searchParams.get("frontendOnly") === "1" || searchParams.get("frontendOnly") === "true"
     try {
+        await connectDB()
+        const { searchParams } = new URL(req.url)
+        const frontendOnly = searchParams.get("frontendOnly") === "1" || searchParams.get("frontendOnly") === "true"
         const menuItems = await SubMenuFixed.find({})
         const output = frontendOnly
             ? menuItems
@@ -29,56 +31,86 @@ export async function GET(req) {
 
         return NextResponse.json(output)
     } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch menu items" }, { status: 500 })
+        console.error("GET /api/subMenuFixed:", error)
+        return NextResponse.json({ success: false, message: "Failed to fetch menu items" }, { status: 500 })
     }
 }
 
 export async function POST(req) {
-    await connectDB()
     try {
+        await connectDB()
         const body = await req.json()
         const { type, catTitle, categoryId, subCatTitle, subCategoryId, title, url } = body
+
         if (type === "category") {
+            if (!catTitle?.trim()) {
+                return NextResponse.json({ success: false, message: "Category title is required" }, { status: 400 })
+            }
+
             const newCategory = new SubMenuFixed({
-                catTitle,
-                active: true
+                catTitle: catTitle.trim(),
+                active: true,
+                subCat: [],
             })
             await newCategory.save()
-            return NextResponse.json({ message: "Category added successfully" })
+            return NextResponse.json({ success: true, message: "Category added successfully", data: newCategory })
         }
 
         if (type === "subcategory") {
-            const category = await SubMenuFixed.findOne({ _id: categoryId })
+            if (!categoryId || !isValidObjectId(categoryId)) {
+                return NextResponse.json({ success: false, message: "Valid categoryId is required" }, { status: 400 })
+            }
+            if (!subCatTitle?.trim()) {
+                return NextResponse.json({ success: false, message: "Subcategory title is required" }, { status: 400 })
+            }
+
+            const category = await SubMenuFixed.findById(categoryId)
             if (!category) {
-                return NextResponse.json({ error: "Category not found" }, { status: 404 })
+                return NextResponse.json({ success: false, message: "Category not found" }, { status: 404 })
             }
 
             category.subCat.push({
-                title: subCatTitle,
-                active: true
+                title: subCatTitle.trim(),
+                active: true,
+                subCatPackage: [],
             })
             await category.save()
-            return NextResponse.json({ message: "Subcategory added successfully" })
+            return NextResponse.json({ success: true, message: "Subcategory added successfully" })
         }
 
         if (type === "package") {
+            if (!subCategoryId || !isValidObjectId(subCategoryId)) {
+                return NextResponse.json({ success: false, message: "Valid subCategoryId is required" }, { status: 400 })
+            }
+            if (!title?.trim()) {
+                return NextResponse.json({ success: false, message: "Package title is required" }, { status: 400 })
+            }
+
             const category = await SubMenuFixed.findOne({ "subCat._id": subCategoryId })
             if (!category) {
-                return NextResponse.json({ error: "Subcategory not found" }, { status: 404 })
+                return NextResponse.json({ success: false, message: "Subcategory not found" }, { status: 404 })
             }
 
             const subCategory = category.subCat.id(subCategoryId)
+            if (!subCategory) {
+                return NextResponse.json({ success: false, message: "Subcategory not found" }, { status: 404 })
+            }
+
             subCategory.subCatPackage.push({
-                title,
-                url,
-                active: true
+                title: title.trim(),
+                url: url?.trim() || "",
+                active: true,
             })
             await category.save()
-            return NextResponse.json({ message: "Package added successfully" })
+            return NextResponse.json({ success: true, message: "Package added successfully" })
         }
 
-        return NextResponse.json({ error: "Invalid type" }, { status: 400 })
+        return NextResponse.json({ success: false, message: "Invalid type" }, { status: 400 })
     } catch (error) {
-        return NextResponse.json({ error: "Failed to add item" }, { status: 500 })
+        console.error("POST /api/subMenuFixed:", error)
+        return NextResponse.json(
+            { success: false, message: error.message || "Failed to add item" },
+            { status: 500 }
+        )
     }
 }

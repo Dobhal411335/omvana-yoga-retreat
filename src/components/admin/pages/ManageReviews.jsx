@@ -1,355 +1,442 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import ReviewDetails from "./ReviewDetails";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  Inbox,
+  Loader2,
+  Star,
+  Trash2,
+} from "lucide-react";
 import toast from "react-hot-toast";
+import { AdminPageHeader } from "@/components/admin/common/AdminPageHeader";
+import ReviewDetails from "@/components/admin/pages/ReviewDetails";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
+const ITEMS_PER_PAGE = 10;
 
-const statusOptions = [
-    { label: "Active", value: "active" },
-    { label: "Inactive", value: "inactive" },
-    { label: "All", value: "all" },
+const STATUS_FILTERS = [
+  { label: "All", value: "all" },
+  { label: "Pending", value: "pending" },
+  { label: "Approved", value: "approved" },
+  { label: "Rejected", value: "rejected" },
 ];
-const typeOptions = [
-    { label: "All Types", value: "all" },
-    { label: "Product", value: "product" },
-    { label: "Artisan", value: "artisan" }
-];
 
-const columns = [
-    "Date",
-    "Title",
-    "Name",
-    "Type",
-    "Rating",
-    "Thumb",
-    "Approved",
-    "Action",
-    "View",
-];
-
-function EyeIcon() {
-    return (
-        <svg width="20" height="20" fill="none" stroke="#222" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" /><path d="M2 12C4.5 7 12 7 12 7s7.5 0 10 5c-2.5 5-10 5-10 5s-7.5 0-10-5z" /></svg>
-    );
+function formatDate(value) {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
 }
 
+function statusBadgeClass(status) {
+  if (status === "approved") {
+    return "border-primary/30 bg-primary/10 text-primary";
+  }
+  if (status === "rejected") {
+    return "border-error/30 bg-error/10 text-error";
+  }
+  return "border-warning/30 bg-warning/10 text-warning";
+}
 
-const ManageReviews = () => {
-    const [allReviews, setAllReviews] = useState([]);
-    const [filteredReviews, setFilteredReviews] = useState([]);
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [typeFilter, setTypeFilter] = useState("all");
-    const [selectedReview, setSelectedReview] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [reviewsPerPage] = useState(10);
-    const [loading, setLoading] = useState(false);
-    // console.log(allReviews)
-    useEffect(() => {
-        filterReviews();
-    }, [allReviews, statusFilter, typeFilter]);
+export default function ManageReviews() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [updatingId, setUpdatingId] = useState(null);
 
-    const fetchReviews = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('/api/saveReviews');
-            const data = await response.json();
-            if (response.ok && data.success) {
-                // Ensure all data is properly serialized
-                const processedReviews = data.reviews.map(review => ({
-                    ...review,
-                    // Ensure all object IDs are strings
-                    _id: review._id?.toString(),
-                    product: review.product?._id ? {
-                        _id: review.product._id.toString(),
-                        title: review.product.title
-                    } : null,
-                    artisan: review.artisan?._id ? {
-                        _id: review.artisan._id.toString(),
-                        name: review.artisan.name
-                    } : null,
-                    // Ensure thumb is properly formatted
-                    thumb: review.thumb?.url ? {
-                        url: review.thumb.url,
-                        key: review.thumb.key || ''
-                    } : null,
-                    // Ensure dates are properly formatted
-                    createdAt: review.createdAt ? new Date(review.createdAt).toISOString() : new Date().toISOString(),
-                    updatedAt: review.updatedAt ? new Date(review.updatedAt).toISOString() : new Date().toISOString()
-                }));
+  const fetchReviews = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/saveReviews");
+      const result = await response.json();
 
-                setAllReviews(processedReviews);
-                setFilteredReviews(processedReviews);
-            } else {
-                console.error('Failed to fetch reviews:', data.message);
-            }
-        } catch (error) {
-            console.error('Error fetching reviews:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to fetch reviews.");
+      }
 
-    const filterReviews = () => {
-        let filtered = [...allReviews];
+      setReviews(Array.isArray(result.data) ? result.data : []);
+    } catch (error) {
+      setReviews([]);
+      toast.error(error.message || "Failed to load reviews.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-        // Filter by status
-        if (statusFilter === 'active') {
-            filtered = filtered.filter(review => review.active && !review.deleted);
-        } else if (statusFilter === 'inactive') {
-            filtered = filtered.filter(review => !review.active && !review.deleted);
-        } else {
-            filtered = filtered.filter(review => !review.deleted);
-        }
+  useEffect(() => {
+    fetchReviews();
+  }, [fetchReviews]);
 
-        // Filter by type
-        if (typeFilter !== 'all') {
-            filtered = filtered.filter(review => review.type === typeFilter);
-        }
-        setFilteredReviews(filtered);
-        setCurrentPage(1);
-    };
+  const filteredReviews = useMemo(() => {
+    if (statusFilter === "all") return reviews;
+    return reviews.filter((review) => review.status === statusFilter);
+  }, [reviews, statusFilter]);
 
-    const handleStatusChange = (e) => {
-        setStatusFilter(e.target.value);
-    };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [statusFilter, reviews.length]);
 
-    const handleTypeChange = (e) => {
-        setTypeFilter(e.target.value);
-    };
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredReviews.length / ITEMS_PER_PAGE)
+  );
+  const currentItems = filteredReviews.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
-    const handleAction = async (id, action) => {
-        try {
-            let updates = { _id: id };
+  async function handleToggleApproved(review) {
+    const nextApproved = review.status !== "approved";
+    setUpdatingId(review._id);
+    try {
+      const response = await fetch("/api/saveReviews", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _id: review._id,
+          approved: nextApproved,
+          status: nextApproved ? "approved" : "pending",
+        }),
+      });
+      const result = await response.json();
 
-            // Determine the updates based on the action
-            switch (action) {
-                case 'active':
-                    updates.active = true;
-                    updates.deleted = false;
-                    break;
-                case 'inactive':
-                    updates.active = false;
-                    updates.deleted = false;
-                    break;
-                default:
-                    throw new Error('Invalid action');
-            }
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to update review.");
+      }
 
-            // Send the update
-            const res = await fetch('/api/saveReviews', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates)
-            });
+      toast.success(nextApproved ? "Review approved." : "Review set to pending.");
+      await fetchReviews();
+      if (selectedReview?._id === review._id && result.data) {
+        setSelectedReview(result.data);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update review.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
 
-            const data = await res.json();
+  async function handleStatusChange(review, status) {
+    setUpdatingId(review._id);
+    try {
+      const response = await fetch("/api/saveReviews", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _id: review._id, status }),
+      });
+      const result = await response.json();
 
-            if (res.ok) {
-                toast.success(data.message || 'Action completed successfully');
-                fetchReviews();
-            } else {
-                throw new Error(data.message || 'Failed to perform action');
-            }
-        } catch (error) {
-            console.error('Error performing action:', error);
-            toast.error(error.message || 'An error occurred');
-        }
-    };
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to update status.");
+      }
 
-    const handleToggleApproved = async (review) => {
-        try {
-            const isApproving = !review.approved;
-            const updates = {
-                _id: review._id,
-                approved: isApproving,
-                // If approving, ensure the review is also active and not deleted
-                ...(isApproving && {
-                    active: true,
-                    deleted: false
-                })
-            };
+      toast.success(`Review marked as ${status}.`);
+      await fetchReviews();
+      if (selectedReview?._id === review._id && result.data) {
+        setSelectedReview(result.data);
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update status.");
+    } finally {
+      setUpdatingId(null);
+    }
+  }
 
-            // Only create promotion when approving an artisan review
-            if (isApproving && review.type === 'artisan' && review.artisan?._id) {
-                updates.createPromotion = true;
-            }
+  async function handleDelete() {
+    if (!deleteTarget?._id) return;
+    setDeleting(true);
+    try {
+      const response = await fetch("/api/saveReviews", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ _id: deleteTarget._id }),
+      });
+      const result = await response.json();
 
-            const res = await fetch(`/api/saveReviews`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updates)
-            });
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to delete review.");
+      }
 
-            const data = await res.json();
+      toast.success("Review deleted.");
+      if (selectedReview?._id === deleteTarget._id) setSelectedReview(null);
+      setDeleteTarget(null);
+      await fetchReviews();
+    } catch (error) {
+      toast.error(error.message || "Failed to delete review.");
+    } finally {
+      setDeleting(false);
+    }
+  }
 
-            if (res.ok) {
-                toast.success(data.message || `Review ${isApproving ? 'approved' : 'disapproved'} successfully`);
-                if (isApproving && review.type === 'artisan') {
-                    toast.success('Promotion created for this review');
-                }
-                fetchReviews();
-            } else {
-                throw new Error(data.message || `Failed to ${isApproving ? 'approve' : 'disapprove'} review`);
-            }
-        } catch (error) {
-            console.error('Approval error:', error);
-            toast.error(error.message || "Failed to update review status");
-        }
-    };
-    // Pagination logic
-    const indexOfLast = currentPage * reviewsPerPage;
-    const indexOfFirst = indexOfLast - reviewsPerPage;
-    const currentReviews = filteredReviews.slice(indexOfFirst, indexOfLast);
-    const totalPages = Math.ceil(filteredReviews.length / reviewsPerPage);
-    // console.log(currentReviews)
-    return (
-        <div className="w-full max-w-5xl mx-auto rounded-xl shadow-sm border border-border bg-card px-6 py-8 my-12">
-            {/* Filter Row */}
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-6">
-            {/* Existing status filter */}
-            <div className="flex-1">
-                    <label className="block text-sm font-medium text-foreground mb-1">Status</label>
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full px-3 py-2 border border-border bg-background rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                        {statusOptions.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+  return (
+    <div className="mx-auto w-full max-w-6xl space-y-6">
+      <AdminPageHeader
+        title="Manage Reviews"
+        description="Approve guest package reviews before they appear on the website."
+      />
 
-                {/* New type filter */}
-                <div className="flex-1">
-                    <label className="block text-sm font-medium text-foreground mb-1">Type</label>
-                    <select
-                        value={typeFilter}
-                        onChange={(e) => setTypeFilter(e.target.value)}
-                        className="w-full px-3 py-2 border border-border bg-background rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                        {typeOptions.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-      
-            {/* Table */}
-            <div className="overflow-x-auto bg-card rounded-xl border border-border shadow-sm">
-                <table className="min-w-full border-separate border-spacing-0">
-                    <thead>
-                        <tr>
-                            {columns.map((col) => (
-                                <th key={col} className="py-3 px-4 border-b border-border font-semibold text-heading text-left text-sm">{col}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={columns.length} className="text-center py-6">Loading...</td>
-                            </tr>
-                        ) : currentReviews.length > 0 ? (
-                            currentReviews.map((review) => (
-                                <tr key={review._id} className="hover:bg-muted/10 transition-colors border-b border-border last:border-0">
-                                    {/* Date */}
-                                    <td className="align-middle min-w-[150px] px-5 py-3 border-b border-border">{review.createdAt ? new Date(review.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: 'numeric' }) : "-"}</td>
-                                    {/* Title */}
-                                    <td className="align-middle truncate max-w-[180px] px-5 py-3 border-b border-border">{review.title || '-'}</td>
-                                    {/* Name */}
-                                    <td className="align-middle min-w-[120px] px-5 py-3 border-b border-border">{review.name || '-'}</td>
-                                    {/* Type */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">{review.type || '-'}</td>
-                                    {/* Rating */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">{review.rating || '-'}</td>
-                                    {/* Thumb */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">
-                                        {review.thumb && review.thumb.url ? (
-                                            <img
-                                                src={review.thumb.url}
-                                                alt="thumb"
-                                                className="w-10 h-10 object-cover rounded border shadow-sm border-border"
-                                            />
-                                        ) : '-'}
-                                    </td>
-                                    {/* Approved */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">
-                                        <Switch
-                                            checked={!!review.approved}
-                                            onCheckedChange={() => handleToggleApproved(review)}
-                                        />
-                                    </td>
-                                    {/* Active Status */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">
-                                        <Switch
-                                            checked={!review.deleted && review.active}
-                                            onCheckedChange={() => handleAction(review._id, review.active ? 'inactive' : 'active')}
-                                            className={`${review.deleted ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            disabled={review.deleted}
-                                            title={review.deleted ? 'Cannot activate deleted review' : ''}
-                                        />
-                                    </td>
-                                    {/* View */}
-                                    <td className="align-middle px-5 py-3 border-b border-border">
-                                        <button className="icon-btn hover:bg-accent rounded p-2 transition-colors" onClick={() => setSelectedReview(review)}>
-                                            <EyeIcon size={20} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan={columns.length} className="text-center py-6">No reviews found.</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="reviewlog-pagination-row">
-                    <div className="pagination">
-                        <button className="icon-btn" aria-label="Prev" disabled={currentPage === 1} onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
-                        </button>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(num => (
-                            <button
-                                key={num}
-                                className={`page-btn${num === currentPage ? " active" : ""}`}
-                                onClick={() => setCurrentPage(num)}
-                            >
-                                {num}
-                            </button>
-                        ))}
-                        <button className="icon-btn" aria-label="Next" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#222" strokeWidth="2"><path d="M9 6l6 6-6 6" /></svg>
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal for review details */}
-            {selectedReview && (
-                <ReviewDetails
-                    review={selectedReview}
-                    onClose={() => setSelectedReview(null)}
-                    onUpdate={fetchReviews}
-                    onAction={handleAction}
-                />
-            )}
-
-            {/* Styles (copied from ManageReviewLog for consistency) */}
-
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="font-body text-sm text-muted">
+          {filteredReviews.length} review
+          {filteredReviews.length === 1 ? "" : "s"}
+          {statusFilter !== "all" ? ` · ${statusFilter}` : ""}
+        </p>
+        <div className="flex items-center gap-3">
+          <span className="font-ui text-xs font-medium text-muted">Status</span>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px] bg-card">
+              <SelectValue placeholder="All" />
+            </SelectTrigger>
+            <SelectContent>
+              {STATUS_FILTERS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-    );
+      </div>
 
-};
+      <div className="overflow-hidden rounded-card border border-border bg-card shadow-sm">
+        {loading ? (
+          <div className="flex min-h-64 items-center justify-center gap-2 font-body text-sm text-muted">
+            <Loader2 className="size-4 animate-spin text-primary" />
+            Loading reviews…
+          </div>
+        ) : (
+          <>
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border hover:bg-transparent">
+                  <TableHead className="font-ui text-heading">Date</TableHead>
+                  <TableHead className="font-ui text-heading">Package</TableHead>
+                  <TableHead className="font-ui text-heading">Guest</TableHead>
+                  <TableHead className="font-ui text-heading">Rating</TableHead>
+                  <TableHead className="font-ui text-heading">Status</TableHead>
+                  <TableHead className="font-ui text-heading">Approved</TableHead>
+                  <TableHead className="w-[120px] text-right font-ui text-heading">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {currentItems.length > 0 ? (
+                  currentItems.map((review, index) => (
+                    <TableRow
+                      key={review._id}
+                      className={cn(
+                        "border-border",
+                        index % 2 === 1 && "bg-surface/60"
+                      )}
+                    >
+                      <TableCell className="font-body text-sm text-muted">
+                        {formatDate(review.createdAt)}
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate font-body text-sm text-heading">
+                        {review.packageName ||
+                          review.package?.packageName ||
+                          "—"}
+                      </TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-body text-sm text-heading">
+                            {review.name}
+                          </p>
+                          {review.title ? (
+                            <p className="line-clamp-1 font-body text-xs text-muted">
+                              {review.title}
+                            </p>
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center gap-1 font-ui text-sm text-heading">
+                          <Star className="size-3.5 fill-warning text-warning" />
+                          {review.rating}.0
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "font-ui text-[10px] uppercase tracking-wide",
+                            statusBadgeClass(review.status)
+                          )}
+                        >
+                          {review.status || "pending"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Switch
+                          checked={review.status === "approved"}
+                          disabled={updatingId === review._id}
+                          onCheckedChange={() => handleToggleApproved(review)}
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="inline-flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-8"
+                            onClick={() => setSelectedReview(review)}
+                            aria-label="View review"
+                          >
+                            <Eye className="size-3.5" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-8 text-error hover:text-error"
+                            onClick={() => setDeleteTarget(review)}
+                            aria-label="Delete review"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-48">
+                      <div className="flex flex-col items-center justify-center gap-2 text-center">
+                        <Inbox className="size-8 text-muted" />
+                        <p className="font-heading text-lg text-heading">
+                          No reviews found
+                        </p>
+                        <p className="font-body text-sm text-muted">
+                          Guest package reviews will appear here for approval.
+                        </p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
 
-export default ManageReviews;
+            {filteredReviews.length > ITEMS_PER_PAGE && (
+              <div className="flex items-center justify-between border-t border-border px-4 py-3">
+                <p className="font-ui text-xs text-muted">
+                  Page {currentPage} of {totalPages}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((page) => page - 1)}
+                  >
+                    <ChevronLeft className="size-4" />
+                    Previous
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((page) => page + 1)}
+                  >
+                    Next
+                    <ChevronRight className="size-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {selectedReview ? (
+        <ReviewDetails
+          review={selectedReview}
+          onClose={() => setSelectedReview(null)}
+          onApprove={() => handleToggleApproved(selectedReview)}
+          onReject={() => handleStatusChange(selectedReview, "rejected")}
+          onDelete={() => setDeleteTarget(selectedReview)}
+          updating={updatingId === selectedReview._id}
+        />
+      ) : null}
+
+      <Dialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-xl text-heading">
+              Delete review?
+            </DialogTitle>
+            <DialogDescription className="font-body text-sm text-muted">
+              This will remove the review from{" "}
+              <span className="text-heading">{deleteTarget?.name}</span>.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteTarget(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={deleting}
+              onClick={handleDelete}
+            >
+              {deleting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <Trash2 className="size-4" />
+              )}
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

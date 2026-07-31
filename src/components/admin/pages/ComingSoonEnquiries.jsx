@@ -176,7 +176,6 @@ const ComingSoonEnquiries = ({ }) => {
                         </TableRow>
                     )}
                 </TableBody>
-                </TableBody>
                 </Table>
             </div>
 

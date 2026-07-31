@@ -3,7 +3,7 @@ export const websiteNavigation = [
   { label: "Home", href: "/" },
   { label: "Plan your own", href: "/plan-your-own" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Testimonials", href: "/gallery" },
+  { label: "Testimonials", href: "/testimonials" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -22,7 +22,7 @@ export const adminNavigation = [
       { label: "About", href: "/admin/about", icon: "Info" },
       { label: "Retreat Packages", href: "/admin/packages", icon: "Package" },
       { label: "Gallery", href: "/admin/gallery", icon: "Images" },
-      { label: "Testimonials", href: "/admin/testimonials", icon: "Star" },
+      { label: "Testimonials", href: "/admin/create_testimonials", icon: "Star" },
       { label: "Contact", href: "/admin/contact-info", icon: "Mail" },
     ],
   },

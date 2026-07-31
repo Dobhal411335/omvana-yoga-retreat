@@ -1,22 +1,12 @@
 "use client"
-import { ArrowLeftIcon, Trash2 } from 'lucide-react';
-import React from 'react'
 
-import { useState } from 'react';
-import { useRef } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import { StarterKit } from '@tiptap/starter-kit';
-import { TextStyle } from '@tiptap/extension-text-style';
-import { FontFamily } from '@tiptap/extension-font-family';
-import { Typography } from '@tiptap/extension-typography';
-import { TextAlign } from '@tiptap/extension-text-align';
-import { Underline } from '@tiptap/extension-underline';
-import { Link } from '@tiptap/extension-link';
-import { Color } from '@tiptap/extension-color';
-import { ListItem } from '@tiptap/extension-list-item';
-import toast from "react-hot-toast"
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef } from 'react'
 import {
+  ArrowLeftIcon,
+  Trash2,
+  Plus,
+  Upload,
+  Save,
   Bold,
   Italic,
   Underline as UnderlineIcon,
@@ -30,6 +20,24 @@ import {
   Heading3,
   PilcrowSquare,
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useEditor, EditorContent } from '@tiptap/react'
+import { StarterKit } from '@tiptap/starter-kit'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { FontFamily } from '@tiptap/extension-font-family'
+import { Typography } from '@tiptap/extension-typography'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { Underline } from '@tiptap/extension-underline'
+import { Link } from '@tiptap/extension-link'
+import { Color } from '@tiptap/extension-color'
+import { ListItem } from '@tiptap/extension-list-item'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 const initialCreateTags = [''];
 const initialHighlights = [{ title: '', point: '' }];
 const createEmptyParagraphSection = () => ({
@@ -56,6 +64,12 @@ const TEMPLATE_OPTIONS = [
   { value: "design7", label: "Design 7" },
 ];
 
+const fieldClass =
+  'h-11 w-full rounded-input border-border bg-background font-body text-sm text-heading placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/30';
+const textareaClass =
+  'min-h-24 w-full rounded-input border-border bg-background font-body text-sm text-heading placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-primary/30 resize-y';
+const labelClass = 'font-ui text-sm font-medium text-heading';
+
 const normalizeParagraphSections = (sections) => {
   if (!Array.isArray(sections) || sections.length === 0) {
     return initialParagraphSections;
@@ -75,7 +89,7 @@ const InlineRichTextEditor = ({ value, onChange }) => {
     content: value || '',
     editorProps: {
       attributes: {
-        class: 'min-h-[80px] border rounded-lg p-2 bg-gray-200 text-black font-semibold [&_h1]:text-2xl [&_h1]:font-bold [&_h2]:text-xl [&_h2]:font-bold [&_h3]:text-lg [&_h3]:font-semibold [&_p]:my-1 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-gray-500 [&_blockquote]:pl-3 [&_blockquote]:italic',
+        class: 'min-h-[120px] rounded-b-[var(--radius-input)] border border-t-0 border-border bg-background p-3 font-body text-sm text-heading focus:outline-none [&_h1]:font-heading [&_h1]:text-2xl [&_h1]:font-medium [&_h2]:font-heading [&_h2]:text-xl [&_h2]:font-medium [&_h3]:font-heading [&_h3]:text-lg [&_h3]:font-medium [&_p]:my-1 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:border-border [&_blockquote]:pl-3 [&_blockquote]:italic [&_blockquote]:text-muted-foreground',
       },
     },
     onUpdate: ({ editor: currentEditor }) => onChange(currentEditor.getHTML()),
@@ -90,20 +104,20 @@ const InlineRichTextEditor = ({ value, onChange }) => {
   if (!editor) return null;
 
   return (
-    <div className="w-full">
-      <div className="flex flex-wrap gap-2 pb-2 mb-2 bg-white rounded-t px-2 pt-2">
-        <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('bold') ? 'bg-gray-200' : ''}`}><Bold className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleItalic().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('italic') ? 'bg-gray-200' : ''}`}><Italic className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('underline') ? 'bg-gray-200' : ''}`}><UnderlineIcon className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().setParagraph().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('paragraph') ? 'bg-gray-200' : ''}`}><PilcrowSquare className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200' : ''}`}><Heading1 className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200' : ''}`}><Heading2 className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-200' : ''}`}><Heading3 className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleBulletList().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('bulletList') ? 'bg-gray-200' : ''}`}><List className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleOrderedList().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('orderedList') ? 'bg-gray-200' : ''}`}><ListOrdered className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={`p-1 rounded hover:bg-gray-100 ${editor.isActive('blockquote') ? 'bg-gray-200' : ''}`}><Quote className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().undo().run()} className="p-1 rounded hover:bg-gray-100"><Undo className="w-4 h-4" /></button>
-        <button type="button" onClick={() => editor.chain().focus().redo().run()} className="p-1 rounded hover:bg-gray-100"><Redo className="w-4 h-4" /></button>
+    <div className="w-full overflow-hidden rounded-input border border-border bg-surface">
+      <div className="flex flex-wrap gap-1 border-b border-border bg-surface px-2 py-2">
+        <Button type="button" variant={editor.isActive('bold') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleBold().run()}><Bold className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('italic') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleItalic().run()}><Italic className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('underline') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleUnderline().run()}><UnderlineIcon className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('paragraph') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().setParagraph().run()}><PilcrowSquare className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('heading', { level: 1 }) ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}><Heading1 className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('heading', { level: 2 }) ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}><Heading2 className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('heading', { level: 3 }) ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}><Heading3 className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('bulletList') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleBulletList().run()}><List className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('orderedList') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleOrderedList().run()}><ListOrdered className="size-4" /></Button>
+        <Button type="button" variant={editor.isActive('blockquote') ? 'secondary' : 'ghost'} size="icon" className="size-8" onClick={() => editor.chain().focus().toggleBlockquote().run()}><Quote className="size-4" /></Button>
+        <Button type="button" variant="ghost" size="icon" className="size-8" onClick={() => editor.chain().focus().undo().run()}><Undo className="size-4" /></Button>
+        <Button type="button" variant="ghost" size="icon" className="size-8" onClick={() => editor.chain().focus().redo().run()}><Redo className="size-4" /></Button>
       </div>
       <EditorContent editor={editor} />
     </div>
@@ -668,46 +682,51 @@ const EditWebpages = ({ activityId }) => {
   };
 
   return (
-    <div className="w-full bg-[#f8f9fa] min-h-screen py-8">
-      <div className="max-w-4xl mx-auto mb-6">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center text-blue-600 hover:text-blue-800 font-semibold bg-white px-4 py-2 rounded-lg shadow-sm"
-        >
-          <ArrowLeftIcon className="w-4 h-4 mr-2" />
+    <div className="w-full min-h-screen bg-background py-8 font-body">
+      <div className="mx-auto mb-6 max-w-4xl px-4 md:px-0">
+        <Button type="button" variant="outline" onClick={() => router.back()} className="gap-2">
+          <ArrowLeftIcon className="size-4" />
           Back to Webpages
-        </button>
+        </Button>
       </div>
-      <form className="max-w-4xl w-full mx-auto bg-white p-8 md:p-10 shadow-sm border border-slate-100 rounded-[20px]" onSubmit={handleSubmit}>
-        <div className="border-b border-slate-100 pb-6 mb-8">
-          <h2 className="text-2xl font-semibold text-slate-800 tracking-tight">Edit Webpage: <span className="text-blue-600">{form.title}</span></h2>
-          <p className="text-sm text-slate-500 mt-1">Update the content and configuration for this webpage.</p>
+      <form
+        className="mx-auto w-full max-w-4xl space-y-8 rounded-card border border-border bg-card p-6 shadow-sm md:p-10"
+        onSubmit={handleSubmit}
+      >
+        <div className="space-y-2 border-b border-border pb-6">
+          <h2 className="font-heading text-3xl font-medium tracking-tight text-heading">
+            Edit Webpage: <span className="text-primary">{form.title}</span>
+          </h2>
+          <p className="font-ui text-sm text-muted-foreground">
+            Update the content and configuration for this webpage.
+          </p>
         </div>
-        <div className="mb-4">
-          <label className="block mb-1 font-semibold">Frontend Design</label>
-
-          <input type="text" value={form.templateType} disabled readOnly className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+        <div className="space-y-2">
+                <Label className={labelClass}>Frontend Design</Label>
+          <Input type="text" value={form.templateType} disabled readOnly className={fieldClass} />
         </div>
         {(isDesignOneOrTwo || isDesignThree || isDesignFour || isDesignFive || isDesignSix || isDesignSeven) && (
           <>
             {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4">
-                <label className="block mb-2 font-semibold">Top Section View</label>
-                <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
-                  <button
+              <div className="space-y-2">
+                <Label className={labelClass}>Top Section View</Label>
+                <div className="inline-flex overflow-hidden rounded-button border border-border">
+                  <Button
                     type="button"
+                    variant={topSectionView === 'all' ? 'default' : 'ghost'}
                     onClick={() => setTopSectionView('all')}
-                    className={`px-4 py-2 font-semibold ${topSectionView === 'all' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
+                    className="rounded-none"
                   >
                     All Inputs
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     type="button"
+                    variant={topSectionView === 'bannerOnly' ? 'default' : 'ghost'}
                     onClick={() => setTopSectionView('bannerOnly')}
-                    className={`px-4 py-2 font-semibold ${topSectionView === 'bannerOnly' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
+                    className="rounded-none"
                   >
                     Banner Image Only
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -715,15 +734,15 @@ const EditWebpages = ({ activityId }) => {
             {(topSectionView === 'all' || isDesignFour || isDesignFive || isDesignSix || isDesignSeven) && (
               <>
                 {/* Main Top Title Tag Line */}
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Main Top Title Tag Line</label>
-                  <input type="text" name="secondTitle" value={form.secondTitle} onChange={handleChange} placeholder="Type Here" className="w-full rounded-md p-3 bg-gray-200 font-semibold" />
+                <div className="space-y-2">
+                <Label className={labelClass}>Main Top Title Tag Line</Label>
+                  <Input type="text" name="secondTitle" value={form.secondTitle} onChange={handleChange} placeholder="Type Here" className={fieldClass} />
                 </div>
 
                 {/* Main Top Image (Cloudinary Upload) */}
                 {!isDesignThree && (
-                  <div className="mb-4">
-                    <label className="block mb-1 font-semibold">Main Top Image</label>
+                  <div className="space-y-2">
+                <Label className={labelClass}>Main Top Image</Label>
                     <input
                       type="file"
                       accept="image/*"
@@ -731,55 +750,56 @@ const EditWebpages = ({ activityId }) => {
                       ref={imageFirstInputRef}
                       className="hidden"
                     />
-                    <button
+                    <Button
                       type="button"
-                      className="mb-2 flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded"
+                      variant="default" className="mb-2 gap-2"
                       onClick={() => imageFirstInputRef.current && imageFirstInputRef.current.click()}
                     >
+                      <Upload className="size-4" />
                       <span>Upload Here</span>
-                    </button>
-                    {uploadingImageFirst && <div className="text-blue-600 font-semibold">Uploading...</div>}
+                    </Button>
+                    {uploadingImageFirst && <div className="font-ui text-sm text-primary">Uploading...</div>}
                     {form.imageFirst && form.imageFirst.url && (
-                      <div className="relative w-full h-48 border rounded overflow-hidden mb-2">
+                      <div className="relative mb-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                         <img
                           src={form.imageFirst.url}
                           alt="Image First Preview"
                           className="object-contain w-full h-full"
                         />
-                        <button
+                        <Button
                           type="button"
                           onClick={() => handleDeleteCloudinaryImage('imageFirst')}
-                          className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                          variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                           title="Remove image"
                         >
-                          <Trash2 className="w-5 h-5 text-red-600" />
-                        </button>
+                          <Trash2 className="size-5 text-destructive" />
+                        </Button>
                       </div>
                     )}
                   </div>
                 )}
                 {/* Main Short Tag Line */}
 
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Main Short Tag Line</label>
-                  <input type="text" name="firstTitle" value={form.firstTitle} onChange={handleChange} placeholder="Type Here" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                <div className="space-y-2">
+                <Label className={labelClass}>Main Short Tag Line</Label>
+                  <Input type="text" name="firstTitle" value={form.firstTitle} onChange={handleChange} placeholder="Type Here" className={fieldClass} />
                 </div>
                 {/* Create Tag */}
                 {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-                  <div className="mb-4">
-                    <label className="block mb-1 font-semibold">Create Tag</label>
+                  <div className="space-y-2">
+                <Label className={labelClass}>Create Tag</Label>
                     {form.createTags.map((tag, index) => (
                       <div key={index} className="flex items-center gap-2 mb-2">
-                        <input
+                        <Input
                           type="text"
                           value={tag}
                           onChange={(e) => handleArrayTextChange('createTags', index, e.target.value)}
                           placeholder="Type Here"
-                          className="flex-1 rounded-md p-3 bg-gray-200 font-semibold"
+                          className={fieldClass}
                         />
-                        <button type="button" onClick={() => addArrayTextRow('createTags')} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                        <Button type="button" onClick={() => addArrayTextRow('createTags')} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                         {form.createTags.length > 1 && (
-                          <button type="button" onClick={() => removeArrayTextRow('createTags', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                          <Button type="button" onClick={() => removeArrayTextRow('createTags', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                         )}
                       </div>
                     ))}
@@ -788,15 +808,15 @@ const EditWebpages = ({ activityId }) => {
 
                 {/* Posted By */}
                 {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-                  <div className="mb-4">
-                    <label className="block mb-2 font-semibold">Posted By</label>
+                  <div className="space-y-2">
+                <Label className={labelClass}>Posted By</Label>
                     <div className="flex items-center gap-6">
-                      <label className="flex items-center gap-2 font-semibold">
-                        <input type="checkbox" checked={!!form.postedBy?.admin} onChange={() => handlePostedByChange('admin')} /> Admin
-                      </label>
-                      <label className="flex items-center gap-2 font-semibold">
-                        <input type="checkbox" checked={!!form.postedBy?.user} onChange={() => handlePostedByChange('user')} /> User
-                      </label>
+                      <Label className="flex items-center gap-2 font-ui text-sm font-medium text-heading">
+                        <Checkbox checked={!!form.postedBy?.admin} onCheckedChange={() => handlePostedByChange('admin')} /> Admin
+                      </Label>
+                      <Label className="flex items-center gap-2 font-ui text-sm font-medium text-heading">
+                        <Checkbox checked={!!form.postedBy?.user} onCheckedChange={() => handlePostedByChange('user')} /> User
+                      </Label>
                     </div>
                   </div>
                 )}
@@ -805,8 +825,8 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Main Top Banner Image (Cloudinary Upload) */}
             {(topSectionView === 'bannerOnly' && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven) && (
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Main Top Banner Image</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Main Top Banner Image</Label>
                 <input
                   type="file"
                   accept="image/*"
@@ -814,29 +834,30 @@ const EditWebpages = ({ activityId }) => {
                   ref={bannerImageInputRef}
                   className="hidden"
                 />
-                <button
+                <Button
                   type="button"
-                  className="mb-2 flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded"
+                  variant="default" className="mb-2 gap-2"
                   onClick={() => bannerImageInputRef.current && bannerImageInputRef.current.click()}
                 >
+                  <Upload className="size-4" />
                   <span>Upload Here</span>
-                </button>
-                {uploadingBannerImage && <div className="text-blue-600 font-semibold">Uploading...</div>}
+                </Button>
+                {uploadingBannerImage && <div className="font-ui text-sm text-primary">Uploading...</div>}
                 {form.bannerImage && form.bannerImage.url && (
-                  <div className="relative w-full h-48 border rounded overflow-hidden mb-2">
+                  <div className="relative mb-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                     <img
                       src={form.bannerImage.url}
                       alt="Banner Image Preview"
                       className="object-contain w-full h-full"
                     />
-                    <button
+                    <Button
                       type="button"
                       onClick={() => handleDeleteCloudinaryImage('bannerImage')}
-                      className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                      variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                       title="Remove image"
                     >
-                      <Trash2 className="w-5 h-5 text-red-600" />
-                    </button>
+                      <Trash2 className="size-5 text-destructive" />
+                    </Button>
                   </div>
                 )}
               </div>
@@ -845,28 +866,28 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Highlights */}
             {!isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4 border rounded p-3 bg-blue-50">
-                <label className="block mb-2 font-semibold">Highlights</label>
+              <div className="space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                <Label className={labelClass}>Highlights</Label>
                 {form.highlights.map((row, index) => (
                   <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-2 mb-2">
-                    <input
+                    <Input
                       type="text"
                       value={row.title}
                       onChange={(e) => handleObjectArrayChange('highlights', index, 'title', e.target.value)}
                       placeholder="Highlight Title"
-                      className="rounded-md p-3 bg-gray-200 font-semibold"
+                      className={fieldClass}
                     />
-                    <input
+                    <Input
                       type="text"
                       value={row.point}
                       onChange={(e) => handleObjectArrayChange('highlights', index, 'point', e.target.value)}
                       placeholder="Point"
-                      className="rounded-md p-3 bg-gray-200 font-semibold"
+                      className={fieldClass}
                     />
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => addObjectArrayRow('highlights', { title: '', point: '' })} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                      <Button type="button" onClick={() => addObjectArrayRow('highlights', { title: '', point: '' })} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                       {form.highlights.length > 1 && (
-                        <button type="button" onClick={() => removeObjectArrayRow('highlights', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                        <Button type="button" onClick={() => removeObjectArrayRow('highlights', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                       )}
                     </div>
                   </div>
@@ -876,25 +897,25 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Paragraph Section */}
             {!isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4 border rounded p-3 bg-gray-50">
-                <label className="block mb-2 font-semibold">Paragraph Section</label>
+              <div className="space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                <Label className={labelClass}>Paragraph Section</Label>
                 {form.paragraphSections.map((row, index) => (
-                  <div key={index} className="mb-3 border border-gray-200 rounded p-3">
-                    <label className="block mb-2 font-semibold">Paragraph Heading</label>
+                  <div key={index} className="space-y-4 rounded-card border border-border bg-background p-4 md:p-5">
+                    <Label className={labelClass}>Paragraph Heading</Label>
                     <div className="flex gap-2 mb-2">
-                      <input
+                      <Input
                         type="text"
                         value={row.title}
                         onChange={(e) => handleObjectArrayChange('paragraphSections', index, 'title', e.target.value)}
                         placeholder="Title Text Line"
-                        className="flex-1 rounded-md p-3 bg-gray-200 font-semibold"
+                        className={fieldClass}
                       />
-                      <button type="button" onClick={() => addObjectArrayRow('paragraphSections', createEmptyParagraphSection())} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                      <Button type="button" onClick={() => addObjectArrayRow('paragraphSections', createEmptyParagraphSection())} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                       {form.paragraphSections.length > 1 && (
-                        <button type="button" onClick={() => removeObjectArrayRow('paragraphSections', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                        <Button type="button" onClick={() => removeObjectArrayRow('paragraphSections', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                       )}
                     </div>
-                    <label className="block mb-2 font-semibold my-5">Paragraph Description</label>
+                    <Label className={labelClass}>Paragraph Description</Label>
                     <InlineRichTextEditor
                       value={row.description}
                       onChange={(html) => handleObjectArrayChange('paragraphSections', index, 'description', html)}
@@ -902,63 +923,63 @@ const EditWebpages = ({ activityId }) => {
                     <div className="flex flex-col gap-3 mt-2">
                       <div>
                         <input id={`paragraph-first-image-${index}`} type="file" accept="image/*" onChange={e => handleParagraphSectionImageChange(e, index, 'firstImage')} className="hidden" />
-                        <label htmlFor={`paragraph-first-image-${index}`} className="inline-block bg-yellow-400 my-2 px-4 py-2 rounded cursor-pointer">Upload First Image</label>
-                        {uploadingParagraphFirstImage && <div className="text-blue-600 text-sm my-2">Uploading...</div>}
+                        <Label htmlFor={`paragraph-first-image-${index}`} className="my-2 inline-flex cursor-pointer items-center rounded-button border border-transparent bg-primary px-4 py-2 font-body text-sm font-medium text-primary-foreground hover:bg-primary-hover">Upload First Image</Label>
+                        {uploadingParagraphFirstImage && <div className="font-ui text-sm text-primary my-2">Uploading...</div>}
                         {row.firstImage?.url && (
-                          <div className="relative w-full h-48 border rounded overflow-hidden mb-2">
+                          <div className="relative mb-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                             <img
                               src={row.firstImage.url}
                               alt="Paragraph First Image Preview"
                               className="object-contain w-full h-full"
                             />
-                            <button
+                            <Button
                               type="button"
                               onClick={() => handleDeleteParagraphSectionImage(index, 'firstImage')}
-                              className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                              variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                               title="Remove image"
                             >
-                              <Trash2 className="w-5 h-5 text-red-600" />
-                            </button>
+                              <Trash2 className="size-5 text-destructive" />
+                            </Button>
                           </div>
                         )}
                       </div>
                       <div>
                         <input id={`paragraph-second-image-${index}`} type="file" accept="image/*" onChange={e => handleParagraphSectionImageChange(e, index, 'secondImage')} className="hidden" />
-                        <label htmlFor={`paragraph-second-image-${index}`} className="inline-block bg-gray-200 px-4 py-2 rounded cursor-pointer">Upload Second Image</label>
-                        {uploadingParagraphSecondImage && <div className="text-blue-600 text-sm my-2">Uploading...</div>}
+                        <Label htmlFor={`paragraph-second-image-${index}`} className="inline-flex cursor-pointer items-center rounded-button border border-border bg-surface px-4 py-2 font-body text-sm font-medium text-heading hover:bg-background">Upload Second Image</Label>
+                        {uploadingParagraphSecondImage && <div className="font-ui text-sm text-primary my-2">Uploading...</div>}
                         {row.secondImage?.url && (
-                          <div className="relative w-full h-48 border rounded overflow-hidden mb-2">
+                          <div className="relative mb-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                             <img
                               src={row.secondImage.url}
                               alt="Paragraph Second Image Preview"
                               className="object-contain w-full h-full"
                             />
-                            <button
+                            <Button
                               type="button"
                               onClick={() => handleDeleteParagraphSectionImage(index, 'secondImage')}
-                              className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                              variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                               title="Remove image"
                             >
-                              <Trash2 className="w-5 h-5 text-red-600" />
-                            </button>
+                              <Trash2 className="size-5 text-destructive" />
+                            </Button>
                           </div>
                         )}
                       </div>
 
-                      <div className="border border-gray-200 rounded p-3 bg-white">
-                        <label className="block mb-2 font-semibold">Bullet Points</label>
+                      <div className="space-y-3 rounded-card border border-border bg-background p-4">
+                        <Label className={labelClass}>Bullet Points</Label>
                         {(row.bulletPoints || ['']).map((bullet, bulletIndex) => (
                           <div key={bulletIndex} className="flex items-center gap-2 mb-2">
-                            <input
+                            <Input
                               type="text"
                               value={bullet}
                               onChange={(e) => handleParagraphBulletPointChange(index, bulletIndex, e.target.value)}
                               placeholder="Add bullet point"
-                              className="flex-1 rounded-md p-3 bg-gray-200 font-semibold"
+                              className={fieldClass}
                             />
-                            <button type="button" onClick={() => addParagraphBulletPoint(index)} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                            <Button type="button" onClick={() => addParagraphBulletPoint(index)} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                             {(row.bulletPoints || []).length > 1 && (
-                              <button type="button" onClick={() => removeParagraphBulletPoint(index, bulletIndex)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                              <Button type="button" onClick={() => removeParagraphBulletPoint(index, bulletIndex)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                             )}
                           </div>
                         ))}
@@ -971,85 +992,89 @@ const EditWebpages = ({ activityId }) => {
 
             {isDesignFour && !isDesignSix && !isDesignSeven && (
               <>
-                <div className="mb-4 border rounded p-3 bg-red-50">
-                  <label className="block mb-2 font-semibold">Notices (Design 4)</label>
+                <div className="space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                  <Label className={labelClass}>Notices (Design 4)</Label>
                   {form.notices.map((row, index) => (
-                    <div key={index} className="mb-3 border border-red-200 rounded p-3 bg-white">
+                    <div key={index} className="space-y-4 rounded-card border border-border bg-background p-4 md:p-5">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
                         <div>
-                          <label className="block mb-1 font-semibold text-sm">Notice Title</label>
-                          <input
+                          <Label className={labelClass}>Notice Title</Label>
+                          <Input
                             type="text"
                             value={row.title}
                             onChange={(e) => handleObjectArrayChange('notices', index, 'title', e.target.value)}
                             placeholder="Notice Title"
-                            className="w-full rounded-md p-3 bg-gray-200 font-semibold"
+                            className={fieldClass}
                           />
                         </div>
                         <div>
-                          <label className="block mb-1 font-semibold text-sm">Notice Type</label>
-                          <select
+                          <Label className={labelClass}>Notice Type</Label>
+                          <Select
                             value={row.type}
-                            onChange={(e) => handleObjectArrayChange('notices', index, 'type', e.target.value)}
-                            className="w-full rounded-md p-3 bg-gray-200 font-semibold"
+                            onValueChange={(value) => handleObjectArrayChange('notices', index, 'type', value)}
                           >
-                            <option value="warning">Warning (Yellow/Orange)</option>
-                            <option value="info">Info (Blue)</option>
-                            <option value="danger">Danger (Red)</option>
-                            <option value="success">Success (Green)</option>
-                          </select>
+                            <SelectTrigger className={`w-full ${fieldClass}`}>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="warning">Warning (Yellow/Orange)</SelectItem>
+                              <SelectItem value="info">Info (Blue)</SelectItem>
+                              <SelectItem value="danger">Danger (Red)</SelectItem>
+                              <SelectItem value="success">Success (Green)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                       <div className="mb-2">
-                        <label className="block mb-1 font-semibold text-sm">Notice Description</label>
-                        <textarea
+                        <Label className={labelClass}>Notice Description</Label>
+                        <Textarea
                           value={row.description}
                           onChange={(e) => handleObjectArrayChange('notices', index, 'description', e.target.value)}
                           placeholder="Notice Description"
-                          className="w-full rounded-md p-3 bg-gray-200 font-semibold h-24"
-                        ></textarea>
+                          className={textareaClass}
+                        />
                       </div>
                       <div className="flex gap-2">
-                        <button type="button" onClick={() => addObjectArrayRow('notices', { title: '', description: '', type: 'warning' })} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                        <Button type="button" onClick={() => addObjectArrayRow('notices', { title: '', description: '', type: 'warning' })} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                         {form.notices.length > 1 && (
-                          <button type="button" onClick={() => removeObjectArrayRow('notices', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                          <Button type="button" onClick={() => removeObjectArrayRow('notices', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                         )}
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Bold Paragraph Text</label>
-                  <textarea
+                <div className="space-y-2">
+                <Label className={labelClass}>Bold Paragraph Text</Label>
+                  <Textarea
                     name="boldParagraph"
                     value={form.boldParagraph}
                     onChange={handleChange}
                     placeholder="Experience the ultimate spiritual journey..."
-                    className="w-full rounded-md p-3 bg-gray-200 font-semibold h-24"
-                  ></textarea>
+                    className={textareaClass}
+                   />
                 </div>
-                <div className="mb-4 border rounded p-3 bg-green-50">
-                  <label className="block mb-2 font-semibold">Search Locations Sidebar (Design 4)</label>
+                <div className="space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                  <Label className={labelClass}>Search Locations Sidebar (Design 4)</Label>
                   {form.searchLocations.map((row, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-2 mb-2">
-                      <input
+                      <Input
                         type="text"
                         value={row.locationName}
                         onChange={(e) => handleObjectArrayChange('searchLocations', index, 'locationName', e.target.value)}
                         placeholder="Location Name"
-                        className="rounded-md p-3 bg-gray-200 font-semibold"
+                        className={fieldClass}
                       />
-                      <input
+                      <Input
                         type="text"
                         value={row.count}
                         onChange={(e) => handleObjectArrayChange('searchLocations', index, 'count', e.target.value)}
                         placeholder="Count"
-                        className="rounded-md p-3 bg-gray-200 font-semibold"
+                        className={fieldClass}
                       />
                       <div className="flex gap-2">
-                        <button type="button" onClick={() => addObjectArrayRow('searchLocations', { locationName: '', count: '' })} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                        <Button type="button" onClick={() => addObjectArrayRow('searchLocations', { locationName: '', count: '' })} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                         {form.searchLocations.length > 1 && (
-                          <button type="button" onClick={() => removeObjectArrayRow('searchLocations', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                          <Button type="button" onClick={() => removeObjectArrayRow('searchLocations', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                         )}
                       </div>
                     </div>
@@ -1061,28 +1086,28 @@ const EditWebpages = ({ activityId }) => {
             {/* Table Data */}
             {!isDesignFive && !isDesignSix && !isDesignSeven && (
               <>
-                <label className="block mb-2 font-semibold">Table Data</label>
-                <div className="mb-4 border rounded p-3 bg-blue-50">
-                  <label className="block mb-2 font-semibold">Table Heading</label>
-                  <input
+                <Label className={labelClass}>Table Data</Label>
+                <div className="space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                  <Label className={labelClass}>Table Heading</Label>
+                  <Input
                     type="text"
                     name="tableTitle"
                     value={form.tableTitle}
                     onChange={handleChange}
                     placeholder="Table Title"
-                    className="w-full rounded-md p-3 bg-gray-200 font-semibold mb-2"
+                    className={fieldClass}
                   />
-                  <label className="block mb-2 font-semibold">Table Description</label>
+                  <Label className={labelClass}>Table Description</Label>
 
                   {form.tableRows.map((row, index) => (
                     <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-2 mb-2">
 
-                      <input type="text" value={row.column1} onChange={(e) => handleObjectArrayChange('tableRows', index, 'column1', e.target.value)} placeholder="Column 1" className="rounded-md p-3 bg-gray-200 font-semibold" />
-                      <input type="text" value={row.column2} onChange={(e) => handleObjectArrayChange('tableRows', index, 'column2', e.target.value)} placeholder="Column 2" className="rounded-md p-3 bg-gray-200 font-semibold" />
+                      <Input type="text" value={row.column1} onChange={(e) => handleObjectArrayChange('tableRows', index, 'column1', e.target.value)} placeholder="Column 1" className={fieldClass} />
+                      <Input type="text" value={row.column2} onChange={(e) => handleObjectArrayChange('tableRows', index, 'column2', e.target.value)} placeholder="Column 2" className={fieldClass} />
                       <div className="flex gap-2">
-                        <button type="button" onClick={() => addObjectArrayRow('tableRows', { column1: '', column2: '' })} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                        <Button type="button" onClick={() => addObjectArrayRow('tableRows', { column1: '', column2: '' })} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                         {form.tableRows.length > 1 && (
-                          <button type="button" onClick={() => removeObjectArrayRow('tableRows', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                          <Button type="button" onClick={() => removeObjectArrayRow('tableRows', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                         )}
                       </div>
                     </div>
@@ -1093,25 +1118,25 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Blockquote */}
             {!isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4">
-                <label className="block mb-2 font-semibold">Blockquote Title</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Blockquote Title</Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
-                  <input type="text" name="blockquoteMainTitle" value={form.blockquoteMainTitle} onChange={handleChange} placeholder="Title Name For Blockquote" className="rounded-md p-3 bg-gray-200 font-semibold" />
-                  <input type="text" name="blockquoteLeftTitle" value={form.blockquoteLeftTitle} onChange={handleChange} placeholder="Blockquote Left Para" className="rounded-md p-3 bg-gray-200 font-semibold" />
+                  <Input type="text" name="blockquoteMainTitle" value={form.blockquoteMainTitle} onChange={handleChange} placeholder="Title Name For Blockquote" className={fieldClass} />
+                  <Input type="text" name="blockquoteLeftTitle" value={form.blockquoteLeftTitle} onChange={handleChange} placeholder="Blockquote Left Para" className={fieldClass} />
                 </div>
-                <label className="block mb-2 font-semibold">BlockQoute Description</label>
+                <Label className={labelClass}>BlockQoute Description</Label>
                 <InlineRichTextEditor
                   value={form.blockquoteDescription}
                   onChange={(html) => setForm((prev) => ({ ...prev, blockquoteDescription: html }))}
                 />
                 <div className="mt-2">
-                  <label className="block mb-2 font-semibold">Blockquote Tags</label>
+                  <Label className={labelClass}>Blockquote Tags</Label>
                   {form.blockquoteTags.map((tag, index) => (
                     <div key={index} className="flex items-center gap-2 mb-2">
-                      <input type="text" value={tag} onChange={(e) => handleArrayTextChange('blockquoteTags', index, e.target.value)} placeholder="Blockquote Tag" className="flex-1 rounded-md p-3 bg-gray-200 font-semibold" />
-                      <button type="button" onClick={() => addArrayTextRow('blockquoteTags')} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                      <Input type="text" value={tag} onChange={(e) => handleArrayTextChange('blockquoteTags', index, e.target.value)} placeholder="Blockquote Tag" className={fieldClass} />
+                      <Button type="button" onClick={() => addArrayTextRow('blockquoteTags')} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                       {form.blockquoteTags.length > 1 && (
-                        <button type="button" onClick={() => removeArrayTextRow('blockquoteTags', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                        <Button type="button" onClick={() => removeArrayTextRow('blockquoteTags', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                       )}
                     </div>
                   ))}
@@ -1121,8 +1146,8 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Accordion Tag */}
             {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4">
-                <label className="block mb-2 font-semibold">Advertisement Section</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Advertisement Section</Label>
                 <div className="flex flex-col gap-4">
                   <div>
                     <input
@@ -1132,38 +1157,38 @@ const EditWebpages = ({ activityId }) => {
                       ref={advertisementImageInputRef}
                       className="hidden"
                     />
-                    <button
+                    <Button
                       type="button"
                       onClick={() => advertisementImageInputRef.current && advertisementImageInputRef.current.click()}
-                      className="rounded-md p-3 bg-blue-400 font-semibold text-left"
+                      variant="outline" className="justify-start"
                     >
                       {form.advertisementImage?.url ? 'Change Advertisement Image' : 'Upload Advertisement Image'}
-                    </button>
-                    {uploadingAdvertisementImage && <div className="text-blue-600 text-sm mt-1">Uploading...</div>}
+                    </Button>
+                    {uploadingAdvertisementImage && <div className="font-ui text-sm text-primary mt-1">Uploading...</div>}
                     {form.advertisementImage?.url && (
-                      <div className="relative w-full h-48 border rounded overflow-hidden mt-2">
+                      <div className="relative mt-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                         <img src={form.advertisementImage.url} alt="Advertisement Preview" className="object-contain w-full h-full" />
-                        <button
+                        <Button
                           type="button"
                           onClick={() => handleDeleteCloudinaryImage('advertisementImage')}
-                          className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                          variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                           title="Remove image"
                         >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </button>
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
                       </div>
                     )}
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <h2 className='font-semibold mb-1'>Advertisement URL</h2>
-                    <input
+                    <h2 className={labelClass}>Advertisement URL</h2>
+                    <Input
                       type="text"
                       name="advertisementUrl"
                       value={form.advertisementUrl}
                       onChange={handleChange}
                       placeholder="https://example.com"
-                      className="rounded-md p-3 bg-gray-200 font-semibold"
+                      className={fieldClass}
                     />
                   </div>
                 </div>
@@ -1171,22 +1196,22 @@ const EditWebpages = ({ activityId }) => {
             )}
 
             {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4">
-                <label className="block mb-2 font-bold">Accordion Tag</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Accordion Tag</Label>
                 {form.accordionTags.map((row, index) => (
                   <div key={index} className="grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-2 mb-2">
                     <div className="flex flex-col gap-1">
-                      <label className="block mb-2 font-semibold text-sm">Accordion Main Title</label>
-                      <input type="text" value={row.left} onChange={(e) => handleObjectArrayChange('accordionTags', index, 'left', e.target.value)} placeholder="Title Text Line" className="rounded-md p-3 bg-gray-200 font-semibold" />
+                      <Label className={labelClass}>Accordion Main Title</Label>
+                      <Input type="text" value={row.left} onChange={(e) => handleObjectArrayChange('accordionTags', index, 'left', e.target.value)} placeholder="Title Text Line" className={fieldClass} />
                     </div>
                     <div className="flex flex-col gap-1">
-                      <label className="block mb-2 font-semibold text-sm">Accordion Description</label>
-                      <input type="text" value={row.right} onChange={(e) => handleObjectArrayChange('accordionTags', index, 'right', e.target.value)} placeholder="Accordion Tag Line" className="rounded-md p-3 bg-gray-200 font-semibold" />
+                      <Label className={labelClass}>Accordion Description</Label>
+                      <Input type="text" value={row.right} onChange={(e) => handleObjectArrayChange('accordionTags', index, 'right', e.target.value)} placeholder="Accordion Tag Line" className={fieldClass} />
                     </div>
                     <div className="flex items-end gap-2">
-                      <button type="button" onClick={() => addObjectArrayRow('accordionTags', { left: '', right: '' })} className="bg-blue-700 text-white px-3 py-2 rounded">+</button>
+                      <Button type="button" onClick={() => addObjectArrayRow('accordionTags', { left: '', right: '' })} variant="default" size="icon" className="shrink-0"><Plus className="size-4" /></Button>
                       {form.accordionTags.length > 1 && (
-                        <button type="button" onClick={() => removeObjectArrayRow('accordionTags', index)} className="bg-red-500 text-white px-3 py-2 rounded"><Trash2 className="w-4 h-4" /></button>
+                        <Button type="button" onClick={() => removeObjectArrayRow('accordionTags', index)} variant="destructive" size="icon" className="shrink-0"><Trash2 className="size-4" /></Button>
                       )}
                     </div>
                   </div>
@@ -1196,8 +1221,8 @@ const EditWebpages = ({ activityId }) => {
 
             {/* Side Thumb Blog */}
             {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
-              <div className="mb-4">
-                <label className="block mb-2 font-semibold">Side Thumb Blog</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Side Thumb Blog</Label>
                 <div className="flex flex-col gap-5 mb-2">
                   <div>
                     <input
@@ -1207,48 +1232,48 @@ const EditWebpages = ({ activityId }) => {
                       ref={sideThumbImageInputRef}
                       className="hidden"
                     />
-                    <button
+                    <Button
                       type="button"
                       onClick={() => sideThumbImageInputRef.current && sideThumbImageInputRef.current.click()}
-                      className="rounded-md p-3 bg-blue-400 font-semibold text-left"
+                      variant="outline" className="justify-start"
                     >
                       {form.sideThumbImage ? 'Change Thumb Image' : 'Upload Thumb Image'}
-                    </button>
-                    {uploadingSideThumbImage && <div className="text-blue-600 text-sm mt-1">Uploading...</div>}
+                    </Button>
+                    {uploadingSideThumbImage && <div className="font-ui text-sm text-primary mt-1">Uploading...</div>}
                     {form.sideThumbImage && (
-                      <div className="relative w-full h-48 border rounded overflow-hidden mt-2">
+                      <div className="relative mt-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                         <img src={form.sideThumbImage} alt="Side Thumb Preview" className="object-contain w-full h-full" />
-                        <button
+                        <Button
                           type="button"
                           onClick={() => handleDeleteCloudinaryImage('sideThumbImage')}
-                          className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                          variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                           title="Remove image"
                         >
-                          <Trash2 className="w-4 h-4 text-red-600" />
-                        </button>
+                          <Trash2 className="size-4 text-destructive" />
+                        </Button>
                       </div>
                     )}
                   </div>
                   <div className="flex flex-col  gap-2">
-                    <h2 className='font-semibold mb-2'>Side Thumb Name</h2>
-                    <input type="text" name="sideThumbName" value={form.sideThumbName} onChange={handleChange} placeholder="Name Here" className="rounded-md p-3 bg-gray-200 text-black font-semibold" />
-                    <h2 className='font-semibold mb-2'>Side Thumb Designation</h2>
-                    <input type="text" name="sideThumbDesignation" value={form.sideThumbDesignation} onChange={handleChange} placeholder="Designation" className="rounded-md p-3 bg-gray-200 text-black font-semibold" />
-                    <h2 className='font-semibold mb-2'>Side Thumb Description</h2>
-                    <input type="text" name="sideThumbDescription" value={form.sideThumbDescription} onChange={handleChange} placeholder="Description" className="rounded-md p-3 bg-gray-200 text-black font-semibold" />
+                    <h2 className={labelClass}>Side Thumb Name</h2>
+                    <Input type="text" name="sideThumbName" value={form.sideThumbName} onChange={handleChange} placeholder="Name Here" className={fieldClass} />
+                    <h2 className={labelClass}>Side Thumb Designation</h2>
+                    <Input type="text" name="sideThumbDesignation" value={form.sideThumbDesignation} onChange={handleChange} placeholder="Designation" className={fieldClass} />
+                    <h2 className={labelClass}>Side Thumb Description</h2>
+                    <Input type="text" name="sideThumbDescription" value={form.sideThumbDescription} onChange={handleChange} placeholder="Description" className={fieldClass} />
                   </div>
                 </div>
-                <hr className='my-4 border-black' />
-                <h2 className="text-lg font-bold my-2">Social Media Links</h2>
+                <hr className='my-6 border-border' />
+                <h2 className="font-heading text-xl font-medium text-heading my-2">Social Media Links</h2>
                 <div className="grid grid-col-1 gap-2">
-                  <h2 className='font-semibold mb-1'>Facebook URL</h2>
-                  <input type="text" name="facebookUrl" value={form.facebookUrl} onChange={handleChange} placeholder="Facebook Url" className="rounded-md p-3 bg-gray-200 font-semibold" />
-                  <h2 className='font-semibold mb-1'>Youtube URL</h2>
-                  <input type="text" name="youtubeUrl" value={form.youtubeUrl} onChange={handleChange} placeholder="Youtube Url" className="rounded-md p-3 bg-gray-200 font-semibold" />
-                  <h2 className='font-semibold mb-1'>Instagram URL</h2>
-                  <input type="text" name="instaUrl" value={form.instaUrl} onChange={handleChange} placeholder="Insta Url" className="rounded-md p-3 bg-gray-200 font-semibold" />
-                  <h2 className='font-semibold mb-1'>Google URL</h2>
-                  <input type="text" name="googleUrl" value={form.googleUrl} onChange={handleChange} placeholder="Google Url" className="rounded-md p-3 bg-gray-200 font-semibold" />
+                  <h2 className={labelClass}>Facebook URL</h2>
+                  <Input type="text" name="facebookUrl" value={form.facebookUrl} onChange={handleChange} placeholder="Facebook Url" className={fieldClass} />
+                  <h2 className={labelClass}>Youtube URL</h2>
+                  <Input type="text" name="youtubeUrl" value={form.youtubeUrl} onChange={handleChange} placeholder="Youtube Url" className={fieldClass} />
+                  <h2 className={labelClass}>Instagram URL</h2>
+                  <Input type="text" name="instaUrl" value={form.instaUrl} onChange={handleChange} placeholder="Insta Url" className={fieldClass} />
+                  <h2 className={labelClass}>Google URL</h2>
+                  <Input type="text" name="googleUrl" value={form.googleUrl} onChange={handleChange} placeholder="Google Url" className={fieldClass} />
                 </div>
               </div>
             )}
@@ -1257,38 +1282,38 @@ const EditWebpages = ({ activityId }) => {
         {isDesignFive && !isDesignSix && !isDesignSeven && (
           <>
             {/* Design 5 Content */}
-            <div className="mb-4 mt-8 border-t border-slate-100 pt-6">
-              <h3 className="text-xl font-bold mb-4">Design 5 Sections</h3>
+            <div className="mt-8 space-y-6 border-t border-border pt-8">
+              <h3 className="font-heading text-2xl font-medium text-heading mb-2">Design 5 Sections</h3>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Top Chip Text (e.g. Why Choose Us)</label>
-                <input type="text" name="design5Chip" value={form.design5Chip} onChange={handleChange} placeholder="Type Here" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+              <div className="space-y-2">
+                <Label className={labelClass}>Top Chip Text (e.g. Why Choose Us)</Label>
+                <Input type="text" name="design5Chip" value={form.design5Chip} onChange={handleChange} placeholder="Type Here" className={fieldClass} />
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Main Heading</label>
-                <input type="text" name="design5MainHeading" value={form.design5MainHeading} onChange={handleChange} placeholder="Type Here" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+              <div className="space-y-2">
+                <Label className={labelClass}>Main Heading</Label>
+                <Input type="text" name="design5MainHeading" value={form.design5MainHeading} onChange={handleChange} placeholder="Type Here" className={fieldClass} />
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-bold">Grid Cards</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Grid Cards</Label>
                 {form.gridCards.map((card, index) => (
-                  <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                    <button type="button" onClick={() => {
+                  <div key={index} className="relative mb-4 space-y-4 rounded-card border border-border bg-surface p-5">
+                    <Button type="button" onClick={() => {
                       setForm((prev) => {
                         const nextGridCards = [...(prev.gridCards || [])];
                         nextGridCards.splice(index, 1);
                         return { ...prev, gridCards: nextGridCards };
                       });
-                    }} className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    }} variant="destructive" size="icon" className="absolute top-2 right-2 size-8">
+                      <Trash2 className="size-4" />
+                    </Button>
 
                     <div className="mb-2">
-                      <h2 className="block mb-2 font-semibold text-sm">Card Image</h2>
+                      <h2 className={labelClass}>Card Image</h2>
                       <div className="flex flex-col gap-2">
                         <div>
-                          <label className="rounded-md p-3 bg-blue-400 font-semibold text-left cursor-pointer inline-block">
+                          <Label className="inline-flex cursor-pointer items-center rounded-button border border-border bg-surface px-4 py-2 font-body text-sm font-medium text-heading hover:bg-background">
                             {card.image?.url ? 'Change Card Image' : 'Upload Card Image'}
                             <input
                               type="file"
@@ -1296,18 +1321,18 @@ const EditWebpages = ({ activityId }) => {
                               onChange={(e) => handleGridCardImageChange(e, index)}
                               className="hidden"
                             />
-                          </label>
+                          </Label>
                           {card.image?.url && (
-                            <div className="relative w-full h-48 border rounded overflow-hidden mt-2">
+                            <div className="relative mt-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                               <img src={card.image.url} alt="Grid Card Preview" className="object-contain w-full h-full" />
-                              <button
+                              <Button
                                 type="button"
                                 onClick={() => handleDeleteGridCardImage(index)}
-                                className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                                variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                                 title="Remove image"
                               >
-                                <Trash2 className="w-4 h-4 text-red-600" />
-                              </button>
+                                <Trash2 className="size-4 text-destructive" />
+                              </Button>
                             </div>
                           )}
                         </div>
@@ -1316,50 +1341,50 @@ const EditWebpages = ({ activityId }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Chip Name</label>
-                        <input type="text" value={card.chipName} onChange={(e) => {
+                        <Label className={labelClass}>Chip Name</Label>
+                        <Input type="text" value={card.chipName} onChange={(e) => {
                           setForm((prev) => {
                             const nextGridCards = [...(prev.gridCards || [])];
                             nextGridCards[index].chipName = e.target.value;
                             return { ...prev, gridCards: nextGridCards };
                           });
-                        }} placeholder="e.g. Fintech" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="e.g. Fintech" className={fieldClass} />
                       </div>
 
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Title</label>
-                        <input type="text" value={card.title} onChange={(e) => {
+                        <Label className={labelClass}>Title</Label>
+                        <Input type="text" value={card.title} onChange={(e) => {
                           setForm((prev) => {
                             const nextGridCards = [...(prev.gridCards || [])];
                             nextGridCards[index].title = e.target.value;
                             return { ...prev, gridCards: nextGridCards };
                           });
-                        }} placeholder="e.g. Compliance Consulting" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="e.g. Compliance Consulting" className={fieldClass} />
                       </div>
 
                       <div className="md:col-span-2">
-                        <label className="block mb-1 font-semibold text-sm">Link URL (for Explore More)</label>
-                        <input type="text" value={card.link} onChange={(e) => {
+                        <Label className={labelClass}>Link URL (for Explore More)</Label>
+                        <Input type="text" value={card.link} onChange={(e) => {
                           setForm((prev) => {
                             const nextGridCards = [...(prev.gridCards || [])];
                             nextGridCards[index].link = e.target.value;
                             return { ...prev, gridCards: nextGridCards };
                           });
-                        }} placeholder="/some-link" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="/some-link" className={fieldClass} />
                       </div>
                     </div>
                   </div>
                 ))}
 
-                <button type="button" onClick={() => {
+                <Button type="button" onClick={() => {
                   setForm((prev) => {
                     const nextGridCards = [...(prev.gridCards || [])];
                     nextGridCards.push({ image: { url: '', key: '' }, chipName: '', title: '', link: '' });
                     return { ...prev, gridCards: nextGridCards };
                   });
-                }} className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold mt-2">
-                  + Add Grid Card
-                </button>
+                }} variant="default" className="mt-2 gap-2">
+                  <Plus className="size-4" /> Add Grid Card
+                </Button>
               </div>
             </div>
           </>
@@ -1368,67 +1393,67 @@ const EditWebpages = ({ activityId }) => {
         {isDesignSix && (
           <>
             {/* Design 6 Content */}
-            <div className="mb-4 mt-8 border-t border-slate-100 pt-6">
-              <h3 className="text-xl font-bold mb-4">Design 6 (Team Page) Sections</h3>
+            <div className="mt-8 space-y-6 border-t border-border pt-8">
+              <h3 className="font-heading text-2xl font-medium text-heading mb-2">Design 6 (Team Page) Sections</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block mb-1 font-semibold">Top Chip Text</label>
-                  <input type="text" name="design6Chip" value={form.design6Chip} onChange={handleChange} placeholder="e.g. News & Insight" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Top Chip Text</Label>
+                  <Input type="text" name="design6Chip" value={form.design6Chip} onChange={handleChange} placeholder="e.g. News & Insight" className={fieldClass} />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold">Explore Area Link</label>
-                  <input type="text" name="design6ExploreLink" value={form.design6ExploreLink} onChange={handleChange} placeholder="/explore" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Explore Area Link</Label>
+                  <Input type="text" name="design6ExploreLink" value={form.design6ExploreLink} onChange={handleChange} placeholder="/explore" className={fieldClass} />
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Main Heading</label>
-                <input type="text" name="design6MainHeading" value={form.design6MainHeading} onChange={handleChange} placeholder="The latest news and insights..." className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+              <div className="space-y-2">
+                <Label className={labelClass}>Main Heading</Label>
+                <Input type="text" name="design6MainHeading" value={form.design6MainHeading} onChange={handleChange} placeholder="The latest news and insights..." className={fieldClass} />
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Sub Heading / Paragraph Text</label>
-                <textarea name="design6SubHeading" value={form.design6SubHeading} onChange={handleChange} placeholder="Business consulting is a professional service..." className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black h-24"></textarea>
+              <div className="space-y-2">
+                <Label className={labelClass}>Sub Heading / Paragraph Text</Label>
+                <Textarea name="design6SubHeading" value={form.design6SubHeading} onChange={handleChange} placeholder="Business consulting is a professional service..." className={textareaClass} />
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Author Attribution</label>
-                <input type="text" name="design6Author" value={form.design6Author} onChange={handleChange} placeholder="Mr. Daniel Scoot, Mr. Daniel Scoot" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+              <div className="space-y-2">
+                <Label className={labelClass}>Author Attribution</Label>
+                <Input type="text" name="design6Author" value={form.design6Author} onChange={handleChange} placeholder="Mr. Daniel Scoot, Mr. Daniel Scoot" className={fieldClass} />
               </div>
 
-              <hr className="my-6 border-slate-300" />
+              <hr className="my-6 border-border" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block mb-1 font-semibold">Mid Section Heading</label>
-                  <input type="text" name="design6MidHeading" value={form.design6MidHeading} onChange={handleChange} placeholder="Excellent Service Provided by..." className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Mid Section Heading</Label>
+                  <Input type="text" name="design6MidHeading" value={form.design6MidHeading} onChange={handleChange} placeholder="Excellent Service Provided by..." className={fieldClass} />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold">Explore People Link</label>
-                  <input type="text" name="design6MidLink" value={form.design6MidLink} onChange={handleChange} placeholder="/people" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Explore People Link</Label>
+                  <Input type="text" name="design6MidLink" value={form.design6MidLink} onChange={handleChange} placeholder="/people" className={fieldClass} />
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-2 font-bold">Team Cards</label>
+              <div className="space-y-2">
+                <Label className={labelClass}>Team Cards</Label>
                 {form.teamCards.map((card, index) => (
-                  <div key={index} className="border p-4 mb-4 rounded-md bg-gray-50 relative">
-                    <button type="button" onClick={() => {
+                  <div key={index} className="relative mb-4 space-y-4 rounded-card border border-border bg-surface p-5">
+                    <Button type="button" onClick={() => {
                       setForm((prev) => {
                         const nextCards = [...(prev.teamCards || [])];
                         nextCards.splice(index, 1);
                         return { ...prev, teamCards: nextCards };
                       });
-                    }} className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    }} variant="destructive" size="icon" className="absolute top-2 right-2 size-8">
+                      <Trash2 className="size-4" />
+                    </Button>
 
                     <div className="mb-2">
-                      <h2 className="block mb-2 font-semibold text-sm">Card Image</h2>
+                      <h2 className={labelClass}>Card Image</h2>
                       <div className="flex flex-col gap-2">
                         <div>
-                          <label className="rounded-md p-3 bg-blue-400 font-semibold text-left cursor-pointer inline-block text-black">
+                          <Label className="inline-flex cursor-pointer items-center rounded-button border border-border bg-surface px-4 py-2 font-body text-sm font-medium text-heading hover:bg-background">
                             {card.image?.url ? 'Change Image' : 'Upload Image'}
                             <input
                               type="file"
@@ -1436,18 +1461,18 @@ const EditWebpages = ({ activityId }) => {
                               onChange={(e) => handleTeamCardImageChange(e, index)}
                               className="hidden"
                             />
-                          </label>
+                          </Label>
                           {card.image?.url && (
-                            <div className="relative w-full h-48 border rounded overflow-hidden mt-2 bg-white">
+                            <div className="relative mt-2 h-48 w-full overflow-hidden rounded-image border border-border bg-background">
                               <img src={card.image.url} alt="Team Preview" className="object-contain w-full h-full" />
-                              <button
+                              <Button
                                 type="button"
                                 onClick={() => handleDeleteTeamCardImage(index)}
-                                className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200"
+                                variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10"
                                 title="Remove image"
                               >
-                                <Trash2 className="w-4 h-4 text-red-600" />
-                              </button>
+                                <Trash2 className="size-4 text-destructive" />
+                              </Button>
                             </div>
                           )}
                         </div>
@@ -1456,81 +1481,81 @@ const EditWebpages = ({ activityId }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Name</label>
-                        <input type="text" value={card.name} onChange={(e) => {
+                        <Label className={labelClass}>Name</Label>
+                        <Input type="text" value={card.name} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].name = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="Mr. Anthony Brian" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="Mr. Anthony Brian" className={fieldClass} />
                       </div>
 
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Designation</label>
-                        <input type="text" value={card.designation} onChange={(e) => {
+                        <Label className={labelClass}>Designation</Label>
+                        <Input type="text" value={card.designation} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].designation = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="Senior Consultant" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="Senior Consultant" className={fieldClass} />
                       </div>
 
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Phone Number</label>
-                        <input type="text" value={card.phone} onChange={(e) => {
+                        <Label className={labelClass}>Phone Number</Label>
+                        <Input type="text" value={card.phone} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].phone = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="+91 656 786 53" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="+91 656 786 53" className={fieldClass} />
                       </div>
 
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Facebook URL Link</label>
-                        <input type="text" value={card.facebook} onChange={(e) => {
+                        <Label className={labelClass}>Facebook URL Link</Label>
+                        <Input type="text" value={card.facebook} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].facebook = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="https://facebook.com/..." className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="https://facebook.com/..." className={fieldClass} />
                       </div>
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Instagram URL Link</label>
-                        <input type="text" value={card.instagram} onChange={(e) => {
+                        <Label className={labelClass}>Instagram URL Link</Label>
+                        <Input type="text" value={card.instagram} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].instagram = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="https://instagram.com/..." className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="https://instagram.com/..." className={fieldClass} />
                       </div>
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Youtube URL Link</label>
-                        <input type="text" value={card.youtube} onChange={(e) => {
+                        <Label className={labelClass}>Youtube URL Link</Label>
+                        <Input type="text" value={card.youtube} onChange={(e) => {
                           setForm((prev) => {
                             const nextCards = [...(prev.teamCards || [])];
                             nextCards[index].youtube = e.target.value;
                             return { ...prev, teamCards: nextCards };
                           });
-                        }} placeholder="https://youtube.com/..." className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="https://youtube.com/..." className={fieldClass} />
                       </div>
                     </div>
                   </div>
                 ))}
 
-                <button type="button" onClick={() => {
+                <Button type="button" onClick={() => {
                   setForm((prev) => {
                     const nextCards = [...(prev.teamCards || [])];
                     nextCards.push({ image: { url: '', key: '' }, name: '', designation: '', phone: '', facebook: '', instagram: '', youtube: '' });
                     return { ...prev, teamCards: nextCards };
                   });
-                }} className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold mt-2">
-                  + Add Team Card
-                </button>
+                }} variant="default" className="mt-2 gap-2">
+                  <Plus className="size-4" /> Add Team Card
+                </Button>
               </div>
             </div>
           </>
@@ -1539,53 +1564,53 @@ const EditWebpages = ({ activityId }) => {
         {isDesignSeven && (
           <>
             {/* Design 7 Content */}
-            <div className="mb-4 mt-4 border-t border-slate-100 pt-6">
-              <h3 className="text-xl font-bold mb-4">Design 7 Sections</h3>
+            <div className="mt-6 space-y-6 border-t border-border pt-8">
+              <h3 className="font-heading text-2xl font-medium text-heading mb-2">Design 7 Sections</h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block mb-1 font-semibold">Top Chip Text</label>
-                  <input type="text" name="design7Chip" value={form.design7Chip} onChange={handleChange} placeholder="News & Insight" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Top Chip Text</Label>
+                  <Input type="text" name="design7Chip" value={form.design7Chip} onChange={handleChange} placeholder="News & Insight" className={fieldClass} />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold">Explore Link URL</label>
-                  <input type="text" name="design7ExploreLink" value={form.design7ExploreLink} onChange={handleChange} placeholder="/explore" className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+                  <Label className={labelClass}>Explore Link URL</Label>
+                  <Input type="text" name="design7ExploreLink" value={form.design7ExploreLink} onChange={handleChange} placeholder="/explore" className={fieldClass} />
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block mb-1 font-semibold">Main Heading</label>
-                <input type="text" name="design7MainHeading" value={form.design7MainHeading} onChange={handleChange} placeholder="The latest news and insights..." className="w-full rounded-md p-3 bg-gray-200 font-semibold text-black" />
+              <div className="space-y-2">
+                <Label className={labelClass}>Main Heading</Label>
+                <Input type="text" name="design7MainHeading" value={form.design7MainHeading} onChange={handleChange} placeholder="The latest news and insights..." className={fieldClass} />
               </div>
 
               {/* Gallery Grid Cards for Design 7 */}
-              <div className="mb-4 border border-slate-200 rounded-xl p-5 bg-slate-50">
-                <h4 className="font-bold text-lg mb-4">Gallery Image Cards</h4>
+              <div className="mb-4 space-y-4 rounded-card border border-border bg-surface p-5 md:p-6">
+                <h4 className="font-heading text-xl font-medium text-heading mb-4">Gallery Image Cards</h4>
                 {form.gridCards.map((card, index) => (
-                  <div key={index} className="mb-4 border border-slate-200 rounded p-4 bg-white relative">
-                    <button type="button" onClick={() => {
+                  <div key={index} className="relative mb-4 space-y-4 rounded-card border border-border bg-background p-5">
+                    <Button type="button" onClick={() => {
                       setForm((prev) => {
                         const nextGridCards = [...(prev.gridCards || [])];
                         nextGridCards.splice(index, 1);
                         return { ...prev, gridCards: nextGridCards };
                       });
-                    }} className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    }} variant="destructive" size="icon" className="absolute top-2 right-2 size-8">
+                      <Trash2 className="size-4" />
+                    </Button>
 
                     <div className="mb-2">
-                      <h2 className="block mb-2 font-semibold text-sm">Card Image</h2>
+                      <h2 className={labelClass}>Card Image</h2>
                       <div className="flex flex-col gap-2">
                         <input id={`grid-card-image-${index}`} type="file" accept="image/*" onChange={(e) => handleGridCardImageChange(e, index)} className="hidden" />
-                        <label htmlFor={`grid-card-image-${index}`} className="inline-block bg-yellow-400 px-4 py-2 rounded cursor-pointer w-max font-semibold text-sm">
+                        <Label htmlFor={`grid-card-image-${index}`} className="inline-flex w-max cursor-pointer items-center rounded-button border border-transparent bg-primary px-4 py-2 font-body text-sm font-medium text-primary-foreground hover:bg-primary-hover">
                           Upload Image
-                        </label>
+                        </Label>
                         {card.image?.url && (
-                          <div className="relative w-32 h-32 border rounded overflow-hidden mt-2">
+                          <div className="relative mt-2 h-32 w-32 overflow-hidden rounded-image border border-border bg-background">
                             <img src={card.image.url} alt="Grid Card" className="object-cover w-full h-full" />
-                            <button type="button" onClick={() => handleDeleteGridCardImage(index)} className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200" title="Remove image">
-                              <Trash2 className="w-4 h-4 text-red-600" />
-                            </button>
+                            <Button type="button" onClick={() => handleDeleteGridCardImage(index)} variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10" title="Remove image">
+                              <Trash2 className="size-4 text-destructive" />
+                            </Button>
                           </div>
                         )}
                       </div>
@@ -1593,150 +1618,150 @@ const EditWebpages = ({ activityId }) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Hover Chip Name</label>
-                        <input type="text" value={card.chipName} onChange={(e) => {
+                        <Label className={labelClass}>Hover Chip Name</Label>
+                        <Input type="text" value={card.chipName} onChange={(e) => {
                           setForm((prev) => {
                             const nextGridCards = [...(prev.gridCards || [])];
                             nextGridCards[index].chipName = e.target.value;
                             return { ...prev, gridCards: nextGridCards };
                           });
-                        }} placeholder="e.g. Fintech" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="e.g. Fintech" className={fieldClass} />
                       </div>
 
                       <div>
-                        <label className="block mb-1 font-semibold text-sm">Hover Title (Link Text)</label>
-                        <input type="text" value={card.title} onChange={(e) => {
+                        <Label className={labelClass}>Hover Title (Link Text)</Label>
+                        <Input type="text" value={card.title} onChange={(e) => {
                           setForm((prev) => {
                             const nextGridCards = [...(prev.gridCards || [])];
                             nextGridCards[index].title = e.target.value;
                             return { ...prev, gridCards: nextGridCards };
                           });
-                        }} placeholder="e.g. Compliance Consulting" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold text-black" />
+                        }} placeholder="e.g. Compliance Consulting" className={fieldClass} />
                       </div>
 
                       {/* Expandable Gallery Detail Section */}
-                      <div className="md:col-span-2 mt-4 border border-blue-200 rounded-lg p-4 bg-blue-50">
-                        <h3 className="font-bold text-md mb-3 text-blue-800">Gallery Detail Page Content</h3>
-                        <p className="text-xs text-blue-600 mb-4">Filling this out will generate a detail page at <strong>/gallery/{card.gallerySlug || "<auto-generated>"}</strong></p>
+                      <div className="md:col-span-2 mt-4 space-y-4 rounded-card border border-border bg-surface p-5">
+                        <h3 className="font-heading text-lg font-medium text-heading mb-2">Gallery Detail Page Content</h3>
+                        <p className="font-ui text-xs text-muted-foreground mb-4">Filling this out will generate a detail page at <strong>/gallery/{card.gallerySlug || "<auto-generated>"}</strong></p>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                           <div>
-                            <label className="block mb-1 font-semibold text-sm">Date</label>
-                            <input type="date" value={card.galleryDate || ''} onChange={(e) => {
+                            <Label className={labelClass}>Date</Label>
+                            <Input type="date" value={card.galleryDate || ''} onChange={(e) => {
                               setForm((prev) => {
                                 const nextGridCards = [...(prev.gridCards || [])];
                                 nextGridCards[index].galleryDate = e.target.value;
                                 return { ...prev, gridCards: nextGridCards };
                               });
-                            }} className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold" />
+                            }} className={fieldClass} />
                           </div>
                           <div>
-                            <label className="block mb-1 font-semibold text-sm">Posted By</label>
-                            <input type="text" value={card.postedBy || ''} onChange={(e) => {
+                            <Label className={labelClass}>Posted By</Label>
+                            <Input type="text" value={card.postedBy || ''} onChange={(e) => {
                               setForm((prev) => {
                                 const nextGridCards = [...(prev.gridCards || [])];
                                 nextGridCards[index].postedBy = e.target.value;
                                 return { ...prev, gridCards: nextGridCards };
                               });
-                            }} placeholder="Author Name" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold" />
+                            }} placeholder="Author Name" className={fieldClass} />
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block mb-1 font-semibold text-sm">Description Paragraph</label>
-                            <textarea value={card.galleryDescription || ''} onChange={(e) => {
+                            <Label className={labelClass}>Description Paragraph</Label>
+                            <Textarea value={card.galleryDescription || ''} onChange={(e) => {
                               setForm((prev) => {
                                 const nextGridCards = [...(prev.gridCards || [])];
                                 nextGridCards[index].galleryDescription = e.target.value;
                                 return { ...prev, gridCards: nextGridCards };
                               });
-                            }} rows="3" className="w-full rounded-md p-3 bg-white border border-gray-300 font-semibold"></textarea>
+                            }} rows="3" className={textareaClass} />
                           </div>
                         </div>
 
                         <div className="mb-6">
-                          <label className="block mb-2 font-bold text-sm text-blue-900 border-b border-blue-200 pb-1">Bento Gallery Images</label>
+                          <Label className={labelClass}>Bento Gallery Images</Label>
                           <div className="flex flex-wrap gap-2 mb-2">
                             {(card.bentoImages || []).map((img, imgIdx) => (
-                              <div key={imgIdx} className="relative w-24 h-24 border rounded overflow-hidden">
+                              <div key={imgIdx} className="relative h-24 w-24 overflow-hidden rounded-image border border-border bg-background">
                                 <img src={img.url} alt="Bento" className="object-cover w-full h-full" />
-                                <button type="button" onClick={() => handleDeleteBentoImage(index, imgIdx)} className="absolute top-1 right-1 bg-white bg-opacity-80 rounded-full p-1 hover:bg-red-200" title="Remove image">
-                                  <Trash2 className="w-3 h-3 text-red-600" />
-                                </button>
+                                <Button type="button" onClick={() => handleDeleteBentoImage(index, imgIdx)} variant="ghost" size="icon" className="absolute top-2 right-2 size-8 rounded-full border border-border bg-surface/90 text-destructive hover:bg-destructive/10" title="Remove image">
+                                  <Trash2 className="size-3 text-destructive" />
+                                </Button>
                               </div>
                             ))}
-                            <div className="w-24 h-24 border-2 border-dashed border-blue-300 rounded flex flex-col items-center justify-center bg-white cursor-pointer hover:bg-blue-50 relative">
+                            <div className="relative flex h-24 w-24 cursor-pointer flex-col items-center justify-center rounded-image border-2 border-dashed border-border bg-background hover:bg-surface">
                               <input type="file" multiple accept="image/*" onChange={(e) => handleBentoImageChange(e, index)} className="absolute inset-0 opacity-0 cursor-pointer" />
-                              <span className="text-xl text-blue-400">+</span>
-                              <span className="text-xs text-blue-500 font-semibold mt-1">Upload</span>
+                              <span className="text-xl text-primary">+</span>
+                              <span className="font-ui text-xs text-muted-foreground mt-1">Upload</span>
                             </div>
                           </div>
                         </div>
 
                         <div className="mb-6">
-                          <label className="block mb-2 font-bold text-sm text-blue-900 border-b border-blue-200 pb-1">YouTube Shorts</label>
+                          <Label className={labelClass}>YouTube Shorts</Label>
                           {(card.youtubeShorts || []).map((short, shortIdx) => (
-                            <div key={shortIdx} className="flex gap-2 mb-2 items-center bg-white p-2 rounded border border-gray-200 w-full">
+                            <div key={shortIdx} className="mb-2 flex w-full items-center gap-2 rounded-input border border-border bg-background p-2">
                               <div className="w-full">
-                                <input type="text" value={short.url} onChange={(e) => {
+                                <Input type="text" value={short.url} onChange={(e) => {
                                   setForm(prev => {
                                     const newCards = [...prev.gridCards];
                                     newCards[index].youtubeShorts[shortIdx].url = e.target.value;
                                     return { ...prev, gridCards: newCards };
                                   });
-                                }} placeholder="YouTube URL" className="w-full rounded p-2 text-sm border border-gray-300" />
+                                }} placeholder="YouTube URL" className={fieldClass} />
                               </div>
                               <div className="md:col-span-1 text-center">
-                                <button type="button" onClick={() => {
+                                <Button type="button" onClick={() => {
                                   setForm(prev => {
                                     const newCards = [...prev.gridCards];
                                     newCards[index].youtubeShorts.splice(shortIdx, 1);
                                     return { ...prev, gridCards: newCards };
                                   });
-                                }} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4 inline" /></button>
+                                }} className="text-destructive hover:text-destructive/80"><Trash2 className="w-4 h-4 inline" /></Button>
                               </div>
                             </div>
                           ))}
-                          <button type="button" onClick={() => {
+                          <Button type="button" onClick={() => {
                             setForm(prev => {
                               const newCards = [...prev.gridCards];
                               if (!newCards[index].youtubeShorts) newCards[index].youtubeShorts = [];
                               newCards[index].youtubeShorts.push({ url: '' });
                               return { ...prev, gridCards: newCards };
                             });
-                          }} className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded font-semibold hover:bg-blue-200">+ Add Short</button>
+                          }} variant="outline" size="sm"><Plus className="size-4" /> Add Short</Button>
                         </div>
 
                         <div>
-                          <label className="block mb-2 font-bold text-sm text-blue-900 border-b border-blue-200 pb-1">YouTube Highlight Videos</label>
+                          <Label className={labelClass}>YouTube Highlight Videos</Label>
                           {(card.youtubeVideos || []).map((vid, vidIdx) => (
-                            <div key={vidIdx} className="flex gap-2 mb-2 items-center bg-white p-2 rounded border border-gray-200 w-full">
+                            <div key={vidIdx} className="mb-2 flex w-full items-center gap-2 rounded-input border border-border bg-background p-2">
                               <div className="w-full">
-                                <input type="text" value={vid.url} onChange={(e) => {
+                                <Input type="text" value={vid.url} onChange={(e) => {
                                   setForm(prev => {
                                     const newCards = [...prev.gridCards];
                                     newCards[index].youtubeVideos[vidIdx].url = e.target.value;
                                     return { ...prev, gridCards: newCards };
                                   });
-                                }} placeholder="YouTube URL" className="w-full rounded p-2 text-sm border border-gray-300" />
+                                }} placeholder="YouTube URL" className={fieldClass} />
                               </div>
                               <div className="text-center">
-                                <button type="button" onClick={() => {
+                                <Button type="button" onClick={() => {
                                   setForm(prev => {
                                     const newCards = [...prev.gridCards];
                                     newCards[index].youtubeVideos.splice(vidIdx, 1);
                                     return { ...prev, gridCards: newCards };
                                   });
-                                }} className="text-red-500 hover:text-red-700"><Trash2 className="w-4 h-4 inline" /></button>
+                                }} className="text-destructive hover:text-destructive/80"><Trash2 className="w-4 h-4 inline" /></Button>
                               </div>
                             </div>
                           ))}
-                          <button type="button" onClick={() => {
+                          <Button type="button" onClick={() => {
                             setForm(prev => {
                               const newCards = [...prev.gridCards];
                               if (!newCards[index].youtubeVideos) newCards[index].youtubeVideos = [];
                               newCards[index].youtubeVideos.push({ url: '', });
                               return { ...prev, gridCards: newCards };
                             });
-                          }} className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded font-semibold hover:bg-blue-200">+ Add Video</button>
+                          }} variant="outline" size="sm"><Plus className="size-4" /> Add Video</Button>
                         </div>
 
                       </div>
@@ -1745,15 +1770,15 @@ const EditWebpages = ({ activityId }) => {
                   </div>
                 ))}
 
-                <button type="button" onClick={() => {
+                <Button type="button" onClick={() => {
                   setForm((prev) => {
                     const nextGridCards = [...(prev.gridCards || [])];
                     nextGridCards.push({ image: { url: '', key: '' }, chipName: '', title: '', link: '', galleryDate: '', postedBy: '', galleryDescription: '', bentoImages: [], youtubeShorts: [], youtubeVideos: [] });
                     return { ...prev, gridCards: nextGridCards };
                   });
-                }} className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold mt-2">
-                  + Add Gallery Card
-                </button>
+                }} variant="default" className="mt-2 gap-2">
+                  <Plus className="size-4" /> Add Gallery Card
+                </Button>
               </div>
 
             </div>
@@ -1761,10 +1786,11 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Data Save Button */}
-        <div className="pt-6 mt-8 border-t border-slate-100 flex justify-end">
-          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-xl shadow-sm transition-all text-lg">
+        <div className="mt-8 flex justify-end border-t border-border pt-6">
+          <Button type="submit" size="lg" className="min-w-40 gap-2">
+            <Save className="size-4" />
             Save Changes
-          </button>
+          </Button>
         </div>
       </form>
     </div>

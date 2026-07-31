@@ -34,15 +34,17 @@ const ManageSubMenuSection = () => {
         try {
             const res = await fetch(`/api/subMenuFixed`)
             const data = await res.json()
-            setCategories(data)
+            setCategories(Array.isArray(data) ? data : [])
         } catch (error) {
             toast.error("Failed to fetch categories")
+            setCategories([])
         }
     }
 
     const handleSubcategoryChange = (value) => {
-        setPackageForm({ ...packageForm, subCategoryId: value })
-        setSelectedSubcategory(value)
+        const nextValue = value || ''
+        setPackageForm({ ...packageForm, subCategoryId: nextValue })
+        setSelectedSubcategory(nextValue)
     }
 
     const handleAddCategory = async (e) => {
@@ -65,7 +67,7 @@ const ManageSubMenuSection = () => {
                 setCategoryForm({ catTitle: '' })
                 fetchCategories()
             } else {
-                toast.error(responseData.message || "Failed to add category")
+                toast.error(responseData.message || responseData.error || "Failed to add category")
             }
         } catch (error) {
             console.error("Error:", error)
@@ -75,25 +77,29 @@ const ManageSubMenuSection = () => {
 
     const handleAddSubCategory = async (e) => {
         e.preventDefault()
+        if (!subCategoryForm.categoryId) {
+            toast.error("Please select a category")
+            return
+        }
         try {
             const response = await fetch("/api/subMenuFixed", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     type: "subcategory",
-                   
                     categoryId: subCategoryForm.categoryId,
                     subCatTitle: subCategoryForm.subCatTitle,
-                 
                 }),
             })
+
+            const responseData = await response.json()
 
             if (response.ok) {
                 toast.success("Subcategory added successfully!")
                 setSubCategoryForm({ categoryId: '', subCatTitle: '' })
                 fetchCategories()
             } else {
-                toast.error("Failed to add subcategory")
+                toast.error(responseData.message || responseData.error || "Failed to add subcategory")
             }
         } catch (error) {
             toast.error("Something went wrong")
@@ -102,26 +108,31 @@ const ManageSubMenuSection = () => {
 
     const handleAddPackage = async (e) => {
         e.preventDefault()
+        if (!packageForm.subCategoryId) {
+            toast.error("Please select a subcategory")
+            return
+        }
         try {
             const response = await fetch("/api/subMenuFixed", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     type: "package",
-                  
                     subCategoryId: packageForm.subCategoryId,
                     title: packageForm.subCatPackageTitle,
                     url: packageForm.subCatPackageUrl,
-                    
                 }),
             })
 
+            const responseData = await response.json()
+
             if (response.ok) {
                 toast.success("Package added successfully!")
-                setPackageForm({ subCategoryId: '', subCatPackageTitle: '', subCatPackageUrl: '', })
+                setPackageForm({ subCategoryId: '', subCatPackageTitle: '', subCatPackageUrl: '' })
+                setSelectedSubcategory(null)
                 fetchCategories()
             } else {
-                toast.error("Failed to add package")
+                toast.error(responseData.message || responseData.error || "Failed to add package")
             }
         } catch (error) {
             toast.error("Something went wrong")
@@ -243,7 +254,7 @@ const ManageSubMenuSection = () => {
         for (const category of categories) {
             if (category.subCat) {
                 for (const subcat of category.subCat) {
-                    if (subcat._id === selectedSubcategory && subcat.subCatPackage) {
+                    if (String(subcat._id) === String(selectedSubcategory) && subcat.subCatPackage) {
                         return subcat.subCatPackage.map(pkg => ({
                             ...pkg,
                             categoryTitle: category.catTitle,
@@ -272,6 +283,7 @@ const ManageSubMenuSection = () => {
                                 onChange={(e) => setCategoryForm({ ...categoryForm, catTitle: e.target.value })}
                                 placeholder="Enter Category Title"
                                 required
+                                className={"mt-2"}
                             />
 
                         </div>
@@ -286,17 +298,24 @@ const ManageSubMenuSection = () => {
                             <h2 className="text-lg font-semibold mb-4">Add SubCategory</h2>
                             <Label>Select Category</Label>
                             <Select
-                                value={subCategoryForm.categoryId}
-                                onValueChange={(value) => setSubCategoryForm({ ...subCategoryForm, categoryId: value })}
-                                required
+                                value={subCategoryForm.categoryId || null}
+                                onValueChange={(value) => setSubCategoryForm({ ...subCategoryForm, categoryId: value || '' })}
+                                items={categories.map((cat) => ({
+                                    value: String(cat._id),
+                                    label: cat.catTitle,
+                                }))}
                             >
                                 <SelectTrigger className="w-full border-border bg-background focus:ring-primary">
                                     <SelectValue placeholder="Select a category" />
                                 </SelectTrigger>
                                 <SelectContent className="border-border bg-popover">
                                     <SelectGroup>
-                                        {categories && categories.map(cat => (
-                                            <SelectItem key={cat._id} value={cat.catTitle} className="focus:bg-accent focus:text-accent-foreground font-medium">
+                                        {categories.map((cat) => (
+                                            <SelectItem
+                                                key={cat._id}
+                                                value={String(cat._id)}
+                                                className="focus:bg-accent focus:text-accent-foreground font-medium"
+                                            >
                                                 {cat.catTitle}
                                             </SelectItem>
                                         ))}
@@ -326,22 +345,31 @@ const ManageSubMenuSection = () => {
                             <h2 className="text-lg font-semibold mb-4">Add Package</h2>
                             <Label>Select SubCategory</Label>
                             <Select
-                                value={packageForm.subCategoryId}
+                                value={packageForm.subCategoryId || null}
                                 onValueChange={handleSubcategoryChange}
-                                required
+                                items={categories.flatMap((cat) =>
+                                    (cat.subCat || []).map((sub) => ({
+                                        value: String(sub._id),
+                                        label: `${cat.catTitle} - ${sub.title}`,
+                                    }))
+                                )}
                             >
                                 <SelectTrigger className="w-full border-border bg-background focus:ring-primary">
                                     <SelectValue placeholder="Select a subcategory" />
                                 </SelectTrigger>
                                 <SelectContent className="border-border bg-popover">
                                     <SelectGroup>
-                                        {categories.map(cat => (
-                                            cat.subCat?.map(sub => (
-                                                <SelectItem key={sub._id} value={sub._id} className="focus:bg-accent focus:text-accent-foreground font-medium">
+                                        {categories.map((cat) =>
+                                            cat.subCat?.map((sub) => (
+                                                <SelectItem
+                                                    key={sub._id}
+                                                    value={String(sub._id)}
+                                                    className="focus:bg-accent focus:text-accent-foreground font-medium"
+                                                >
                                                     {cat.catTitle} - {sub.title}
                                                 </SelectItem>
                                             ))
-                                        ))}
+                                        )}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
@@ -352,6 +380,7 @@ const ManageSubMenuSection = () => {
                                     onChange={(e) => setPackageForm({ ...packageForm, subCatPackageTitle: e.target.value })}
                                     placeholder="Enter Package Title"
                                     required
+                                    className={"mt-2"}
                                 />
                             </div>
                             <div>
@@ -360,6 +389,7 @@ const ManageSubMenuSection = () => {
                                     value={packageForm.subCatPackageUrl}
                                     onChange={(e) => setPackageForm({ ...packageForm, subCatPackageUrl: e.target.value })}
                                     placeholder="Enter Package URL"
+                                    className={"mt-2"}
                                 />
                             </div>
 
