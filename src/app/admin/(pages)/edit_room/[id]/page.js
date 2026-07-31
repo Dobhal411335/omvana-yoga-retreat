@@ -1,4 +1,4 @@
-import EditRoom from "@/components/Admin/pages/EditRoom.jsx";
+import EditRoom from "@/components/admin/pages/EditRoom";
 const EditRoomPage = async ({ params }) => {
   const { id } = await params;
   return <EditRoom roomId={id} />;
