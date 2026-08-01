@@ -6,7 +6,7 @@ import { Quote } from "lucide-react";
 export function TestimonialsBanner() {
   return (
     <Section
-      spacing="lg"
+      spacing="sm"
       className="relative overflow-hidden border-b border-border/40 bg-surface"
     >
       <div
@@ -38,53 +38,51 @@ function TestimonialCard({ testimonial, index }) {
 
   return (
     <article
-      className="group border-b border-border/50 py-10 last:border-b-0 md:py-14"
+      className="group border-b border-border/50 py-6 sm:py-8 md:py-12 lg:py-14 last:border-b-0"
       style={{ animationDelay: `${Math.min(index, 6) * 60}ms` }}
     >
-      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
+      <div className="flex flex-col items-center gap-5 sm:gap-6 md:flex-row md:items-start md:gap-8 lg:gap-10">
         {imageUrl ? (
-          <div className="relative mx-auto size-18 shrink-0 overflow-hidden rounded-full border border-border/60 bg-surface shadow-sm md:mx-0 md:mt-1 md:size-20">
+          <div className="relative h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 shrink-0 overflow-hidden rounded-full border border-border/60 bg-surface shadow-sm">
             <Image
               src={imageUrl}
               alt={testimonial.name || "Guest"}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
-              sizes="96px"
+              sizes="(max-width: 768px) 64px, 80px"
             />
           </div>
         ) : (
           <div
-            className="mx-auto flex size-20 shrink-0 items-center justify-center rounded-full bg-surface font-heading text-3xl text-primary/40 md:mx-0 md:size-24"
+            className="flex h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 shrink-0 items-center justify-center rounded-full border border-border/60 bg-surface shadow-sm"
             aria-hidden="true"
           >
-            <Quote className="size-6 text-primary" />
+            <Quote className="h-5 w-5 md:h-6 md:w-6 text-primary" />
           </div>
         )}
 
-        <div className="min-w-0 flex-1 text-center md:text-left">
-          <span
-            className="mb-3 block font-heading text-4xl leading-none text-primary/25 md:text-5xl"
-            aria-hidden="true"
-          >
-            <Quote className="size-6 text-primary" />
-          </span>
+        <div className="flex-1 text-center md:text-left">
+          <div className="mb-3">
+            <Quote className="mx-auto h-5 w-5 text-primary md:mx-0 md:h-6 md:w-6" />
+          </div>
+
           <blockquote>
-            <p className="font-heading text-2xl font-medium leading-snug text-heading md:text-3xl lg:text-[2rem] lg:leading-snug">
+            <p className="font-heading text-lg leading-8 sm:text-xl sm:leading-9 md:text-2xl md:leading-10 lg:text-3xl lg:leading-[1.45] xl:text-[2rem]">
               {testimonial.title}
             </p>
           </blockquote>
-          <footer className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 font-ui text-xs tracking-wide text-muted md:justify-start">
+
+          <footer className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs sm:text-sm tracking-wide text-muted md:justify-start">
             <cite className="not-italic font-semibold uppercase tracking-[0.14em] text-heading">
               {testimonial.name}
             </cite>
-            {testimonial.location ? (
+
+            {testimonial.location && (
               <>
-                <span className="text-border" aria-hidden="true">
-                  ·
-                </span>
+                <span className="text-border">•</span>
                 <span>{testimonial.location}</span>
               </>
-            ) : null}
+            )}
           </footer>
         </div>
       </div>
@@ -95,9 +93,9 @@ function TestimonialCard({ testimonial, index }) {
 export function TestimonialsList({ testimonials = [] }) {
   if (!testimonials.length) {
     return (
-      <Section spacing="lg">
+      <Section spacing="sm">
         <Container>
-          <div className="rounded-card border border-dashed border-border bg-surface/60 px-6 py-16 text-center">
+          <div className="rounded-card border border-dashed border-border bg-surface/60 px-6 md:py-16 text-center">
             <p className="font-heading text-2xl text-heading">
               Stories are gathering.
             </p>
@@ -111,7 +109,7 @@ export function TestimonialsList({ testimonials = [] }) {
   }
 
   return (
-    <Section spacing="md" className="bg-background">
+    <Section spacing="sm" className="bg-background">
       <Container className="max-w-4xl">
         <div className="divide-y-0">
           {testimonials.map((item, index) => (

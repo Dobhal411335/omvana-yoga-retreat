@@ -353,16 +353,6 @@ export default function RoomDetailView({ data }) {
               ) : (
                 <p className="font-body text-sm text-muted">No Description</p>
               )}
-
-              <button
-                type="button"
-                onClick={() => setShowExpertModal(true)}
-                className="inline-flex items-center gap-2 font-body text-sm font-medium text-heading transition-colors hover:text-primary"
-              >
-                <Mail className="size-4 text-primary" />
-                Ask An Expert
-              </button>
-
               <p className="font-body text-base font-semibold text-primary md:text-lg">
                 {baseRate ? (
                   <>
@@ -457,9 +447,9 @@ export default function RoomDetailView({ data }) {
                 </Button>
                 <div className="flex gap-2">
                   <Button
-                    type="button"
                     variant="outline"
                     className="flex-1"
+                    nativeButton={false}
                     render={
                       <a
                         href={`https://wa.me/918006000325?text=${encodeURIComponent(whatsappMessage)}`}
@@ -627,103 +617,6 @@ export default function RoomDetailView({ data }) {
           </Container>
         </Section>
       ) : null}
-
-      <Dialog open={showExpertModal} onOpenChange={setShowExpertModal}>
-        <DialogContent className="max-h-[min(90dvh,720px)] overflow-y-auto sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="font-heading text-2xl text-heading">
-              Ask an expert
-            </DialogTitle>
-            <DialogDescription className="font-body text-sm text-muted">
-              We&apos;ll follow up within 24–36 hours about {data?.title}.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleExpertSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="expert-name">Name</Label>
-              <Input
-                id="expert-name"
-                name="name"
-                value={expertForm.name}
-                onChange={handleExpertInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="expert-email">Email</Label>
-              <Input
-                id="expert-email"
-                type="email"
-                name="email"
-                value={expertForm.email}
-                onChange={handleExpertInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="expert-phone">Phone</Label>
-              <Input
-                id="expert-phone"
-                name="phone"
-                value={expertForm.phone}
-                onChange={handleExpertInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Do you need</Label>
-              <div className="flex flex-wrap gap-4 font-body text-sm">
-                {["Appointment", "Business", "Personal"].map((option) => (
-                  <label key={option} className="inline-flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="need"
-                      value={option}
-                      checked={expertForm.need === option}
-                      onChange={handleExpertInputChange}
-                      className="accent-[var(--primary)]"
-                    />
-                    {option}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="expert-question">Your question</Label>
-              <Textarea
-                id="expert-question"
-                name="question"
-                rows={4}
-                value={expertForm.question}
-                onChange={handleExpertInputChange}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Preferred contact</Label>
-              <div className="flex flex-wrap gap-4 font-body text-sm">
-                {["Phone", "Email", "Both"].map((option) => (
-                  <label key={option} className="inline-flex items-center gap-2">
-                    <input
-                      type="radio"
-                      name="contactMethod"
-                      value={option}
-                      checked={expertForm.contactMethod === option}
-                      onChange={handleExpertInputChange}
-                      className="accent-[var(--primary)]"
-                    />
-                    {option}
-                  </label>
-                ))}
-              </div>
-            </div>
-            <Button type="submit" className="w-full" disabled={submittingExpert}>
-              {submittingExpert ? "Sending…" : "Send question"}
-            </Button>
-          </form>
-        </DialogContent>
-      </Dialog>
-
       {bookingOpen ? (
         <BookingDetails room={data} onClose={() => setBookingOpen(false)} />
       ) : null}

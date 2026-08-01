@@ -1,6 +1,18 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import { ArrowRight, Globe, X, MapPin, } from "lucide-react";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import {
+  ArrowUpRight,
+  CalendarClock,
+  MapPin,
+  Star,
+} from "lucide-react";
+
+import { Container } from "@/components/common/Container";
+import { Section } from "@/components/common/Section";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Carousel,
   CarouselContent,
@@ -8,174 +20,351 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Link from "next/link";
-import Image from "next/image";
-const RandomTourPackageSection = () => {
 
-  const [loading1, setLoading1] = useState(true);
+export default function RandomTourPackageSection() {
+  const [packages, setPackages] = useState([]);
+  const [packagesLoading, setPackagesLoading] = useState(true);
   const [bannerSection3rd, setBannerSection3rd] = useState([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
+  const [consultancyBanner, setConsultancyBanner] = useState([]);
+  const [consultancyLoading, setConsultancyLoading] = useState(true);
 
-  const fetchBannerSection3rd = async () => {
-    try {
-      const response = await fetch('/api/bannerSection3rd');
-      const data = await response.json();
-      // console.log(data);
-      setBannerSection3rd(data); // Use dummy data if API returns empty
-    } catch (error) {
-      // console.error('Error fetching data:', error);
-      setBannerSection3rd([]); // Use dummy data on error
-    } finally {
-      setLoading1(false);
-    }
-  };
-  const [consultancyBanner, setConsultancyBanner] = useState([])
-  // console.log(promotinalBanner)
-  const fetchPromotinalBanner = async () => {
-    try {
-      const res = await fetch("/api/addConsultancyBanner");
-      const data = await res.json();
-      // console.log("Consultancy Banner API response:", data);
-      if (data && data.length > 0) {
-        setConsultancyBanner(data);
-      } else {
-        setConsultancyBanner([]);
-      }
-    } catch (error) {
-      // console.error("Error fetching products:", error);
-      setConsultancyBanner([]);
-    }
-  };
   useEffect(() => {
-    fetchBannerSection3rd();
-    fetchPromotinalBanner();
-  }, []);
-  return (
-    <section className="bg-[#fcf7f1] md:mt-19 w-full overflow-hidden max-w-screen overflow-x-hidden">
+    const fetchPackages = async () => {
+      try {
+        const res = await fetch("/api/getRandomPackages");
+        const data = await res.json();
+        setPackages(data.packages?.length ? data.packages : []);
+      } catch {
+        setPackages([]);
+      } finally {
+        setPackagesLoading(false);
+      }
+    };
 
-      {bannerSection3rd.length > 0 && (
-        <section className="relative w-full">
-          {loading1 ? (
-            // Skeleton loader
-            <div className="w-full">
-              <div className="grid grid-cols-1 gap-5 md:gap-4">
-                {[...Array(2)].map((_, idx) => (
-                  <div
-                    key={idx}
-                    className="h-[220px] md:h-[400px] rounded-2xl overflow-hidden bg-gray-200 animate-pulse"
-                  />
-                ))}
-              </div>
-            </div>
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch("/api/bannerSection3rd");
+        const data = await response.json();
+        setBannerSection3rd(Array.isArray(data) ? data : []);
+      } catch {
+        setBannerSection3rd([]);
+      } finally {
+        setBannersLoading(false);
+      }
+    };
+
+    const fetchConsultancy = async () => {
+      try {
+        const res = await fetch("/api/addConsultancyBanner");
+        const data = await res.json();
+        setConsultancyBanner(Array.isArray(data) && data.length ? data : []);
+      } catch {
+        setConsultancyBanner([]);
+      } finally {
+        setConsultancyLoading(false);
+      }
+    };
+
+    fetchPackages();
+    fetchBanners();
+    fetchConsultancy();
+  }, []);
+
+  const formatNumeric = (num) =>
+    new Intl.NumberFormat("en-IN").format(num);
+
+  const showBanners = bannersLoading || bannerSection3rd.length > 0;
+  const showPackages = packagesLoading || packages.length > 0;
+  const showConsultancy =
+    consultancyLoading || consultancyBanner.length > 0;
+
+  return (
+    <>
+      {showBanners && (
+        <section className="w-full bg-background">
+          {bannersLoading ? (
+            <Skeleton className="h-[400px] px-2 w-full rounded-none md:h-[430px]" />
           ) : (
-            // Actual content
-            bannerSection3rd.map((item, idx) => (
-              <div className="w-full" key={item._id}>
-                <div className="grid grid-cols-1 gap-5 md:gap-4 overflow-hidden">
-                  <div className="hidden md:flex flex-col md:h-[430px] overflow-hidden relative group">
-                    <Link
-                      href={item.buttonLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute inset-0 flex items-center justify-center group-hover:opacity-100 transition-opacity duration-300"
-                    >
-                      <img
-                        src={item.image?.url}
-                        alt={item.title}
-                        className="absolute inset-0 w-full h-full object-contain object-center transition-transform duration-300 group-hover:scale-105"
+            <div className="flex w-full flex-col">
+              {bannerSection3rd.map((item) => (
+                <Link
+                  key={item._id}
+                  href={item.buttonLink || "#"}
+                  target={item.buttonLink ? "_blank" : undefined}
+                  rel={item.buttonLink ? "noopener noreferrer" : undefined}
+                  className="group relative block w-full overflow-hidden bg-border"
+                >
+                  <div className="relative hidden h-[300px] md:h-[430px] w-full md:block">
+                    {item.image?.url ? (
+                      <Image
+                        src={item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
                       />
-                    </Link>
+                    ) : null}
                   </div>
-                  <div className="md:hidden flex flex-col h-[450px] overflow-hidden relative group">
-                    <Link
-                      href={item.buttonLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute inset-0 flex items-center justify-center group-hover:opacity-100 transition-opacity duration-300"
-                    >
-                      <img
-                        src={item.mobileImage?.url}
-                        alt={item.title}
-                        className="absolute inset-0 w-full h-full object-contain object-center transition-transform duration-300 group-hover:scale-105"
+                  <div className="relative h-[450px] w-full md:hidden">
+                    {(item.mobileImage?.url || item.image?.url) ? (
+                      <Image
+                        src={item.mobileImage?.url || item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
                       />
-                    </Link>
+                    ) : null}
                   </div>
-                </div>
-              </div>
-            ))
+                </Link>
+              ))}
+            </div>
           )}
         </section>
       )}
 
-      {consultancyBanner.length > 0 && (
-        <div className="w-full px-2 md:py-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-2 uppercase">A true reflection of authenticity and tradition.</h2>
-          <p className="text-gray-600 text-center py-4 mx-auto md:w-[50%]"> We deliver a true reflection of authenticity and tradition. Our unwavering commitment to time-honored methods ensures a superior, distinct character that mass production will never replicate.</p>
-          <Carousel className="w-full px-5 md:px-20 mx-auto">
-            <CarouselContent>
-              {consultancyBanner.map((item, idx) => (
-                <CarouselItem key={item._id || idx} className="w-full md:basis-1/2">
+      {showPackages && (
+        <Section spacing="sm" className="bg-background overflow-hidden">
+          <Container>
+            <div className="mb-12 max-w-2xl">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+                Journeys
+              </p>
+              <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
+                Packages chosen for{" "}
+                <em className="italic text-primary">today</em>.
+              </h2>
+              <p className="mt-5 max-w-xl font-body text-base leading-[1.9] text-foreground">
+                A quiet selection of stays and experiences — curated for
+                travellers who value depth over spectacle, and presence over
+                itinerary.
+              </p>
+            </div>
 
-                  <div className="flex flex-col gap-5 md:flex-row md:h-[400px] h-[700px] rounded-xl overflow-hidden group px-2">
-                    {/* Image Section */}
-                    <div className="w-full h-full overflow-hidden border rounded-md border-gray-300">
-                      <div className="relative w-full h-full">
-                        <Image
-                          src={item?.image?.url || "/placeholder.jpeg"}
-                          alt={item?.title || "Consultancy Service"}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
-                          priority={idx === 0}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Content Section */}
-                    <div className="w-full bg-[#FAF2F2] p-6 flex flex-col justify-center rounded-md border border-gray-300">
-                      <div>
-                        <div className="flex items-center">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <svg
-                              key={star}
-                              className={`w-7 h-7 ${star <= (item.rating || 0) ? 'text-orange-400' : 'text-gray-300'}`}
-                              fill="currentColor"
-                              viewBox="0 0 20 20"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                          ))}
-                          <span className="ml-2 text-sm text-gray-600">{item.rating || 0}/5</span>
-                        </div>
-                        <h3 className="text-2xl md:text-xl font-bold text-gray-900 my-3 line-clamp-2">
-                          {item.title || 'Title Come Here'}
-                        </h3>
-                        <p className="text-gray-600 max-h-60 overflow-hidden">
-                          {item.shortDescription || 'Short Description'}
-                        </p>
-                      </div>
-                      <div className="mt-4">
-                        <button
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(item.buttonLink, '_blank', 'noopener,noreferrer');
-                          }}
-                          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto md:mx-0 w-full justify-center"
-                        >
-                          Explore Now <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
+            {packagesLoading ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col gap-4 rounded-[var(--radius-card)] border border-border/60 bg-surface p-3 shadow-sm"
+                  >
+                    <Skeleton className="aspect-[4/3] w-full rounded-[var(--radius-image)]" />
+                    <div className="flex flex-col gap-3 px-1 pb-2">
+                      <Skeleton className="h-3 w-1/2" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="mt-2 h-4 w-1/3" />
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <Carousel
+                opts={{ align: "start", loop: false }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-5">
+                  {packages.map((item) => (
+                    <CarouselItem
+                      key={item._id || item.slug}
+                      className="basis-full pl-5 py-1 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                    >
+                      <Link
+                        href={`/package/${item.slug}`}
+                        className="group flex h-full flex-col rounded-[var(--radius-card)] border border-border/60 bg-surface p-3 shadow-sm transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:border-heading/20 hover:shadow-md"
+                      >
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-image)] bg-border">
+                          <Image
+                            src={
+                              item?.basicDetails?.thumbnail?.url ||
+                              "/RandomTourPackageImages/u1.jpg"
+                            }
+                            alt={item?.packageName || "Tour package"}
+                            fill
+                            sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 25vw"
+                            quality={60}
+                            className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                          />
+                        </div>
 
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselNext className="!right-2 !top-1/2 !-translate-y-1/2 z-10 bg-white/80 hover:bg-white w-10 h-10 rounded-full shadow-md" />
-            <CarouselPrevious className="!left-2 !top-1/2 !-translate-y-1/2 z-10 bg-white/80 hover:bg-white w-10 h-10 rounded-full shadow-md" />
-          </Carousel>
-        </div>
+                        <div className="flex flex-1 flex-col justify-between gap-5 px-2 pb-2 pt-5">
+                          <div className="flex flex-col gap-3">
+                            <div className="flex flex-wrap items-center justify-between gap-2 font-ui text-xs text-muted">
+                              {item?.basicDetails?.location ? (
+                                <span className="inline-flex items-center gap-1.5">
+                                  <MapPin
+                                    className="size-3.5 text-primary"
+                                    strokeWidth={1.5}
+                                    aria-hidden="true"
+                                  />
+                                  {item.basicDetails.location}
+                                </span>
+                              ) : null}
+                              {item?.basicDetails?.duration ? (
+                                <span className="inline-flex items-center gap-1.5">
+                                  <CalendarClock
+                                    className="size-3.5 text-primary"
+                                    strokeWidth={1.5}
+                                    aria-hidden="true"
+                                  />
+                                  {item.basicDetails.duration} Days
+                                </span>
+                              ) : null}
+                            </div>
+                            <h3 className="font-heading text-xl leading-snug text-heading line-clamp-2">
+                              {item.packageName}
+                            </h3>
+                          </div>
+
+                          <div className="flex items-end justify-between gap-3 border-t border-border pt-4">
+                            <div>
+                              <p className="font-ui text-[10px] uppercase tracking-[0.2em] text-muted">
+                                From
+                              </p>
+                              <p className="mt-1 font-body text-sm text-heading">
+                                {item?.price === 0 ? (
+                                  "On request"
+                                ) : (
+                                  <>
+                                    ₹{formatNumeric(item?.price)}
+                                    <span className="text-muted">*</span>
+                                  </>
+                                )}
+                              </p>
+                            </div>
+                            <span className="inline-flex items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-[var(--duration-fast)] group-hover:text-primary-hover">
+                              Details
+                              <ArrowUpRight
+                                className="size-3.5"
+                                aria-hidden="true"
+                              />
+                            </span>
+                          </div>
+                        </div>
+                      </Link>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-left-5" />
+                <CarouselNext className="right-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-right-5" />
+              </Carousel>
+            )}
+          </Container>
+        </Section>
       )}
-    </section>
+
+      {showConsultancy && (
+        <Section spacing="sm" className="bg-background overflow-hidden">
+          <Container>
+            <div className="mx-auto mb-12 max-w-2xl text-center">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+                Guidance
+              </p>
+              <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
+                Rooted in{" "}
+                <em className="italic text-primary">authenticity</em>.
+              </h2>
+              <p className="mx-auto mt-5 max-w-lg font-body text-base leading-[1.9] text-foreground">
+                Thoughtful guidance shaped by tradition — never hurried,
+                never mass-produced. Space to ask, listen, and arrive at
+                your own pace.
+              </p>
+            </div>
+
+            {consultancyLoading ? (
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                <Skeleton className="aspect-[4/3] w-full rounded-[var(--radius-image)] lg:min-h-[420px]" />
+                <Skeleton className="min-h-[320px] w-full rounded-[var(--radius-card)]" />
+              </div>
+            ) : (
+              <Carousel
+                opts={{ align: "start", loop: consultancyBanner.length > 1 }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {consultancyBanner.map((item, idx) => (
+                    <CarouselItem key={item._id || idx} className="w-full">
+                      <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-2 lg:gap-12">
+                        <div className="relative min-h-[280px] overflow-hidden rounded-[var(--radius-image)] bg-border sm:min-h-[360px] lg:min-h-[420px]">
+                          <Image
+                            src={item?.image?.url || "/placeholder.jpeg"}
+                            alt={item?.title || "Consultancy"}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 50vw"
+                            priority={idx === 0}
+                            className="object-cover"
+                          />
+                        </div>
+
+                        <div className="flex flex-col justify-center rounded-[var(--radius-card)] border border-border bg-surface p-8 md:p-12">
+                          {typeof item.rating === "number" &&
+                          item.rating > 0 ? (
+                            <div className="mb-6 flex items-center gap-3">
+                              <div
+                                className="flex items-center gap-1"
+                                aria-label={`${item.rating} out of 5`}
+                              >
+                                {Array.from({ length: 5 }).map((_, star) => (
+                                  <Star
+                                    key={star}
+                                    className={`size-4 ${
+                                      star < item.rating
+                                        ? "fill-warning text-warning"
+                                        : "text-border"
+                                    }`}
+                                    strokeWidth={1.5}
+                                    aria-hidden="true"
+                                  />
+                                ))}
+                              </div>
+                              <span className="font-ui text-xs text-muted">
+                                {item.rating}/5
+                              </span>
+                            </div>
+                          ) : null}
+
+                          <h3 className="font-heading text-3xl leading-tight text-heading md:text-4xl">
+                            {item.title}
+                          </h3>
+
+                          {item.shortDescription ? (
+                            <p className="mt-5 font-body text-base leading-[1.9] text-foreground line-clamp-5">
+                              {item.shortDescription}
+                            </p>
+                          ) : null}
+
+                          {item.buttonLink ? (
+                            <div className="mt-10">
+                              <Link
+                                href={item.buttonLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-primary-foreground transition-colors duration-[var(--duration-fast)] hover:bg-primary-hover"
+                              >
+                                Explore
+                                <ArrowUpRight
+                                  className="size-4"
+                                  aria-hidden="true"
+                                />
+                              </Link>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                {consultancyBanner.length > 1 ? (
+                  <>
+                    <CarouselPrevious className="left-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex lg:-left-5" />
+                    <CarouselNext className="right-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex lg:-right-5" />
+                  </>
+                ) : null}
+              </Carousel>
+            )}
+          </Container>
+        </Section>
+      )}
+    </>
   );
 }
-export default RandomTourPackageSection

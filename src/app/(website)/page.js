@@ -1,6 +1,5 @@
 import { HeroSection } from "@/components/website/home/HeroSection";
 import { PhilosophySection } from "@/components/website/home/PhilosophySection";
-import { RetreatsSection } from "@/components/website/home/RetreatsSection";
 import { QuoteBanner } from "@/components/website/home/QuoteBanner";
 import { CtaSection } from "@/components/website/home/CtaSection";
 import PopUpBanner from "@/components/website/home/PopUpBanner";
@@ -8,6 +7,7 @@ import AboutUsSection from "@/components/website/home/AboutUsSection";
 import Banner from "@/components/website/home/Banner";
 import RandomTourPackageSection from "@/components/website/home/RandomTourPackageSection";
 import InstaBlog from "@/components/website/home/InstaBlog";
+import RoomSection from "@/components/website/home/RoomSection";
 
 export const metadata = {
   title: {
@@ -27,10 +27,10 @@ export default function HomePage() {
       <AboutUsSection/>
       <Banner/>
       <RandomTourPackageSection/>
-      <InstaBlog/>
-      <RetreatsSection />
+      <RoomSection/>
       <QuoteBanner />
       <CtaSection />
+      <InstaBlog/>
     </>
   );
 }

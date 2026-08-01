@@ -12,9 +12,9 @@ const features = [
 
 export function PhilosophySection() {
   return (
-    <Section spacing="lg" className="bg-background">
+    <Section spacing="sm" className="bg-background">
       <Container>
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:gap-24">
+        <div className="grid grid-cols-1 gap-10 md:gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
             <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
               Our Philosophy
@@ -39,7 +39,7 @@ export function PhilosophySection() {
               introspect, to grow, to remember who you are beneath the noise.
             </p>
 
-            <div className="mt-10 grid grid-cols-2 gap-6 border-t border-border pt-10 sm:grid-cols-4">
+            <div className="md:mt-10 mt-5 grid grid-cols-2 gap-6 border-t border-border pt-10 sm:grid-cols-4">
               {features.map((feature) => (
                 <div key={feature.label} className="flex flex-col items-center gap-3 text-center">
                   <feature.icon

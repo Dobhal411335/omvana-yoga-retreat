@@ -306,9 +306,9 @@ const TopAdvertismentBanner = () => {
                         <DialogTitle className="text-xl font-semibold text-slate-800">Delete Banner</DialogTitle>
                     </DialogHeader>
                     <p className="text-slate-600 mb-6">Are you sure you want to delete this banner? This action cannot be undone.</p>
-                    <DialogFooter className="gap-2 sm:gap-0">
+                    <DialogFooter className="gap-2 bg-white sm:gap-0">
                         <Button variant="ghost" onClick={cancelDelete} className="h-11 rounded-xl text-slate-600 hover:bg-slate-100 font-medium">Cancel</Button>
-                        <Button variant="destructive" onClick={confirmDelete} className="h-11 rounded-xl px-6 font-medium">Delete</Button>
+                        <Button variant="default" onClick={confirmDelete} className="h-11 rounded-xl px-6 font-medium">Delete</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

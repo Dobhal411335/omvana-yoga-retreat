@@ -54,6 +54,8 @@ const sections = [
       { label: "Manage Webpages", href: "/admin/create_webpage", icon: FileStack },
       { label: "Room Enquiry Page", href: "/admin/room_enquiries", icon: Inbox },
       { label: "Package Enquiry", href: "/admin/enquiries/packages", icon: PackageSearch },
+      { label: "Enquiry Page", href: "/admin/enquiry_page", icon: Inbox },
+      { label: "Contact Us Page", href: "/admin/contact_us", icon: PackageSearch },
     ],
   },
   {

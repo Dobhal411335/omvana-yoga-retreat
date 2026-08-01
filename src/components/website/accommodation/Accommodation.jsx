@@ -13,14 +13,14 @@ import Image from "next/image";
 import { X } from "lucide-react";
 const BannerSection = () => (
     <div className="relative w-full h-[120px] md:h-[350px]">
-       <Image
+        <Image
             src="/accommodation.jpg"
-             alt="Accommodation Image"
-             fill
-             className="md:object-cover md:object-center object-contain w-full h-full"
-             quality={100}
-             priority
-         /> 
+            alt="Accommodation Image"
+            fill
+            className="md:object-cover md:object-center object-contain w-full h-full"
+            quality={100}
+            priority
+        />
     </div>
 );
 const amenityIcons = {
@@ -145,8 +145,8 @@ const Accommodation = () => {
                                             {/* Details */}
                                             <div className="flex-1 md:p-5 p-2 flex flex-col gap-2 justify-between min-h-[260px] relative">
                                                 <div className="flex items-start justify-between">
-                                                        <h3 className="md:text-2xl text-md font-bold text-gray-900">{item.title || "Room Name"}</h3>
-                                                
+                                                    <h3 className="md:text-2xl text-md font-bold text-gray-900">{item.title || "Room Name"}</h3>
+
                                                 </div>
                                                 <div className="text-gray-800 text-xs md:text-sm mb-1" dangerouslySetInnerHTML={{ __html: item.paragraph }} />
                                                 <div className="font-semibold text-gray-800 text-xs md:text-sm mt-1">Room Amenities</div>
@@ -155,7 +155,7 @@ const Accommodation = () => {
                                                         <div className="flex gap-2 mb-1 text-lg flex-wrap">
                                                             {(item.amenities || []).map((am, i) => (
                                                                 <Tooltip key={am._id || i}>
-                                                                    <TooltipTrigger asChild>
+                                                                    <TooltipTrigger aschild>
                                                                         <span className="bg-gray-100 px-1 rounded flex items-center justify-center cursor-pointer">
                                                                             {amenityIcons[am.label] || am.label}
                                                                         </span>

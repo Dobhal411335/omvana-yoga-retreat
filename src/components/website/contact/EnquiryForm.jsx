@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowUpRight, CalendarIcon, MessageCircle, Loader2 } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -64,6 +65,7 @@ function FieldError({ message }) {
 /* ── Enquiry form ───────────────────────────────────── */
 export function EnquiryForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
@@ -72,14 +74,29 @@ export function EnquiryForm() {
     formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { guests: "1 guest" },
+    defaultValues: {
+      guests: "1 guest",
+      plan: "",
+      startDate: "",
+    },
   });
 
   async function onSubmit(data) {
-    /* Phase 2: wire to /api/enquiry */
-    await new Promise((r) => setTimeout(r, 900));
-    console.log("Enquiry:", data);
-    setSubmitted(true);
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/contact-enquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to send enquiry.");
+      }
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error.message || "Something went wrong. Please try again.");
+    }
   }
 
   if (submitted) {
@@ -179,7 +196,7 @@ export function EnquiryForm() {
                 name="plan"
                 control={control}
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select value={field.value ?? ""} onValueChange={field.onChange}>
                     <SelectTrigger id="c-plan" className="mt-1.5 w-full">
                       <SelectValue placeholder="Choose a retreat" />
                     </SelectTrigger>
@@ -194,16 +211,19 @@ export function EnquiryForm() {
             </div>
             <div>
               <FieldLabel htmlFor="c-date" optional>Preferred start date</FieldLabel>
-              <div className="relative mt-1.5">
-                <CalendarIcon
-                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted"
-                  aria-hidden="true"
-                />
-                <Input
-                  id="c-date"
-                  placeholder="Pick a date"
-                  className="pl-9"
-                  {...register("startDate")}
+              <div className="mt-1.5">
+                <Controller
+                  name="startDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DatePicker
+                      id="c-date"
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Pick a date"
+                      disablePast
+                    />
+                  )}
                 />
               </div>
             </div>
@@ -222,7 +242,13 @@ export function EnquiryForm() {
           </div>
 
           {/* Actions */}
-          <div className="flex flex-wrap items-center gap-4 pt-1">
+          <div className="flex flex-col gap-3 pt-1">
+            {submitError ? (
+              <p className="font-ui text-sm text-error" role="alert">
+                {submitError}
+              </p>
+            ) : null}
+            <div className="flex flex-wrap items-center gap-4">
             <button
               type="submit"
               disabled={isSubmitting}
@@ -250,6 +276,7 @@ export function EnquiryForm() {
               <MessageCircle className="size-4" aria-hidden="true" />
               WhatsApp instead
             </a>
+            </div>
           </div>
 
         </div>

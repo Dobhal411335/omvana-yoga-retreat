@@ -413,7 +413,7 @@ export default function ManageReviews() {
               <span className="text-heading">{deleteTarget?.name}</span>.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="bg-white">
             <Button
               type="button"
               variant="outline"
@@ -423,7 +423,7 @@ export default function ManageReviews() {
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant="default"
               disabled={deleting}
               onClick={handleDelete}
             >

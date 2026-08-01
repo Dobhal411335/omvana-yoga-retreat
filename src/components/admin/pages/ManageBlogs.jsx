@@ -14,7 +14,7 @@ const TiptapEditor = ({ value, onChange }) => (
     <textarea className="w-full min-h-[150px] border-slate-200 bg-slate-50/50 rounded-xl p-4 focus:ring-blue-500 focus:border-blue-500" value={value} onChange={e => onChange(e.target.value)} placeholder="Rich text editor coming soon..." />
 );
 
-const Blogs = ({}) => {
+const Blogs = ({ }) => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [imageUploading, setImageUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -33,7 +33,7 @@ const Blogs = ({}) => {
     const [showBlogsModal, setShowBlogsModal] = useState(false);
     const [selectedArtisanBlogs, setSelectedArtisanBlogs] = useState([]);
     const [loadingReviews, setLoadingReviews] = useState(false);
-    
+
     const formRef = useRef(null);
 
     const fetchBlogs = async () => {
@@ -184,7 +184,7 @@ const Blogs = ({}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!title.trim()) {
             toast.error('Title is required.', { style: { borderRadius: "10px", border: "1px solid #fee2e2", background: "#fef2f2", color: "#991b1b" } });
             return;
@@ -270,9 +270,9 @@ const Blogs = ({}) => {
                                 </CardTitle>
                             </div>
                             {editMode && (
-                                <Button 
-                                    variant="ghost" 
-                                    size="sm" 
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
                                     onClick={handleCancelEdit}
                                     className="h-8 text-slate-500 hover:text-slate-700"
                                 >
@@ -284,7 +284,7 @@ const Blogs = ({}) => {
                             {editMode ? "Update the content for the selected blog." : "Add a new blog post or video to your site."}
                         </CardDescription>
                     </CardHeader>
-                    
+
                     <form onSubmit={handleSubmit}>
                         <CardContent className="pt-6 space-y-6">
                             <div className="space-y-3">
@@ -366,7 +366,7 @@ const Blogs = ({}) => {
                                                     ))}
                                                 </div>
                                             )}
-                                            
+
                                             <div className="mt-4 flex flex-col items-center">
                                                 <input
                                                     type="file"
@@ -385,12 +385,12 @@ const Blogs = ({}) => {
                                                 >
                                                     {imageUploading ? 'Uploading...' : 'Browse Images'}
                                                 </Button>
-                                                
+
                                                 <small className={`mt-2 block ${selectedImages.length === 10 ? 'text-red-500 font-medium' : 'text-slate-500'}`}>
                                                     {selectedImages.length}/10 images selected
                                                 </small>
                                             </div>
-                                            
+
                                             {imageUploading && (
                                                 <div className="w-full max-w-md mx-auto mt-4 space-y-2">
                                                     <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -417,16 +417,16 @@ const Blogs = ({}) => {
                                     className="h-11 rounded-xl border-slate-200 focus-visible:ring-blue-500 bg-slate-50/50"
                                 />
                             </div>
-                            
+
                             <div className="space-y-3">
                                 <Label className="text-slate-700 font-medium">Long Description</Label>
                                 <TiptapEditor value={longDescription} onChange={setLongDescription} />
                             </div>
                         </CardContent>
-                        
+
                         <CardFooter className="bg-slate-50/80 border-t border-slate-100 p-6 flex justify-end">
-                            <Button 
-                                type="submit" 
+                            <Button
+                                type="submit"
                                 disabled={isSubmitting}
                                 className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-11 px-8 shadow-sm transition-all"
                             >
@@ -448,7 +448,7 @@ const Blogs = ({}) => {
                         </div>
                         <CardDescription className="text-slate-500 mt-1">Manage and edit your existing blog posts.</CardDescription>
                     </CardHeader>
-                    
+
                     <CardContent className="p-2">
                         <div className="overflow-x-auto">
                             <Table>
@@ -552,8 +552,8 @@ const Blogs = ({}) => {
                                                 <div className="flex flex-col items-center justify-center text-slate-500">
                                                     <FileText className="w-8 h-8 mb-2 text-slate-300" />
                                                     <p>No blogs available.</p>
-                                                    <Button 
-                                                        variant="link" 
+                                                    <Button
+                                                        variant="link"
                                                         onClick={() => {
                                                             if (formRef.current) {
                                                                 formRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -580,7 +580,7 @@ const Blogs = ({}) => {
                             <DialogTitle className="text-xl font-semibold text-slate-800">Delete Blog</DialogTitle>
                         </DialogHeader>
                         <p className="text-slate-600 py-4">Are you sure you want to delete this blog? This action cannot be undone.</p>
-                        <DialogFooter className="gap-2 sm:gap-0">
+                        <DialogFooter className="gap-2 sm:gap-0 bg-white">
                             <Button variant="outline" onClick={closeDeleteModal} className="rounded-xl border-slate-200 text-slate-700">Cancel</Button>
                             <Button variant="destructive" onClick={handleDelete} className="rounded-xl bg-red-600 hover:bg-red-700">Delete Blog</Button>
                         </DialogFooter>
@@ -593,14 +593,14 @@ const Blogs = ({}) => {
                         <DialogHeader>
                             <DialogTitle className="text-xl font-semibold text-slate-800">Blog Details</DialogTitle>
                         </DialogHeader>
-                        
+
                         {selectedArtisanBlogs.length > 0 && (
                             <div className="space-y-6 mt-4">
                                 <div className="space-y-1">
                                     <h4 className="text-sm font-medium text-slate-500">Blog Title</h4>
                                     <p className="text-base text-slate-900 font-medium">{selectedArtisanBlogs[0].title}</p>
                                 </div>
-                                
+
                                 {selectedArtisanBlogs[0].youtubeUrl && (
                                     <div className="space-y-1">
                                         <h4 className="text-sm font-medium text-slate-500">YouTube URL</h4>
@@ -614,19 +614,19 @@ const Blogs = ({}) => {
                                         </a>
                                     </div>
                                 )}
-                                
+
                                 <div className="space-y-1">
                                     <h4 className="text-sm font-medium text-slate-500">Short Description</h4>
                                     <p className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100">{selectedArtisanBlogs[0].shortDescription || '-'}</p>
                                 </div>
-                                
+
                                 <div className="space-y-1">
                                     <h4 className="text-sm font-medium text-slate-500">Long Description</h4>
                                     <div className="text-slate-700 whitespace-pre-line bg-slate-50 p-4 rounded-xl border border-slate-100 max-h-48 overflow-y-auto">
                                         {selectedArtisanBlogs[0].longDescription || '-'}
                                     </div>
                                 </div>
-                                
+
                                 <div className="space-y-2">
                                     <h4 className="text-sm font-medium text-slate-500">Images</h4>
                                     <div className="flex flex-wrap gap-3">
@@ -635,7 +635,7 @@ const Blogs = ({}) => {
                                                 let url = typeof img === 'object' && img !== null ? img.url : img;
                                                 const key = (typeof img === 'object' && img !== null && img.key) ? img.key : (url ? url : idx);
                                                 if (typeof url !== 'string' || !url.trim() || url === 'undefined') return null;
-                                                
+
                                                 return (
                                                     <div key={key} className="w-24 h-24 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                                                         <img
@@ -654,9 +654,9 @@ const Blogs = ({}) => {
                                 </div>
                             </div>
                         )}
-                        
+
                         <DialogFooter className="mt-6">
-                            <DialogClose asChild>
+                            <DialogClose aschild>
                                 <Button type="button" variant="outline" className="rounded-xl">Close</Button>
                             </DialogClose>
                         </DialogFooter>

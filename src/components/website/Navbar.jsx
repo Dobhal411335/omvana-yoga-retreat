@@ -7,9 +7,8 @@ import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { motion } from "framer-motion";
 
 import { Logo } from "@/components/common/Logo";
-import { websiteNavigation } from "@/constants/navigation";
-import { cn } from "@/lib/utils";
 import TopAdvertisementMarquee from "@/components/admin/pages/TopAdvertisementMarquee";
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
 
 const ResponsiveNavbar = ({ sections = [] }) => {
   const visibleSections = sections
@@ -47,7 +46,7 @@ const ResponsiveNavbar = ({ sections = [] }) => {
               <NavigationMenu.Trigger className="flex items-center gap-2 rounded-md px-4 py-2 text-[14px] text-black transition-colors hover:bg-surface text-nowrap data-[state=open]:bg-surface hover:underline">
                 {section.title}
               </NavigationMenu.Trigger>
-              <NavigationMenu.Content asChild>
+              <NavigationMenu.Content aschild>
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -91,6 +90,7 @@ const ResponsiveNavbar = ({ sections = [] }) => {
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [sections, setSections] = useState([]);
+  const company = useCompanyBasicInfo();
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -110,8 +110,11 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
       <TopAdvertisementMarquee />
-      <div className="container flex h-20 items-center justify-between px-10">
-        <Logo />
+      <div className="container flex h-20 items-center justify-between md:px-10 px-2">
+        <Logo
+          name={company?.companyName}
+          imageSrc={company?.mainLogo?.url}
+        />
         <div className="flex items-center gap-8">
           <ResponsiveNavbar sections={sections} />
         </div>

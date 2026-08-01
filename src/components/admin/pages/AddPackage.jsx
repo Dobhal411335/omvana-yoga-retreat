@@ -303,7 +303,7 @@ const AddPackage = ({ id }) => {
                                                 <Edit className="w-4 h-4" />
                                             </Button>
 
-                                            <Button size="icon" variant="outline" className="hover:bg-accent text-muted-foreground border-border" asChild title="Edit full package page">
+                                            <Button size="icon" variant="outline" className="hover:bg-accent text-muted-foreground border-border" aschild title="Edit full package page">
                                                 <Link href={`/admin/editPackage/${pkg._id}`}>
                                                     <Pencil className="w-4 h-4" />
                                                 </Link>

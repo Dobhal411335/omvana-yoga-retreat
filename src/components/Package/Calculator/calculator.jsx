@@ -1052,7 +1052,7 @@ export default function TourPackageCalculator({ packages, plans }) {
                                     <Label htmlFor="travel-date" className="text-lg font-semibold font-gilda">Travel Date</Label>
                                     <p className="text-sm text-muted-foreground">Choose available options and the estimated date of travel. Kag Premium Homes will therefore make sure that all scheduled fees for guides in spiritual inquiry and cultural immersion are customized for your prosperous voyage.</p>
                                     <Popover>
-                                        <PopoverTrigger asChild>
+                                        <PopoverTrigger aschild>
                                             <Button
                                                 variant="outline"
                                                 className={cn("w-full justify-start text-left font-normal outline-none border-2 border-blue-600 bg-transparent focus-visible:ring-0 focus:ring-0 focus-visible:outline-none focus:outline-none", !date && "text-muted-foreground")}

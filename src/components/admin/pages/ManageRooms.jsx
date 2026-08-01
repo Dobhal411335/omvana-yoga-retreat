@@ -383,13 +383,13 @@ export default function ManageRoom() {
               <span className="text-heading">{deleteTarget?.title}</span>.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="bg-white">
             <Button type="button" variant="outline" onClick={() => setDeleteTarget(null)}>
               Cancel
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant="default"
               disabled={deleting}
               onClick={() => deletePackage(deleteTarget?._id)}
             >

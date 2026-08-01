@@ -255,7 +255,7 @@ const FilterBanner = () => {
                                 <TableCell>
                                     <TooltipProvider>
                                         <Tooltip>
-                                            <TooltipTrigger asChild>
+                                            <TooltipTrigger aschild>
                                                 <span className="cursor-pointer">Hover to view</span>
                                             </TooltipTrigger>
                                             <TooltipContent className="bg-white text-blue-600 font-medium text-base font-barlow shadow-2xl">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 import { Container } from "@/components/common/Container";
@@ -6,7 +7,7 @@ import { Section } from "@/components/common/Section";
 
 export function CtaSection() {
   return (
-    <Section spacing="lg" className="bg-background">
+    <Section spacing="sm" className="bg-background border-b border-gray-300">
       <Container>
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <div>
@@ -31,7 +32,7 @@ export function CtaSection() {
                 <ArrowUpRight className="size-4" aria-hidden="true" />
               </Link>
               <Link
-                href="/retreats"
+                href="/gallery"
                 className="inline-flex h-11 items-center rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-heading/30 hover:bg-surface"
               >
                 See the pace
@@ -39,17 +40,25 @@ export function CtaSection() {
             </div>
           </div>
 
-          <div className="relative h-96 lg:h-[480px]">
-            {/* Photo 1 — replace with next/image in Phase 2 (sunrise/landscape) */}
-            <div
-              className="absolute left-0 top-0 h-72 w-56 rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-64"
-              aria-hidden="true"
-            />
-            {/* Photo 2 — replace with next/image in Phase 2 (tea/warmth close-up) */}
-            <div
-              className="absolute bottom-0 right-0 h-64 w-52 rounded-[var(--radius-image)] bg-muted/20 lg:h-72 lg:w-60"
-              aria-hidden="true"
-            />
+          <div className="relative h-96 lg:h-[400px]">
+            {/* Photo 1 */}
+            <div className="absolute left-0 top-0 h-72 w-56 overflow-hidden rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-64">
+              <Image
+                src="/sunset-road.jpg"
+                alt="Sunrise landscape"
+                fill
+                className="object-cover"
+              />
+            </div>
+            {/* Photo 2 */}
+            <div className="absolute bottom-0 right-0 h-64 w-52 overflow-hidden rounded-[var(--radius-image)] bg-muted/20 lg:h-72 lg:w-60">
+              <Image
+                src="/cta1.png"
+                alt="Warmth close-up"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </Container>

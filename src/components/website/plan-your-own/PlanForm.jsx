@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowUpRight, CalendarIcon, MessageCircle, Loader2 } from "lucide-react";
+import { ArrowUpRight, MessageCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Select,
   SelectContent,
@@ -74,6 +75,7 @@ function FieldError({ message }) {
 /* ── Main form ─────────────────────────────────────── */
 export function PlanForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
@@ -104,10 +106,21 @@ export function PlanForm() {
   }
 
   async function onSubmit(data) {
-    /* Phase 2: wire up API call here */
-    await new Promise((r) => setTimeout(r, 1000));
-    console.log("Plan submission:", data);
-    setSubmitted(true);
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/enquiry-page", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to send enquiry.");
+      }
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error.message || "Something went wrong. Please try again.");
+    }
   }
 
   /* ── Success state ── */
@@ -127,9 +140,9 @@ export function PlanForm() {
   }
 
   return (
-    <section className="bg-background py-16 md:py-24">
+    <section className="bg-background py-16">
       <div className="container">
-        <div className="mx-auto max-w-2xl rounded-[var(--radius-card)] bg-surface p-8 shadow-sm ring-1 ring-border/60 md:p-12">
+        <div className="mx-auto max-w-5xl rounded-[var(--radius-card)] bg-surface p-8 shadow-sm ring-1 ring-border/60 md:p-12">
 
           {/* Card header */}
           <div className="mb-10">
@@ -194,8 +207,8 @@ export function PlanForm() {
                           <SelectValue placeholder="1 guest" />
                         </SelectTrigger>
                         <SelectContent>
-                          {guestOptions.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
+                          {guestOptions.map((opt, index) => (
+                            <SelectItem key={opt+index} value={opt}>
                               {opt}
                             </SelectItem>
                           ))}
@@ -209,16 +222,19 @@ export function PlanForm() {
               {/* Row 3 — Preferred Dates */}
               <div>
                 <FieldLabel htmlFor="dates" optional>Preferred dates</FieldLabel>
-                <div className="relative mt-2">
-                  <CalendarIcon
-                    className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted"
-                    aria-hidden="true"
-                  />
-                  <Input
-                    id="dates"
-                    placeholder="Pick a date range"
-                    className="pl-9"
-                    {...register("dates")}
+                <div className="mt-2">
+                  <Controller
+                    name="dates"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        id="dates"
+                        value={field.value}
+                        onChange={field.onChange}
+                        placeholder="Pick a preferred date"
+                        disablePast
+                      />
+                    )}
                   />
                 </div>
               </div>
@@ -230,22 +246,18 @@ export function PlanForm() {
                   Pick as few or as many as you&apos;d like.
                 </p>
                 <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-                  {experiences.map(([left, right]) => (
-                    <>
-                      {[left, right].map((exp) => (
-                        <label
-                          key={exp}
-                          className="flex cursor-pointer items-center gap-3 font-body text-sm text-foreground"
-                        >
-                          <Checkbox
-                            checked={selectedExperiences.includes(exp)}
-                            onCheckedChange={() => toggleExperience(exp)}
-                            className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                          />
-                          {exp}
-                        </label>
-                      ))}
-                    </>
+                  {experiences.flat().map((exp) => (
+                    <label
+                      key={exp}
+                      className="flex cursor-pointer items-center gap-3 font-body text-sm text-foreground"
+                    >
+                      <Checkbox
+                        checked={selectedExperiences.includes(exp)}
+                        onCheckedChange={() => toggleExperience(exp)}
+                        className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                      />
+                      {exp}
+                    </label>
                   ))}
                 </div>
               </div>
@@ -263,8 +275,8 @@ export function PlanForm() {
                           <SelectValue placeholder="Choose" />
                         </SelectTrigger>
                         <SelectContent>
-                          {accommodationOptions.map((opt) => (
-                            <SelectItem key={opt} value={opt}>
+                          {accommodationOptions.map((opt, index) => (
+                            <SelectItem key={opt+index} value={opt}>
                               {opt}
                             </SelectItem>
                           ))}
@@ -306,7 +318,13 @@ export function PlanForm() {
               </div>
 
               {/* Actions */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
+              <div className="flex flex-col gap-3 pt-2">
+                {submitError ? (
+                  <p className="font-ui text-sm text-error" role="alert">
+                    {submitError}
+                  </p>
+                ) : null}
+                <div className="flex flex-wrap items-center gap-4">
                 <button
                   type="submit"
                   disabled={isSubmitting}
@@ -336,6 +354,7 @@ export function PlanForm() {
                   <MessageCircle className="size-4" aria-hidden="true" />
                   WhatsApp instead
                 </a>
+                </div>
               </div>
 
             </div>

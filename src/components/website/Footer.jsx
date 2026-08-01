@@ -1,33 +1,104 @@
+"use client";
+
 import Link from "next/link";
-import { MapPin, Phone, Mail, AtSign } from "lucide-react";
+import { MapPin, Phone, Mail } from "lucide-react";
 
 import { Logo } from "@/components/common/Logo";
 import { websiteNavigation } from "@/constants/navigation";
+import { site } from "@/constants/site";
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
 
-const contactInfo = [
-  { icon: MapPin, text: "Tapovan, Rishikesh, Uttarakhand, India" },
-  { icon: Phone, text: "+91 98765 43210" },
-  { icon: Mail, text: "hello@omvana.in" },
-  { icon: AtSign, text: "@omvana.retreat" },
-];
+function formatPhone(number) {
+  const digits = String(number || "").replace(/\D/g, "");
+  if (digits.length === 10) {
+    return `+91 ${digits.slice(0, 5)} ${digits.slice(5)}`;
+  }
+  return number;
+}
+function Facebook({ className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
 
+function Instagram({ className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 export function Footer() {
   const year = new Date().getFullYear();
+  const company = useCompanyBasicInfo();
+
+  const companyName = company?.companyName || site.name;
+  const footerLogoSrc =
+    company?.footerLogo?.url || company?.mainLogo?.url || undefined;
+
+  const addresses = company?.officeAddresses?.length
+    ? company.officeAddresses
+    : company?.googleAddress
+      ? [company.googleAddress]
+      : [];
+  const phones = company?.contactNumbers || [];
+  const emails = company?.emails || [];
+  const instagramLink = company?.instagramLink || "";
+
+  const contactItems = [
+    ...addresses.map((text) => ({ icon: MapPin, text })),
+    ...phones.map((number) => ({
+      icon: Phone,
+      text: formatPhone(number),
+      href: `tel:${String(number).replace(/\D/g, "")}`,
+    })),
+    ...emails.map((email) => ({
+      icon: Mail,
+      text: email,
+      href: `mailto:${email}`,
+    })),
+    ...(instagramLink
+      ? [{ icon: Instagram, text: instagramLink, href: instagramLink }]
+      : []),
+  ];
 
   return (
-    <footer className="bg-footer text-surface" aria-label="Site footer">
-      <div className="container py-16">
+    <footer className="bg-footer text-white" aria-label="Site footer">
+      <div className="container p-5 md:p-10">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           <div>
-            <Logo tone="light" />
-            <p className="mt-6 max-w-xs font-body text-sm leading-7 text-surface/60">
+            <Logo tone="light" name={companyName} imageSrc={footerLogoSrc} />
+            <p className="mt-6 max-w-xs font-body text-sm leading-7 text-white">
               A spiritual habitat in Rishikesh for those returning home to
               themselves.
             </p>
           </div>
-
           <div>
-            <h3 className="font-ui text-xs uppercase tracking-[0.2em] text-surface/40">
+            <h3 className="font-ui text-xs uppercase tracking-[0.2em] text-white">
               Explore
             </h3>
             <ul className="mt-6 space-y-4">
@@ -35,7 +106,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="font-body text-sm text-surface/60 transition-colors hover:text-surface"
+                    className="font-body text-sm text-white transition-colors hover:text-white"
                   >
                     {link.label}
                   </Link>
@@ -45,28 +116,47 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-ui text-xs uppercase tracking-[0.2em] text-surface/40">
+            <h3 className="font-ui text-xs uppercase tracking-[0.2em] text-white">
               Find us
             </h3>
-            <ul className="mt-6 space-y-4">
-              {contactInfo.map((item) => (
-                <li key={item.text} className="flex items-start gap-3">
-                  <item.icon
-                    className="mt-0.5 size-4 shrink-0 text-surface/40"
-                    aria-hidden="true"
-                  />
-                  <span className="font-body text-sm leading-6 text-surface/60">
-                    {item.text}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {contactItems.length > 0 ? (
+              <ul className="mt-6 space-y-4">
+                {contactItems.map((item) => (
+                  <li key={item.text} className="flex items-start gap-3">
+                    <item.icon
+                      className="mt-0.5 size-4 shrink-0 text-white"
+                      aria-hidden="true"
+                    />
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target={
+                          item.href.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel={
+                          item.href.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        className="font-body text-sm leading-6 text-white transition-colors hover:text-surface break-all"
+                      >
+                        {item.text}
+                      </a>
+                    ) : (
+                      <span className="font-body text-sm leading-6 text-white">
+                        {item.text}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </div>
 
-        <div className="mt-16 border-t border-surface/10 pt-8">
-          <p className="font-ui text-xs text-surface/30">
-            © {year} Omvana Yoga Retreat. All rights reserved.
+        <div className="mt-10 border-t border-white pt-8 text-center">
+          <p className="font-ui text-xs text-white">
+            © {year} {companyName}. All rights reserved.
           </p>
         </div>
       </div>

@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 const TEMPLATE_OPTIONS = [
     { value: "design1", label: "Design 1" },
@@ -113,6 +114,8 @@ const CreateWebpages = () => {
     const { handleSubmit, register, setValue, reset, formState: { errors } } = useForm();
     const [isLoading, setIsLoading] = useState(false);
     const [deletingId, setDeletingId] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [webpageToDelete, setWebpageToDelete] = useState(null);
     const [activities, setActivities] = useState([]);
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState("");
@@ -142,7 +145,6 @@ const CreateWebpages = () => {
     }, []);
 
     const deletePackage = async (id) => {
-        if (!confirm("Are you sure you want to delete this webpage?")) return;
         setDeletingId(id);
         try {
             const response = await fetch('/api/create_webpage', {
@@ -162,6 +164,19 @@ const CreateWebpages = () => {
         } finally {
             setDeletingId(null);
         }
+    };
+
+    const confirmDelete = async () => {
+        if (webpageToDelete) {
+            await deletePackage(webpageToDelete);
+            setWebpageToDelete(null);
+            setShowDeleteModal(false);
+        }
+    };
+
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setWebpageToDelete(null);
     };
 
     const onSubmit = async () => {
@@ -407,7 +422,10 @@ const CreateWebpages = () => {
                                                                 <Button
                                                                     size="icon"
                                                                     disabled={deletingId === activity._id}
-                                                                    onClick={() => deletePackage(activity._id)}
+                                                                    onClick={() => {
+                                                                        setWebpageToDelete(activity._id);
+                                                                        setShowDeleteModal(true);
+                                                                    }}
                                                                     variant="ghost"
                                                                     className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
                                                                     title="Delete Webpage"
@@ -447,6 +465,47 @@ const CreateWebpages = () => {
                     </CardContent>
                 </Card>
             </div>
+
+            <Dialog
+                open={showDeleteModal}
+                onOpenChange={(open) => {
+                    setShowDeleteModal(open);
+                    if (!open) setWebpageToDelete(null);
+                }}
+            >                <DialogContent className="rounded-[24px] p-6 border-slate-100 shadow-xl bg-white max-w-md font-sans gap-0">
+                    <DialogHeader className="mb-4">
+                        <DialogTitle className="text-xl font-semibold text-slate-800">Delete Webpage</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-slate-600 mb-6">
+                        Are you sure you want to delete this webpage? This action cannot be undone.
+                    </p>
+                    <DialogFooter className="gap-2 sm:gap-0 bg-white">
+                        <Button
+                            variant="ghost"
+                            onClick={cancelDelete}
+                            disabled={!!deletingId}
+                            className="h-11 rounded-xl text-slate-600 hover:bg-slate-100 font-medium"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="default"
+                            onClick={confirmDelete}
+                            disabled={!!deletingId}
+                            className="h-11 rounded-xl px-6 font-medium"
+                        >
+                            {deletingId ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Deleting…
+                                </>
+                            ) : (
+                                "Delete"
+                            )}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 

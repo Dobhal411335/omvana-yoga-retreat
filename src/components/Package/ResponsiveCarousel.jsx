@@ -96,6 +96,7 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
 
                     <Button
                       size="sm"
+                      nativeButton={false}
                       render={<Link href={`/package/${item?.slug}`} />}
                       className="shrink-0"
                     >

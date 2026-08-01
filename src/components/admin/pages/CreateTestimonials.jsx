@@ -526,7 +526,7 @@ export default function CreateTestimonials() {
               testimonial and its image.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="bg-white">
             <Button
               type="button"
               variant="outline"
@@ -536,7 +536,7 @@ export default function CreateTestimonials() {
             </Button>
             <Button
               type="button"
-              variant="destructive"
+              variant="default"
               disabled={deleting}
               onClick={handleDelete}
             >

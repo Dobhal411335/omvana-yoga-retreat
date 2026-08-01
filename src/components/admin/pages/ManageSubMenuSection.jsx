@@ -711,11 +711,11 @@ const ManageSubMenuSection = () => {
                         <DialogTitle>Confirm Deletion</DialogTitle>
                     </DialogHeader>
                     <p>Are you sure you want to delete this {editType}? This action cannot be undone.</p>
-                    <DialogFooter>
+                    <DialogFooter className="bg-white">
                         <Button type="button" variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
                             Cancel
                         </Button>
-                        <Button type="button" variant="destructive" onClick={handleDelete}>
+                        <Button type="button" variant="default" onClick={handleDelete}>
                             Delete
                         </Button>
                     </DialogFooter>

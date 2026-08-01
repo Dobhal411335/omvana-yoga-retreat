@@ -65,11 +65,11 @@ export default function PackageSummary({
     } catch (error) {
       console.error(error)
     }
-  
+
     // Open PDF in new tab
     window.open(`/package/calculator/pdf/${packageDetails._id}`, "_blank")
   }
-  
+
 
   if (!packageDetails) return null
 
@@ -260,7 +260,7 @@ export default function PackageSummary({
         <CardFooter className="bg-muted/20 pt-4 flex flex-col gap-2">
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
+              <TooltipTrigger aschild>
                 <span className={`w-full ${disabled ? 'cursor-not-allowed' : ''}`}>
                   <Button
                     type="button"
@@ -284,7 +284,7 @@ export default function PackageSummary({
           </TooltipProvider>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger asChild>
+              <TooltipTrigger aschild>
                 <span className={`w-full ${disabled ? 'cursor-not-allowed' : ''}`}>
                   <Button
                     type="submit"

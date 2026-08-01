@@ -1,100 +1,140 @@
-"use client"
-import { X } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+"use client";
 
-const PopUpBanner = () => {
+import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
+import { ArrowUpRight, X } from "lucide-react";
+
+export default function PopUpBanner() {
   const [banner, setBanner] = useState(null);
-  const [open, setOpen] = useState(false); // Initially closed
+  const [open, setOpen] = useState(false);
   const [showAnim, setShowAnim] = useState(false);
 
+  const handleClose = useCallback(() => {
+    setShowAnim(false);
+    setTimeout(() => setOpen(false), 300);
+  }, []);
+
   useEffect(() => {
-    fetch(`/api/popupBanner`)
-      .then(res => res.json())
-      .then(data => {
+    fetch("/api/popupBanner")
+      .then((res) => res.json())
+      .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
           setBanner(data[0]);
         }
+      })
+      .catch(() => {
+        setBanner(null);
       });
   }, []);
 
   useEffect(() => {
-    if (banner) {
-      // Delay popup open by 2 seconds
-      const timer = setTimeout(() => {
-        setOpen(true);
-        // Animate in after open
-        setTimeout(() => setShowAnim(true), 10);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
+    if (!banner) return;
+
+    const timer = setTimeout(() => {
+      setOpen(true);
+      requestAnimationFrame(() => setShowAnim(true));
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [banner]);
 
-  const handleClose = () => {
-    setShowAnim(false);
-    setTimeout(() => setOpen(false), 200); // Wait for animation out
-  };
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event) {
+      if (event.key === "Escape") handleClose();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, handleClose]);
 
   if (!banner || !open) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 p-4">
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="popup-banner-title"
+    >
+      <button
+        type="button"
+        className={`absolute inset-0 bg-image-dark/50 transition-opacity duration-[var(--duration-medium)] ease-[var(--ease-smooth)] ${
+          showAnim ? "opacity-100" : "opacity-0"
+        }`}
+        aria-label="Close popup"
+        onClick={handleClose}
+      />
+
       <div
-        className={`relative bg-white w-full max-w-3xl overflow-hidden shadow-2xl
-    flex flex-col md:flex-row transition-all duration-500
-    ${showAnim ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"}`}
+        className={`relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-[var(--radius-dialog)] border border-border bg-surface shadow-sm transition-all duration-[var(--duration-slow)] ease-[var(--ease-smooth)] md:flex-row ${
+          showAnim
+            ? "translate-y-0 opacity-100"
+            : "translate-y-4 opacity-0"
+        }`}
       >
-        {/* Close Button */}
         <button
+          type="button"
           onClick={handleClose}
-          className="absolute top-3 right-3 z-20 bg-black/80 hover:bg-black text-white rounded-full p-2 transition"
+          className="absolute right-3 top-3 z-20 flex size-9 items-center justify-center rounded-full border border-border bg-surface/90 text-heading transition-colors duration-[var(--duration-fast)] hover:bg-background"
           aria-label="Close popup"
         >
-          <X size={20} />
+          <X className="size-4" strokeWidth={1.5} aria-hidden="true" />
         </button>
 
-        {/* Left Side Banner */}
-        <div className="w-full md:w-1/2 h-[220px] md:h-[380px]">
-          <img
+        <div className="relative h-52 w-full shrink-0 bg-border md:h-auto md:min-h-[380px] md:w-1/2">
+          <Image
             src={banner.image?.url || "/placeholder.jpeg"}
-            alt="Popup Banner"
-            className="w-full h-full object-cover"
+            alt={banner.heading || "Announcement"}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            priority
           />
         </div>
 
-        {/* Right Side Content */}
-        <div className="w-full md:w-1/2 md:h-[380px] flex items-center justify-center p-5 md:p-8">
-          <div className="w-full max-w-sm text-center">
-            <p className="text-gray-500 font-semibold text-sm mb-2">
-              Crafted with Heart
+        <div className="flex w-full items-center justify-center p-7 md:w-1/2 md:p-10">
+          <div className="w-full max-w-sm text-center md:text-left">
+            <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+              A quiet invitation
             </p>
 
-            <h2 className="text-lg md:text-xl font-bold text-black leading-tight mb-4">
-              {banner.heading}
-            </h2>
+            {banner.heading ? (
+              <h2
+                id="popup-banner-title"
+                className="mt-4 font-heading text-2xl leading-snug text-heading md:text-3xl"
+              >
+                {banner.heading}
+              </h2>
+            ) : null}
 
-            <p className="text-gray-600 text-sm md:text-[14px] leading-relaxed mb-6">
-              {banner.paragraph}
-            </p>
+            {banner.paragraph ? (
+              <p className="mt-4 font-body text-sm leading-[1.9] text-foreground">
+                {banner.paragraph}
+              </p>
+            ) : null}
 
-            <a
-              href={banner.buttonLink || "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block"
-            >
-              <button className="w-full bg-black text-white font-semibold py-3 hover:bg-gray-900 transition">
+            {banner.buttonLink ? (
+              <a
+                href={banner.buttonLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-8 inline-flex h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-primary-foreground transition-colors duration-[var(--duration-fast)] hover:bg-primary-hover md:w-auto"
+              >
                 Explore
-              </button>
-            </a>
-
-            <p className="mt-3 text-gray-500 font-semibold text-sm">
-              Don't miss this chance
-            </p>
+                <ArrowUpRight className="size-4" aria-hidden="true" />
+              </a>
+            ) : null}
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default PopUpBanner;
+}

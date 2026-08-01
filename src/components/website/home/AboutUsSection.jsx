@@ -3,193 +3,242 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowUpRight, Clock, Sparkles } from "lucide-react";
 
-const AboutUsSection = () => {
-    const [featuredPackages, setFeaturedPackages] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [loading1, setLoading1] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
-    const [offerDetails, setOfferDetails] = useState(null);
-    const [bannerSection1st, setBannerSection1st] = useState([]);
-    // console.log(featuredPackages)
+import { Container } from "@/components/common/Container";
+import { Section } from "@/components/common/Section";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export default function AboutUsSection() {
+  const [featuredPackages, setFeaturedPackages] = useState([]);
+  const [packagesLoading, setPackagesLoading] = useState(true);
+  const [offerDetails, setOfferDetails] = useState(null);
+  const [banners, setBanners] = useState([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
+
+  useEffect(() => {
     const fetchPackages = async () => {
-        try {
-            const response = await fetch(`/api/featured-packages`);
-            const data = await response.json();
-            // console.log(data);
-            setFeaturedPackages(data.data || []); // Access the data property from the response
-        } catch (error) {
-            // console.error('Error fetching data:', error);
-            setFeaturedPackages([]); // Use dummy data on error
-        } finally {
-            setIsLoading(false);
-            setLoading(false);
-        }
+      try {
+        const response = await fetch("/api/featured-packages");
+        const data = await response.json();
+        setFeaturedPackages(data.data || []);
+      } catch {
+        setFeaturedPackages([]);
+      } finally {
+        setPackagesLoading(false);
+      }
     };
-    const fetchBannerSection1st = async () => {
-        try {
-            const response = await fetch(`/api/bannerSection1st`);
-            const data = await response.json();
-            // console.log(data);
-            setBannerSection1st(data); // Use dummy data if API returns empty
-        } catch (error) {
-            // console.error('Error fetching data:', error);
-            setBannerSection1st([]); // Use dummy data on error
-        } finally {
-            setIsLoading(false);
-            setLoading1(false);
-        }
+
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch("/api/bannerSection1st");
+        const data = await response.json();
+        setBanners(Array.isArray(data) ? data : []);
+      } catch {
+        setBanners([]);
+      } finally {
+        setBannersLoading(false);
+      }
     };
-    useEffect(() => {
-        fetchPackages();
-        fetchBannerSection1st();
-        fetch("/api/offerDetails")
-            .then(res => res.json())
-            .then(data => { if (data) setOfferDetails(data); })
-            .catch(() => { });
-    }, []);
-    return (
-        <>
-            {featuredPackages.length > 0 && (
-                <section className="relative py-10 w-full px-5 overflow-hidden max-w-screen overflow-x-hidden">
-                    <div className="w-full">
-                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-auto">
-                            {loading ? (
-                                // Loading skeletons
-                                Array.from({ length: 5 }).map((_, idx) => (
-                                    <div
-                                        key={idx}
-                                        className="flex flex-col items-center w-42 rounded-3xl animate-pulse"
-                                        style={{ padding: "1rem 0 0.5rem 0" }}
-                                    >
-                                        <div className="w-full aspect-[4/5] rounded-2xl overflow-hidden flex items-end justify-center bg-gray-200" />
-                                        <div className="mt-4 text-center px-2 w-full flex justify-start">
-                                            <span className="block h-6 w-32 rounded bg-gray-200" />
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                featuredPackages.map((item) => (
-                                    <div
-                                        key={item._id}
-                                        className="flex flex-col items-center w-42 mx-auto md:w-80 rounded-3xl group"
-                                        style={{ padding: "1rem 0 0.5rem 0" }}
-                                    >
-                                        <div className="relative w-full aspect-[4/5] rounded-2xl border overflow-hidden">
-                                            <Image
-                                                width={200}
-                                                height={200}
-                                                src={item.image.url}
-                                                alt={item.title}
-                                                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                                            />
-                                            <Link
-                                                href={item.link}
-                                                className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                            >
-                                                <span className="bg-white text-black font-medium px-4 py-2 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                                    View More
-                                                </span>
-                                            </Link>
-                                        </div>
-                                        <div className="mt-4 text-center px-2 w-full flex justify-start">
-                                            <Link key={item._id} href={item.link}>
-                                                <div className="font-bold text-md md:text-xl text-black hover:underline transition cursor-pointer">{item.title}</div>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                        </div>
+
+    const fetchOffers = async () => {
+      try {
+        const response = await fetch("/api/offerDetails");
+        const data = await response.json();
+        if (data) setOfferDetails(data);
+      } catch {
+        /* keep null — section hidden without CMS data */
+      }
+    };
+
+    fetchPackages();
+    fetchBanners();
+    fetchOffers();
+  }, []);
+
+  const hasOffers =
+    offerDetails?.lastMinuteDeal || offerDetails?.promoBanner;
+  const showPackages = packagesLoading || featuredPackages.length > 0;
+  const showBanners = bannersLoading || banners.length > 0;
+
+  return (
+    <>
+      {showPackages && (
+        <Section spacing="sm" className="bg-background">
+          <Container>
+            <div className="mb-12 max-w-xl">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+                Featured
+              </p>
+              <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
+                Experiences worth{" "}
+                <em className="italic text-primary">lingering</em> over.
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-2 gap-5 md:gap-8 lg:grid-cols-4">
+              {packagesLoading
+                ? Array.from({ length: 4 }).map((_, idx) => (
+                    <div key={idx} className="flex flex-col gap-4">
+                      <Skeleton className="md:aspect-4/5 aspect-3/4 w-full md:rounded-image rounded-md" />
+                      <Skeleton className="h-6 w-3/4" />
                     </div>
-                </section>
-            )}
-            <section className="w-full md:w-[95%] mx-auto py-4 space-y-3 px-3 sm:px-4 md:px-0">
-                {/* Banner 1 */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#fde8e2] via-[#fdf0ec] to-[#fef6f4] rounded-xl px-4 sm:px-5 py-4 shadow-sm border border-orange-100/60">
-
-                    <div className="flex items-start sm:items-center gap-3 sm:gap-4">
-                        <Image src="/clockImage.png" alt="clock" width={40} height={40} className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-
-                        <div>
-                            <h4 className="text-sm sm:text-base md:text-lg font-bold text-gray-900">
-                                {offerDetails?.lastMinuteDeal?.heading || 'Last Minute Deal'}
-                            </h4>
-                            <p className="text-xs sm:text-sm text-gray-500">
-                                {offerDetails?.lastMinuteDeal?.description || 'Up to 75% off on selected hotels'}
-                            </p>
-                        </div>
-                    </div>
-
+                  ))
+                : featuredPackages.map((item) => (
                     <Link
-                        href={offerDetails?.lastMinuteDeal?.link || ''}
-                        className="w-full sm:w-auto text-center text-sm text-nowrap bg-white font-medium text-gray-700 border border-gray-300 rounded-full px-4 sm:px-5 py-2 hover:bg-gray-800 hover:text-white transition-all duration-200"
+                      key={item._id}
+                      href={item.link || "#"}
+                      className="group flex flex-col gap-4"
                     >
-                        Know More
+                      <div className="relative md:aspect-4/5 aspect-3/4 w-full overflow-hidden md:rounded-image rounded-md bg-border">
+                        {item.image?.url ? (
+                          <Image
+                            src={item.image.url}
+                            alt={item.title || "Featured experience"}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-cover transition-transform duration-300 ease-smooth group-hover:scale-[1.03]"
+                          />
+                        ) : null}
+                        <div className="absolute inset-0 flex items-end bg-image-dark/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          <span className="m-5 inline-flex items-center gap-1.5 font-ui text-xs uppercase tracking-[0.2em] text-white">
+                            View
+                            <ArrowUpRight
+                              className="size-3.5"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        </div>
+                      </div>
+                      <h3 className="font-heading text-xl leading-snug text-heading transition-colors duration-300 group-hover:text-primary md:text-2xl">
+                        {item.title}
+                      </h3>
                     </Link>
-                </div>
+                  ))}
+            </div>
+          </Container>
+        </Section>
+      )}
 
-                {/* Banner 2 */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-[#ede4f5] via-[#f3eef9] to-[#f8f5fc] rounded-xl px-4 sm:px-5 py-4 shadow-sm border border-purple-100/60">
-
-                    <div className="flex items-start sm:items-center gap-3 sm:gap-4">
-                        <Image src="/banner1.png" alt="card" width={40} height={40} className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-
-                        <p className="text-xs sm:text-sm md:text-base text-gray-700">
-                            {offerDetails?.promoBanner?.description || 'Save ₹2,000 on Hotels by using Adani One ICICI Bank credit card.'}
+      {hasOffers && (
+        <Section spacing="sm" className="bg-background pt-0">
+          <Container>
+            <div className="flex flex-col gap-4">
+              {offerDetails?.lastMinuteDeal && (
+                <div className="flex flex-col items-start justify-between gap-6 rounded-card border border-border bg-surface px-6 py-6 sm:flex-row sm:items-center sm:px-8">
+                  <div className="flex items-start gap-5 sm:items-center">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-background">
+                      <Clock
+                        className="size-5 text-primary"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-heading text-xl text-heading md:text-2xl">
+                        {offerDetails.lastMinuteDeal.heading}
+                      </h4>
+                      {offerDetails.lastMinuteDeal.description ? (
+                        <p className="mt-1.5 font-body text-sm leading-relaxed text-muted">
+                          {offerDetails.lastMinuteDeal.description}
                         </p>
+                      ) : null}
                     </div>
-
+                  </div>
+                  {offerDetails.lastMinuteDeal.link ? (
                     <Link
-                        href={offerDetails?.promoBanner?.link || ''}
-                        className="w-full sm:w-auto text-center text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-full px-5 py-2 hover:bg-gray-800 hover:text-white transition-all duration-200"
+                      href={offerDetails.lastMinuteDeal.link}
+                      className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-button border border-border bg-background px-7 font-body text-sm text-heading transition-colors duration-300 hover:border-heading/30 hover:bg-background sm:w-auto"
                     >
-                        Apply
+                      Know more
+                      <ArrowUpRight
+                        className="size-4"
+                        aria-hidden="true"
+                      />
                     </Link>
+                  ) : null}
                 </div>
+              )}
 
-            </section>
-            {bannerSection1st.length > 0 && (
-                <section className="bg-[#ededed] relative w-full">
-                    {bannerSection1st.map((item, idx) => (
-                        <div className="w-full" key={item._id}>
-                            <div className="grid grid-cols-1 gap-4 md:gap-5 overflow-hidden">
-                                <div className="hidden md:flex flex-col h-[430px] overflow-hidden relative group">
-                                    <Link
-                                        href={item.buttonLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="absolute inset-0 flex items-center justify-center group-hover:opacity-100 transition-opacity duration-300"
-                                    >
-                                        <img
-                                            src={item.image?.url}
-                                            alt={item.title}
-                                            className="absolute inset-0 w-full h-full md:object-contain object-contain object-center transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    </Link>
-                                </div>
-                                <div className="md:hidden flex flex-col h-[450px] overflow-hidden relative group">
-                                    <Link
-                                        href={item.buttonLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="absolute inset-0 flex items-center justify-center group-hover:opacity-100 transition-opacity duration-300"
-                                    >
-                                        <img
-                                            src={item.mobileImage?.url}
-                                            alt={item.title}
-                                            className="absolute inset-0 w-full h-full md:object-contain object-contain object-center transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </section>
-            )}
+              {offerDetails?.promoBanner && (
+                <div className="flex flex-col items-start justify-between gap-6 rounded-card border border-border bg-surface px-6 py-6 sm:flex-row sm:items-center sm:px-8">
+                  <div className="flex items-start gap-5 sm:items-center">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-background">
+                      <Sparkles
+                        className="size-5 text-primary"
+                        strokeWidth={1.5}
+                        aria-hidden="true"
+                      />
+                    </div>
+                    {offerDetails.promoBanner.description ? (
+                      <p className="font-body text-sm leading-relaxed text-foreground md:text-base">
+                        {offerDetails.promoBanner.description}
+                      </p>
+                    ) : null}
+                  </div>
+                  {offerDetails.promoBanner.link ? (
+                    <Link
+                      href={offerDetails.promoBanner.link}
+                      className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-button bg-primary px-7 font-body text-sm text-primary-foreground transition-colors duration-300 hover:bg-primary-hover sm:w-auto"
+                    >
+                      Apply
+                      <ArrowUpRight
+                        className="size-4"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  ) : null}
+                </div>
+              )}
+            </div>
+          </Container>
+        </Section>
+      )}
 
-        </>
-    );
-};
-
-export default AboutUsSection;
+      {showBanners && (
+        <section className="w-full bg-background">
+          {bannersLoading ? (
+            <Skeleton className="h-[400px] px-2 w-full rounded-none md:h-[430px]" />
+          ) : (
+            <div className="flex w-full flex-col">
+              {banners.map((item) => (
+                <Link
+                  key={item._id}
+                  href={item.buttonLink || "#"}
+                  target={item.buttonLink ? "_blank" : undefined}
+                  rel={item.buttonLink ? "noopener noreferrer" : undefined}
+                  className="group relative block w-full overflow-hidden bg-border"
+                >
+                  {/* Desktop */}
+                  <div className="relative hidden h-[430px] w-full md:block">
+                    {item.image?.url ? (
+                      <Image
+                        src={item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-300 ease-smooth group-hover:scale-[1.02]"
+                      />
+                    ) : null}
+                  </div>
+                  {/* Mobile */}
+                  <div className="relative h-[300px] px-2 w-full md:hidden">
+                    {(item.mobileImage?.url || item.image?.url) ? (
+                      <Image
+                        src={item.mobileImage?.url || item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-300 ease-smooth group-hover:scale-[1.02]"
+                      />
+                    ) : null}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+    </>
+  );
+}

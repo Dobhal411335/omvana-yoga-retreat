@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import connectDB from '@/lib/connectDB.js'
 import CompanyBasicInfo from '@/models/Admin/CompanyBasicInfo'
+import { getCompanyBasicInfo } from '@/services/companyBasicInfo.service'
 
 const normalizeArray = (value) => {
   if (!Array.isArray(value)) {
@@ -46,9 +47,7 @@ const normalizePayload = (payload) => ({
 
 export async function GET() {
   try {
-    await connectDB()
-
-    const companyBasicInfo = await CompanyBasicInfo.findOne().sort({ updatedAt: -1 })
+    const companyBasicInfo = await getCompanyBasicInfo()
     return NextResponse.json({ success: true, data: companyBasicInfo }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
