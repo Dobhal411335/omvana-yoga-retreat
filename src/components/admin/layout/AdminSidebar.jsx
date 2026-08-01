@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
-  Layers,
   Globe,
-  Package,
-  Images,
-  Star,
-  ShieldCheck,
   UserCircle,
   LogOut,
   Mountain,
@@ -18,103 +12,10 @@ import {
   ChevronRight,
   ChevronDown,
   ChevronUp,
-  Building2,
-  Navigation,
-  Share2,
-  FileStack,
-  Inbox,
-  PackageSearch,
-  ImagePlus,
-  MessageCirclePlus,
-  CheckSquare,
-  FilePlus,
-  FileSearch,
-  Users,
-  UserCog,
-  MenuIcon,
-  Boxes,
-  Image as ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-/* ─────────────────────────────────────────────────────
-   Navigation data
-   Each "section" has a header + sub-items.
-   Sections auto-open when a child is active.
-───────────────────────────────────────────────────── */
-const sections = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: LayoutDashboard,
-    items: [
-      { label: "Company Basic Info", href: "/admin/company_basic_information", icon: Building2 },
-      { label: "Manage Navbar", href: "/admin/navbar_section", icon: Navigation },
-      { label: "Social Media Post", href: "/admin/insta_fb_post", icon: Share2 },
-      { label: "Manage Webpages", href: "/admin/create_webpage", icon: FileStack },
-      { label: "Room Enquiry Page", href: "/admin/room_enquiries", icon: Inbox },
-      { label: "Package Enquiry", href: "/admin/enquiries/packages", icon: PackageSearch },
-      { label: "Enquiry Page", href: "/admin/enquiry_page", icon: Inbox },
-      { label: "Contact Us Page", href: "/admin/contact_us", icon: PackageSearch },
-    ],
-  },
-  {
-    id: "manage_banners",
-    label: "Manage Banners",
-    icon: ImageIcon,
-    items: [
-      { label: "Top Advertisment Banner", href: "/admin/top_advertisment_banner", icon: ImageIcon },
-      { label: "Promotional Banner", href: "/admin/promotional_banner", icon: ImageIcon },
-      { label: "Manage Banner", href: "/admin/change_banner_image", icon: ImageIcon },
-      { label: "Featured Offered Banner", href: "/admin/featured_offered_banner", icon: ImageIcon },
-      { label: "Offer Details", href: "/admin/offer_details", icon: ImageIcon },
-      { label: "Manage Featured Product", href: "/admin/manage_featured_packages", icon: ImageIcon },
-      { label: "Category Advertisment", href: "/admin/category_advertisment", icon: ImageIcon },
-      { label: "PopUp Banner", href: "/admin/popup_banner", icon: ImageIcon },
-      { label: "Consultancy Banner", href: "/admin/consultancy_banner", icon: ImageIcon },
-      { label: "Banner Section 1st", href: "/admin/banner_section_1st", icon: ImageIcon },
-      { label: "Banner Section 2nd", href: "/admin/banner_section_2nd", icon: ImageIcon },
-      { label: "Banner Section 3rd", href: "/admin/banner_section_3rd", icon: ImageIcon },
-    ],
-  },
-  {
-    id: "sub-dashboard",
-    label: "Sub-Dashboard",
-    icon: LayoutDashboard,
-    items: [
-      {
-        label: "Manage Menu Section",
-        href: "/admin/manage_menu",
-        icon: MenuIcon,
-      },
-      {
-        label: "Manage Sub Menu Section",
-        href: "/admin/manage_sub_menu",
-        icon: MenuIcon,
-      },
-      {
-        label: "Manage Packages",
-        href: "/admin/manage_packages_category",
-        icon: Boxes,
-      },
-      {
-        label: "Manage Rooms",
-        href: "/admin/manage_rooms",
-        icon: Boxes,
-      },
-    ],
-  },
-
-  {
-    id: "Manage Reviews",
-    label: "Manage Reviews",
-    icon: Package,
-    items: [
-      { label: "Create Testimonials", href: "/admin/create_testimonials", icon: Package }, 
-      { label: "Approve or Reject Reviews", href: "/admin/manage_reviews", icon: Package },
-    ],
-  },
-];
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
+import { adminNavSections } from "@/components/admin/layout/adminNavSections";
 
 /* ─────────────────────────────────────────────────────
    Helpers
@@ -233,8 +134,12 @@ function SectionAccordion({ section, pathname, collapsed }) {
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const company = useCompanyBasicInfo();
   const [collapsed, setCollapsed] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  const companyName = company?.companyName || "Omvana";
+  const companyEmail = company?.emails?.[0] || "";
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -267,7 +172,7 @@ export function AdminSidebar() {
         {!collapsed && (
           <div className="min-w-0">
             <p className="truncate font-heading text-sm font-semibold text-white">
-              Omvana
+              {companyName}
             </p>
             <p className="font-ui text-[10px] uppercase tracking-widest text-white/30">
               Retreat CMS
@@ -284,11 +189,13 @@ export function AdminSidebar() {
           </div>
           <div className="min-w-0">
             <p className="truncate font-ui text-[13px] font-medium text-white/80">
-              Welcome, Omvana Admin
+              Welcome, {companyName}
             </p>
-            <p className="truncate font-ui text-[11px] text-white/80">
-              care.@omvana.in
-            </p>
+            {companyEmail ? (
+              <p className="truncate font-ui text-[11px] text-white/80">
+                {companyEmail}
+              </p>
+            ) : null}
           </div>
         </div>
       )}
@@ -325,7 +232,7 @@ export function AdminSidebar() {
         </Link>
 
         {/* Accordion sections */}
-        {sections.map((section) => (
+        {adminNavSections.map((section) => (
           <SectionAccordion
             key={section.id}
             section={section}

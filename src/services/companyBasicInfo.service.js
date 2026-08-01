@@ -1,5 +1,31 @@
+import { cache } from "react";
 import connectDB from "@/lib/connectDB";
 import CompanyBasicInfo from "@/models/Admin/CompanyBasicInfo";
+
+const FALLBACK_METADATA = {
+  siteName: "Omvana Yoga Retreat",
+  title:
+    "Omvana Yoga Retreat — Find your stillness where the Ganga sings",
+  description:
+    "Omvana is a quiet sanctuary in the Himalayan foothills of Tapovan, Rishikesh — built for travellers who want to slow down, sit with themselves, and return softer than they came. Experience yoga, meditation, temple walks, and Ganga Aarti in a calm spiritual habitat by the sacred Ganges.",
+  ogDescription:
+    "A quiet sanctuary in the Himalayan foothills. Yoga, meditation, temple walks, and Ganga Aarti — built for travellers who want to return softer than they came.",
+  keywords: [
+    "Omvana Yoga Retreat",
+    "Yoga retreat in Rishikesh",
+    "Meditation retreat Rishikesh",
+    "Tapovan yoga",
+    "Ganga Aarti",
+    "Himalayan foothills",
+    "Spiritual retreat India",
+    "Yoga and meditation",
+    "Rishikesh",
+    "Uttarakhand",
+    "India",
+  ],
+  domain: "https://omvanayoga.com",
+  ogImage: "/logo.png",
+};
 
 function serializeImage(image) {
   return {
@@ -37,7 +63,18 @@ function serializeCompanyBasicInfo(record) {
   };
 }
 
-export async function getCompanyBasicInfo() {
+function normalizeSiteUrl(domainName) {
+  const value = String(domainName || "").trim();
+  if (!value) return FALLBACK_METADATA.domain;
+
+  if (/^https?:\/\//i.test(value)) {
+    return value.replace(/\/$/, "");
+  }
+
+  return `https://${value.replace(/\/$/, "")}`;
+}
+
+export const getCompanyBasicInfo = cache(async () => {
   try {
     await connectDB();
     const record = await CompanyBasicInfo.findOne()
@@ -48,4 +85,71 @@ export async function getCompanyBasicInfo() {
     console.error("Failed to load company basic info:", error);
     return null;
   }
+});
+
+export function buildCompanyMetadata(company) {
+  const siteName = company?.companyName || FALLBACK_METADATA.siteName;
+  const title =
+    company?.titleTagForMainLandingPage || FALLBACK_METADATA.title;
+  const keywords =
+    company?.keywords?.length > 0
+      ? company.keywords
+      : FALLBACK_METADATA.keywords;
+  const siteUrl = normalizeSiteUrl(company?.companyDomainName);
+  const ogImage = company?.mainLogo?.url || FALLBACK_METADATA.ogImage;
+
+  let metadataBase;
+  try {
+    metadataBase = new URL(siteUrl);
+  } catch {
+    metadataBase = new URL(FALLBACK_METADATA.domain);
+  }
+
+  return {
+    metadataBase,
+    title: {
+      default: title,
+      template: `%s | ${siteName}`,
+    },
+    description: FALLBACK_METADATA.description,
+    keywords,
+    icons: {
+      icon: [
+        { url: "/favicon/favicon.ico" },
+        {
+          url: "/favicon/favicon-16x16.png",
+          sizes: "16x16",
+          type: "image/png",
+        },
+        {
+          url: "/favicon/favicon-32x32.png",
+          sizes: "32x32",
+          type: "image/png",
+        },
+      ],
+      apple: "/favicon/apple-touch-icon.png",
+    },
+    manifest: "/favicon/site.webmanifest",
+    openGraph: {
+      title,
+      description: FALLBACK_METADATA.ogDescription,
+      images: [ogImage],
+      url: siteUrl,
+      siteName,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: FALLBACK_METADATA.description,
+      images: [ogImage],
+    },
+    authors: [{ name: siteName }],
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
+
+export { FALLBACK_METADATA };

@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/website/Navbar";
 import { Footer } from "@/components/website/Footer";
+import { GoogleTrackingTag } from "@/components/website/GoogleTrackingTag";
 import { CompanyBasicInfoProvider } from "@/providers/CompanyBasicInfoProvider";
 import { getCompanyBasicInfo } from "@/services/companyBasicInfo.service";
 
@@ -8,6 +9,7 @@ export default async function WebsiteLayout({ children }) {
 
   return (
     <CompanyBasicInfoProvider value={companyBasicInfo}>
+      <GoogleTrackingTag html={companyBasicInfo?.googleTrackingTag} />
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <Navbar />
         <main className="flex-1">{children}</main>

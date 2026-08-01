@@ -52,6 +52,19 @@ function Instagram({ className }) {
     </svg>
   );
 }
+function Youtube({ className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.8ZM10 15.5V8.5L16 12l-6 3.5Z" />
+    </svg>
+  );
+}
 export function Footer() {
   const year = new Date().getFullYear();
   const company = useCompanyBasicInfo();
@@ -68,6 +81,8 @@ export function Footer() {
   const phones = company?.contactNumbers || [];
   const emails = company?.emails || [];
   const instagramLink = company?.instagramLink || "";
+  const facebookLink = company?.facebookLink || "";
+  const youtubeLink = company?.youtubeLink || "";
 
   const contactItems = [
     ...addresses.map((text) => ({ icon: MapPin, text })),
@@ -83,6 +98,12 @@ export function Footer() {
     })),
     ...(instagramLink
       ? [{ icon: Instagram, text: instagramLink, href: instagramLink }]
+      : []),
+    ...(facebookLink
+      ? [{ icon: Facebook, text: facebookLink, href: facebookLink }]
+      : []),
+    ...(youtubeLink
+      ? [{ icon: Youtube, text: youtubeLink, href: youtubeLink }]
       : []),
   ];
 

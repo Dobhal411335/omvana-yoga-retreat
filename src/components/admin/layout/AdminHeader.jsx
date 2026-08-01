@@ -68,21 +68,11 @@ export function AdminHeader() {
       <div className="flex items-center gap-2">
 
         {/* Date */}
-        <div className="hidden items-center gap-1.5 rounded-lg bg-background px-3 py-1.5 md:flex">
-          <Calendar className="size-3.5 text-muted" aria-hidden="true" />
-          <span className="font-ui text-[14px] text-muted">{today}</span>
+        <div className="hidden items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 md:flex">
+          <Calendar className="size-3.5 text-heading" aria-hidden="true" />
+          <span className="font-ui text-[14px] text-heading">{today}</span>
         </div>
-        {/* Admin profile */}
-        <button className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 transition-colors hover:bg-background">
-          <div className="flex size-7 items-center justify-center rounded-full bg-primary/15">
-            <User className="size-3.5 text-primary" />
-          </div>
-          <span className="hidden font-ui text-sm font-medium text-heading md:block">
-            Admin
-          </span>
-        </button>
-
-      </div>
+        </div>
     </header>
   );
 }

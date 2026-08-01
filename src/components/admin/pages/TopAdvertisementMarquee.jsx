@@ -2,6 +2,32 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
+function BannerItems({ banners, keyPrefix, ariaHidden = false }) {
+  return (
+    <div
+      className="flex min-w-[100vw] shrink-0 items-center justify-around gap-6 px-4 md:gap-8 md:px-6"
+      aria-hidden={ariaHidden || undefined}
+    >
+      {banners.map((b) => (
+        <span
+          key={`${keyPrefix}-${b._id}`}
+          className="inline-flex items-center whitespace-nowrap text-white"
+        >
+          <Link
+            href={b.buttonLink || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs font-medium hover:underline sm:text-sm md:text-sm"
+            tabIndex={ariaHidden ? -1 : undefined}
+          >
+            {b.title}
+          </Link>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function TopAdvertisementMarquee() {
   const [banners, setBanners] = useState([]);
   const [isPaused, setIsPaused] = useState(false);
@@ -23,53 +49,17 @@ export default function TopAdvertisementMarquee() {
   if (banners.length === 0) return null;
 
   return (
-    <div className="bg-[#0f172a] overflow-hidden py-[6px]">
+    <div className="w-full overflow-hidden bg-[#0f172a] py-[6px]">
       <div
-        className="relative flex h-4 md:h-5 justify-start items-center"
+        className="flex h-4 items-center md:h-5"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-        {/* Marquee container */}
         <div
-          className="flex whitespace-nowrap animate-marquee"
-          style={{
-            animationPlayState: isPaused ? "paused" : "running",
-            padding: "0 1rem",
-          }}
+          className={`flex w-max animate-marquee ${isPaused ? "marquee-paused" : ""}`}
         >
-          {/* Original banners */}
-          {banners.map((b) => (
-            <span
-              key={b._id}
-              className="inline-flex items-center px-2 md:px-6 text-white whitespace-nowrap"
-            >
-              <Link
-                href={b.buttonLink || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs sm:text-sm md:text-sm font-medium hover:underline"
-              >
-                {b.title}
-              </Link>
-            </span>
-          ))}
-
-          {/* Duplicate banners for smooth looping (works on all screens now) */}
-          {banners.map((b) => (
-            <span
-              key={`dup-${b._id}`}
-              className="inline-flex items-center px-2 md:px-6 text-white whitespace-nowrap"
-            >
-              <Link
-                href={b.buttonLink || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs sm:text-sm md:text-base hover:underline"
-              >
-                {b.title}
-              </Link>
-            </span>
-          ))}
+          <BannerItems banners={banners} keyPrefix="a" />
+          <BannerItems banners={banners} keyPrefix="b" ariaHidden />
         </div>
       </div>
 
@@ -84,18 +74,12 @@ export default function TopAdvertisementMarquee() {
         }
 
         .animate-marquee {
-          animation: marquee 10s linear infinite;
-          display: flex;
-          align-items: center;
-          min-width: max-content;
-          gap: 1.5rem;
+          animation: marquee 20s linear infinite;
+          will-change: transform;
         }
 
-        @media (min-width: 768px) {
-          .animate-marquee {
-            animation-duration: 10s;
-            gap: 2rem;
-          }
+        .marquee-paused {
+          animation-play-state: paused;
         }
       `}</style>
     </div>

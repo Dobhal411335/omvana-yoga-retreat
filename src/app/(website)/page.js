@@ -8,15 +8,26 @@ import Banner from "@/components/website/home/Banner";
 import RandomTourPackageSection from "@/components/website/home/RandomTourPackageSection";
 import InstaBlog from "@/components/website/home/InstaBlog";
 import RoomSection from "@/components/website/home/RoomSection";
+import {
+  FALLBACK_METADATA,
+  getCompanyBasicInfo,
+} from "@/services/companyBasicInfo.service";
 
-export const metadata = {
-  title: {
-    absolute:
-      "Omvana Yoga Retreat — Find your stillness where the Ganga sings",
-  },
-  description:
-    "A quiet sanctuary in the Himalayan foothills. Yoga, meditation, temple walks, and Ganga Aarti — built for travellers who want to return softer than they came.",
-};
+export async function generateMetadata() {
+  const company = await getCompanyBasicInfo();
+  const title =
+    company?.titleTagForMainLandingPage || FALLBACK_METADATA.title;
+
+  return {
+    title: {
+      absolute: title,
+    },
+    keywords:
+      company?.keywords?.length > 0
+        ? company.keywords
+        : FALLBACK_METADATA.keywords,
+  };
+}
 
 export default function HomePage() {
   return (
@@ -24,13 +35,13 @@ export default function HomePage() {
       <PopUpBanner />
       <HeroSection />
       <PhilosophySection />
-      <AboutUsSection/>
-      <Banner/>
-      <RandomTourPackageSection/>
-      <RoomSection/>
+      <AboutUsSection />
+      <Banner />
+      <RandomTourPackageSection />
+      <RoomSection />
       <QuoteBanner />
       <CtaSection />
-      <InstaBlog/>
+      <InstaBlog />
     </>
   );
 }

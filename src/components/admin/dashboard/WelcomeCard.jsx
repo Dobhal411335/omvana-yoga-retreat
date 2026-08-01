@@ -1,14 +1,32 @@
-import { Plus, MessageSquare, Images } from "lucide-react";
+"use client";
+
 import Link from "next/link";
 import dayjs from "dayjs";
+import { Building2, Inbox, Boxes } from "lucide-react";
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
 
 const quickActions = [
-  { label: "Create Package", href: "/admin/packages/new", icon: Plus },
-  { label: "View Enquiries", href: "/admin/enquiries", icon: MessageSquare },
-  { label: "Upload Gallery Image", href: "/admin/gallery/upload", icon: Images },
+  {
+    label: "Company Basic Info",
+    href: "/admin/company_basic_information",
+    icon: Building2,
+  },
+  {
+    label: "Room Enquiries",
+    href: "/admin/room_enquiries",
+    icon: Inbox,
+  },
+  {
+    label: "Manage Packages",
+    href: "/admin/manage_packages_category",
+    icon: Boxes,
+  },
 ];
 
-export function WelcomeCard({ adminName = "Admin" }) {
+export function WelcomeCard() {
+  const company = useCompanyBasicInfo();
+  const adminName = company?.companyName || "Admin";
+
   const greeting = (() => {
     const h = new Date().getHours();
     if (h < 12) return "Good morning";
@@ -30,7 +48,7 @@ export function WelcomeCard({ adminName = "Admin" }) {
             <span className="italic text-primary/80">{adminName}.</span>
           </h2>
           <p className="mt-2 font-body text-sm text-white/45">
-            Here&apos;s what&apos;s happening with Omvana today.
+            Jump into any CMS page below to manage your retreat website.
           </p>
         </div>
 
