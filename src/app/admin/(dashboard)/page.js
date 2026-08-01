@@ -3,6 +3,8 @@ import { StatsGrid } from "@/components/admin/dashboard/StatsGrid";
 import { CmsGrid } from "@/components/admin/dashboard/CmsGrid";
 import { getDashboardEnquiryStats } from "@/services/dashboardStats.service";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Dashboard",
 };
