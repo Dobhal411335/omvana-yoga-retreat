@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +38,8 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 const emptyForm = {
+  titleTag: "",
+  date: "",
   title: "",
   name: "",
   location: "",
@@ -135,6 +138,8 @@ export default function CreateTestimonials() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: editId || undefined,
+          titleTag: formData.titleTag.trim(),
+          date: formData.date,
           title: formData.title.trim(),
           name: formData.name.trim(),
           location: formData.location.trim(),
@@ -161,6 +166,8 @@ export default function CreateTestimonials() {
   function handleEdit(item) {
     setEditId(item._id);
     setFormData({
+      titleTag: item.titleTag || "",
+      date: item.date ? new Date(item.date).toISOString().split("T")[0] : "",
       title: item.title || "",
       name: item.name || "",
       location: item.location || "",
@@ -302,12 +309,47 @@ export default function CreateTestimonials() {
           </div>
         </div>
 
+
+        <div className="grid gap-5 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label
+              htmlFor="testimonial-titleTag"
+              className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted"
+            >
+              Title Tag
+            </Label>
+            <Input
+              id="testimonial-titleTag"
+              value={formData.titleTag}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, titleTag: e.target.value }))
+              }
+              placeholder="A life-changing experience"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label
+              htmlFor="testimonial-date"
+              className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted"
+            >
+              Date
+            </Label>
+            <DatePicker
+              id="testimonial-date"
+              value={formData.date}
+              onChange={(val) =>
+                setFormData((prev) => ({ ...prev, date: val || "" }))
+              }
+            />
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label
             htmlFor="testimonial-title"
             className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted"
           >
-            Title / Quote
+            Quote / Testimonial Body
           </Label>
           <Textarea
             id="testimonial-title"

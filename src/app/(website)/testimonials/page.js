@@ -15,6 +15,8 @@ async function getTestimonials() {
 
     return testimonials.map((item) => ({
       _id: item._id?.toString(),
+      titleTag: item.titleTag || "",
+      date: item.date || "",
       title: item.title || "",
       name: item.name || "",
       location: item.location || "",

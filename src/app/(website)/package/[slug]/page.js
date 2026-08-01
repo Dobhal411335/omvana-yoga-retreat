@@ -65,7 +65,7 @@ const getApprovedReviews = async (packageId) => {
 
 const getFeaturedPackages = async () => {
     try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL
         if (!baseUrl) return []
 
         const res = await fetch(`${baseUrl}/api/featured-packages`, {

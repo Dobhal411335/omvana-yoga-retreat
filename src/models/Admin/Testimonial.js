@@ -2,6 +2,13 @@ import { Schema, models, model } from "mongoose";
 
 const TestimonialSchema = new Schema(
   {
+    titleTag: {
+      type: String,
+      trim: true,
+    },
+    date: {
+      type: Date,
+    },
     title: {
       type: String,
       required: true,

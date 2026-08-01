@@ -54,19 +54,7 @@ const navItems = [
     href: (id) => `/admin/editPackage/include-package/${id}`,
     icon: Package,
     isActive: (pathname) => pathname.includes("/include-package"),
-  },
-  {
-    label: "Create Plan Type",
-    href: (id) => `/admin/editPackage/create-plan-type/${id}`,
-    icon: Map,
-    isActive: (pathname) => pathname.includes("/create-plan-type"),
-  },
-  {
-    label: "Add Vehicle Plan",
-    href: (id) => `/admin/editPackage/add-vehicle/${id}`,
-    icon: Car,
-    isActive: (pathname) => pathname.includes("/add-vehicle"),
-  },
+  },  
 ]
 
 const Sidebar = ({ id, slug }) => {
@@ -77,7 +65,7 @@ const Sidebar = ({ id, slug }) => {
       <nav
         aria-label="Edit package sections"
         className="rounded-[var(--radius-card)] bg-white p-3 ring-1 ring-border/50"
-      >
+      > 
         <p className="mb-3 px-2 font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
           Package sections
         </p>

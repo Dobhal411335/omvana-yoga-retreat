@@ -36,6 +36,8 @@ export async function POST(req) {
     await connectDB();
     const body = await req.json();
 
+    const titleTag = String(body?.titleTag || "").trim();
+    const date = body?.date ? new Date(body.date) : null;
     const title = String(body?.title || "").trim();
     const name = String(body?.name || "").trim();
     const location = String(body?.location || "").trim();
@@ -61,6 +63,8 @@ export async function POST(req) {
     const nextOrder = lastItem ? Number(lastItem.order || 0) + 1 : 1;
 
     const testimonial = await Testimonial.create({
+      titleTag,
+      date,
       title,
       name,
       location,
@@ -90,6 +94,8 @@ export async function PATCH(req) {
       return json(false, "Testimonial id is required.", null, 400);
     }
 
+    const titleTag = String(body?.titleTag || "").trim();
+    const date = body?.date ? new Date(body.date) : null;
     const title = String(body?.title || "").trim();
     const name = String(body?.name || "").trim();
     const location = String(body?.location || "").trim();
@@ -112,6 +118,8 @@ export async function PATCH(req) {
     }
 
     const update = {
+      titleTag,
+      date,
       title,
       name,
       location,

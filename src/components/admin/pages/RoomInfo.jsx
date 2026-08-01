@@ -349,13 +349,13 @@ const productInfo = ({ roomData, roomId }) => {
           Basic info
         </h2>
         <p className="mt-1 font-body text-sm text-muted">
-          Heading, description, and gallery for this room.
+          Heading, description, and gallery for this hotel.
         </p>
       </div>
 
       <div className="space-y-2">
         <label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-          Room name
+          Hotel name
         </label>
         <Input
           type="text"
@@ -368,18 +368,18 @@ const productInfo = ({ roomData, roomId }) => {
 
       <div className="space-y-2">
         <label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-          Room heading
+          Hotel heading
         </label>
         <Input
           value={heading}
           onChange={(e) => setHeading(e.target.value)}
-          placeholder="A quiet room overlooking the garden"
+          placeholder="A quiet hotel overlooking the garden"
         />
       </div>
 
       <div className="space-y-2">
         <label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-          Room description
+          Hotel description
         </label>
         <div className="overflow-hidden rounded-card border border-border bg-card">
           {editor && (
@@ -430,7 +430,7 @@ const productInfo = ({ roomData, roomId }) => {
             <div className="relative mb-3 inline-block overflow-hidden rounded-image">
               <img
                 src={editGallery ? editMainImage?.url : selectedMainImage.url}
-                alt="Main room"
+                alt="Main hotel"
                 className="max-h-40 rounded-image object-cover"
               />
               <button

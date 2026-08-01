@@ -99,6 +99,15 @@ const SearchLocationSchema = new Schema(
   {
     locationName: { type: String, default: "" },
     count: { type: String, default: "" },
+    url:{type:String,default:""}
+  },
+  { _id: false }
+);
+
+const AdvertisementSchema = new Schema(
+  {
+    image: { type: ImageSchema, default: () => ({}) },
+    url: { type: String, default: "" }
   },
   { _id: false }
 );
@@ -136,8 +145,7 @@ const WebpageSchema = new Schema(
     blockquoteDescription: { type: String, default: "" },
     blockquoteTags: { type: [String], default: [""] },
     accordionTags: { type: [AccordionTagSchema], default: [{ left: "", right: "" }] },
-    advertisementImage: { type: ImageSchema, default: () => ({}) },
-    advertisementUrl: { type: String, default: "" },
+    advertisements: { type: [AdvertisementSchema], default: [] },
     sideThumbImage: { type: ImageSchema, default: () => ({}) },
     sideThumbName: { type: String, default: "" },
     sideThumbDesignation: { type: String, default: "" },
@@ -149,7 +157,6 @@ const WebpageSchema = new Schema(
     mainProfileImage: { type: ImageSchema, default: () => ({}) },
     imageGallery: { type: [ImageSchema], default: [] },
     notices: { type: [NoticeSchema], default: [] },
-    boldParagraph: { type: String, default: "" },
     searchLocations: { type: [SearchLocationSchema], default: [] },
     design5Chip: { type: String, default: "" },
     design5MainHeading: { type: String, default: "" },

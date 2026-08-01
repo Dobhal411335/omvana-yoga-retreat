@@ -43,8 +43,8 @@ export default function EditRoom({ roomId }) {
   return (
     <div className="mx-auto w-full max-w-6xl space-y-6">
       <AdminPageHeader
-        title={roomData?.title || "Edit room"}
-        description="Update room details, pricing, and amenities."
+        title={roomData?.title || "Edit hotel"}
+        description="Update hotel details, pricing, and amenities."
         action={
           <Button
             type="button"
@@ -52,7 +52,7 @@ export default function EditRoom({ roomId }) {
             onClick={() => router.push("/admin/manage_rooms")}
           >
             <ArrowLeft className="size-4" />
-            Back to rooms
+            Back to hotels
           </Button>
         }
       />
@@ -60,7 +60,7 @@ export default function EditRoom({ roomId }) {
       {loading ? (
         <div className="flex min-h-64 items-center justify-center gap-2 rounded-card border border-border bg-card font-body text-sm text-muted">
           <Loader2 className="size-4 animate-spin text-primary" />
-          Loading room…
+          Loading hotel
         </div>
       ) : (
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start">

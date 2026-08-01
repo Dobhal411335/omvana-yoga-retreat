@@ -60,7 +60,7 @@ export default function InstaBlog({ section = "frontend" }) {
   useEffect(() => {
     const fetchFacebookPosts = async () => {
       try {
-        const res = await fetch(`/api/facebook-posts?section=${section}`);
+        const res = await fetch(`/api/facebook-posts`);
         const data = await res.json();
         setFacebookPosts(Array.isArray(data) ? data : []);
       } catch {
@@ -72,7 +72,7 @@ export default function InstaBlog({ section = "frontend" }) {
 
     const fetchInstagramPosts = async () => {
       try {
-        const res = await fetch(`/api/instagram-posts?section=${section}`);
+        const res = await fetch(`/api/instagram-posts`);
         const data = await res.json();
         setInstagramPosts(Array.isArray(data) ? data : []);
       } catch {
@@ -84,7 +84,7 @@ export default function InstaBlog({ section = "frontend" }) {
 
     fetchFacebookPosts();
     fetchInstagramPosts();
-  }, [section]);
+  }, []);
 
   const isLoading = isInstaLoading || isFbLoading;
 

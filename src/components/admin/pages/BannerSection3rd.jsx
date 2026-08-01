@@ -37,7 +37,7 @@ const BannerSection3rd = () => {
                 setBanners(data);
 
                 if (data.length > 0) {
-                    const highestOrder = Math.max(...data.map((b) => b.order));
+                    const highestOrder = Math.max(0, ...data.map((b) => Number(b.order) || 0));
                     setFormData((prev) => ({ ...prev, order: highestOrder + 1 }));
                 }
             } catch (error) {
@@ -128,7 +128,7 @@ const BannerSection3rd = () => {
 
                 setFormData({
                     buttonLink: "",
-                    order: updatedBanners.length > 0 ? Math.max(...updatedBanners.map(b => b.order)) + 1 : 1,
+                    order: updatedBanners.length > 0 ? Math.max(0, ...updatedBanners.map(b => Number(b.order) || 0)) + 1 : 1,
                     image: { url: "", key: "" },
                     mobileImage: { url: "", key: "" },
                 });
@@ -174,7 +174,7 @@ const BannerSection3rd = () => {
                 if (!editBanner) {
                     setFormData(prev => ({
                         ...prev,
-                        order: updatedBanners.length > 0 ? Math.max(...updatedBanners.map(b => b.order)) + 1 : 1
+                        order: updatedBanners.length > 0 ? Math.max(0, ...updatedBanners.map(b => Number(b.order) || 0)) + 1 : 1
                     }));
                 }
             } else {
@@ -219,7 +219,7 @@ const BannerSection3rd = () => {
                         setEditBanner(null);
                         setFormData({ 
                             buttonLink: "", 
-                            order: banners.length > 0 ? Math.max(...banners.map(b => b.order)) + 1 : 1,
+                            order: banners.length > 0 ? Math.max(0, ...banners.map(b => Number(b.order) || 0)) + 1 : 1,
                             image: { url: "", key: "" }, 
                             mobileImage: { url: "", key: "" } 
                         });
@@ -385,7 +385,7 @@ const BannerSection3rd = () => {
                                                 <Input 
                                                     name="order" 
                                                     type="number" 
-                                                    value={formData.order} 
+                                                    value={formData.order || 1} 
                                                     readOnly 
                                                     className="h-11 pl-10 rounded-xl border-slate-200 bg-slate-100 text-slate-500 cursor-not-allowed focus-visible:ring-0"
                                                 />

@@ -85,7 +85,7 @@ export default function RoomPrice({ roomData, roomId }) {
         throw new Error(error.error || error.message || "Failed to save price");
       }
 
-      toast.success("Room price saved.");
+      toast.success("Hotel price saved.");
     } catch (err) {
       toast.error(err.message || "Failed to save price");
     } finally {
@@ -99,7 +99,7 @@ export default function RoomPrice({ roomData, roomId }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <h2 className="font-heading text-xl font-medium text-heading">
-          Room price
+          Hotel price
         </h2>
         <p className="mt-1 font-body text-sm text-muted">
           Set nightly rates for occupancy types.
@@ -108,9 +108,9 @@ export default function RoomPrice({ roomData, roomId }) {
 
       <div className="space-y-2">
         <Label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-          Room name
+          Hotel name
         </Label>
-        <Input value={roomName || "Room name not found"} disabled className="bg-surface" />
+        <Input value={roomName || "Hotel name not found"} disabled className="bg-surface" />
       </div>
 
       <div className="flex flex-wrap items-center gap-4 rounded-card border border-border bg-surface px-4 py-3">
@@ -124,7 +124,7 @@ export default function RoomPrice({ roomData, roomId }) {
               name="editablePax"
               checked={editablePax === type}
               onChange={() => setEditablePax(type)}
-              className="accent-[var(--primary)]"
+              className="accent-primary"
             />
             Edit {type}
           </label>

@@ -151,11 +151,11 @@ export default function ManageRoom() {
         });
         const result = await response.json();
         if (response.ok) {
-          toast.success("Room updated.");
+          toast.success("Hotel updated.");
           handleCancelEdit();
           await fetchRooms();
         } else {
-          toast.error(result.message || "Failed to update room.");
+          toast.error(result.message || "Failed to update hotel.");
         }
       } else {
         const response = await fetch("/api/room", {
@@ -165,11 +165,11 @@ export default function ManageRoom() {
         });
         const result = await response.json();
         if (response.ok) {
-          toast.success("Room added.");
+          toast.success("Hotel added.");
           handleCancelEdit();
           await fetchRooms();
         } else {
-          toast.error(result.error || result.message || "Failed to add room.");
+          toast.error(result.error || result.message || "Failed to add hotel.");
         }
       }
     } catch (error) {
@@ -194,7 +194,7 @@ export default function ManageRoom() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="font-heading text-xl font-medium text-heading">
-              {isEditing ? "Edit room" : "New room"}
+              {isEditing ? "Edit hotel" : "New hotel"}
             </h2>
             <p className="mt-1 font-body text-sm text-muted">
               Start with a title and code, then complete details in the editor.
@@ -205,13 +205,13 @@ export default function ManageRoom() {
         <div className="grid gap-5 sm:grid-cols-[140px_1fr]">
           <div className="space-y-2">
             <Label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-              Room code
+            Hotel Code
             </Label>
             <Input value={productCode} readOnly className="bg-surface font-ui" />
           </div>
           <div className="space-y-2">
             <Label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-              Room title
+              Hotel title
             </Label>
             <Input
               placeholder="Garden cottage"
@@ -240,7 +240,7 @@ export default function ManageRoom() {
             ) : (
               <Plus className="size-4" />
             )}
-            {isEditing ? "Update room" : "Add room"}
+            {isEditing ? "Update hotel" : "Add hotel"}
           </Button>
           {isEditing ? (
             <Button type="button" variant="outline" onClick={handleCancelEdit}>
@@ -253,7 +253,7 @@ export default function ManageRoom() {
       <div className="overflow-hidden rounded-card border border-border bg-card shadow-sm">
         <div className="border-b border-border px-5 py-4">
           <h2 className="font-heading text-xl font-medium text-heading">
-            All rooms
+            All hotels
           </h2>
           <p className="mt-1 font-body text-sm text-muted">
             {products.length} total
@@ -270,7 +270,7 @@ export default function ManageRoom() {
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent">
                 <TableHead className="font-ui text-heading">#</TableHead>
-                <TableHead className="font-ui text-heading">Room</TableHead>
+                <TableHead className="font-ui text-heading">Hotel</TableHead>
                 <TableHead className="font-ui text-heading">Code</TableHead>
                 <TableHead className="font-ui text-heading">URL</TableHead>
                 <TableHead className="w-[160px] text-right font-ui text-heading">
@@ -310,7 +310,7 @@ export default function ManageRoom() {
                           className="size-8"
                           onClick={() => copyToClipboard(url)}
                           disabled={!url}
-                          aria-label="Copy room URL"
+                          aria-label="Copy hotel URL"
                         >
                           <Copy className="size-4" />
                         </Button>
@@ -318,9 +318,9 @@ export default function ManageRoom() {
                       <TableCell className="text-right">
                         <div className="inline-flex gap-2">
                           <Button
-                            type="button"
                             variant="outline"
                             size="sm"
+                            nativeButton={false}
                             render={<Link href={`/admin/edit_room/${prod._id}`} />}
                           >
                             Edit
@@ -341,7 +341,7 @@ export default function ManageRoom() {
                             size="icon"
                             className="size-8 text-error hover:text-error"
                             onClick={() => setDeleteTarget(prod)}
-                            aria-label="Delete room"
+                            aria-label="Delete hotel"
                           >
                             <Trash2 className="size-3.5" />
                           </Button>
@@ -357,7 +357,7 @@ export default function ManageRoom() {
                       No rooms yet
                     </p>
                     <p className="mt-1 font-body text-sm text-muted">
-                      Create your first room above.
+                      Create your first hotel above.
                     </p>
                   </TableCell>
                 </TableRow>
@@ -376,7 +376,7 @@ export default function ManageRoom() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="font-heading text-xl text-heading">
-              Delete room?
+              Delete hotel ?
             </DialogTitle>
             <DialogDescription className="font-body text-sm text-muted">
               This will permanently remove{" "}

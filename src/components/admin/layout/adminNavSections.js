@@ -138,11 +138,6 @@ export const adminNavSections = [
         icon: MenuIcon,
       },
       {
-        label: "Manage Sub Menu Section",
-        href: "/admin/manage_sub_menu",
-        icon: MenuIcon,
-      },
-      {
         label: "Manage Packages",
         href: "/admin/manage_packages_category",
         icon: Boxes,

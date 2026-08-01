@@ -92,39 +92,39 @@ export default function Banner() {
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8">
               {promoLoading
                 ? Array.from({ length: 2 }).map((_, idx) => (
-                    <Skeleton
-                      key={idx}
-                      className="md:aspect-16/10 aspect-3/4 w-full md:rounded-image rounded-md"
-                    />
-                  ))
+                  <Skeleton
+                    key={idx}
+                    className="md:aspect-16/10 aspect-3/4 w-full md:rounded-image rounded-md"
+                  />
+                ))
                 : promotionalBanners.map((item) => (
-                    <Link
-                      key={item._id || item.title}
-                      href={item.buttonLink || "#"}
-                      target={item.buttonLink ? "_blank" : undefined}
-                      rel={item.buttonLink ? "noopener noreferrer" : undefined}
-                      className="group relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-image)] bg-border md:aspect-[4/3]"
-                    >
-                      {item.image?.url ? (
-                        <Image
-                          src={item.image.url}
-                          alt={item.title || "Promotional banner"}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                  <Link
+                    key={item._id || item.title}
+                    href={item.buttonLink || "#"}
+                    target={item.buttonLink ? "_blank" : undefined}
+                    rel={item.buttonLink ? "noopener noreferrer" : undefined}
+                    className="group relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-image)] bg-border md:aspect-[4/3]"
+                  >
+                    {item.image?.url ? (
+                      <Image
+                        src={item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 flex items-end bg-image-dark/40 opacity-0 transition-opacity duration-[var(--duration-medium)] group-hover:opacity-100">
+                      <span className="m-6 inline-flex items-center gap-1.5 font-ui text-xs uppercase tracking-[0.2em] text-white">
+                        Explore
+                        <ArrowUpRight
+                          className="size-3.5"
+                          aria-hidden="true"
                         />
-                      ) : null}
-                      <div className="absolute inset-0 flex items-end bg-image-dark/40 opacity-0 transition-opacity duration-[var(--duration-medium)] group-hover:opacity-100">
-                        <span className="m-6 inline-flex items-center gap-1.5 font-ui text-xs uppercase tracking-[0.2em] text-white">
-                          Explore
-                          <ArrowUpRight
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
             </div>
           </Container>
         </Section>
@@ -245,47 +245,47 @@ export default function Banner() {
       )}
 
       {showBanners && (
-        <Section spacing="sm" className="bg-background">
-          <Container>
+        <Section spacing="sm" className="bg-background w-full">
+          <div className="w-full">
             {bannersLoading ? (
-              <Skeleton className="h-[280px] w-full rounded-[var(--radius-image)] md:h-[400px]" />
+              <Skeleton className="h-[400px] px-2 w-full rounded-none md:h-[430px]" />
             ) : (
-              <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-8 w-full">
                 {bannerSection2nd.map((item) => (
-                  <Link
-                    key={item._id}
-                    href={item.buttonLink || "#"}
-                    target={item.buttonLink ? "_blank" : undefined}
-                    rel={item.buttonLink ? "noopener noreferrer" : undefined}
-                    className="group relative block overflow-hidden md:rounded-image rounded-md bg-border"
-                  >
-                    <div className="relative hidden aspect-[21/9] w-full md:block">
-                      {item.image?.url ? (
-                        <Image
-                          src={item.image.url}
-                          alt={item.title || "Promotional banner"}
-                          fill
-                          sizes="(max-width: 1280px) 100vw, 1280px"
-                          className="object-cover transition-transform duration-300 ease-smooth group-hover:scale-[1.02]"
-                        />
-                      ) : null}
-                    </div>
-                    <div className="relative aspect-[4/5] w-full md:hidden">
-                      {(item.mobileImage?.url || item.image?.url) ? (
-                        <Image
-                          src={item.mobileImage?.url || item.image.url}
-                          alt={item.title || "Promotional banner"}
-                          fill
-                          sizes="100vw"
-                          className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
-                        />
-                      ) : null}
-                    </div>
-                  </Link>
+                 <Link
+                  key={item._id}
+                  href={item.buttonLink || "#"}
+                  target={item.buttonLink ? "_blank" : undefined}
+                  rel={item.buttonLink ? "noopener noreferrer" : undefined}
+                  className="group relative block w-full overflow-hidden bg-border"
+                >
+                  <div className="relative hidden h-[300px] md:h-[430px] w-full md:block">
+                    {item.image?.url ? (
+                      <Image
+                        src={item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="relative h-[450px] w-full md:hidden">
+                    {(item.mobileImage?.url || item.image?.url) ? (
+                      <Image
+                        src={item.mobileImage?.url || item.image.url}
+                        alt={item.title || "Promotional banner"}
+                        fill
+                        sizes="100vw"
+                        className="object-cover object-center transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
+                      />
+                    ) : null}
+                  </div>
+                </Link>
                 ))}
               </div>
             )}
-          </Container>
+          </div>
         </Section>
       )}
     </>

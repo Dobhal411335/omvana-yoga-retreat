@@ -206,14 +206,14 @@ const FeaturedOffer = ({}) => {
                                     {editBanner ? "Edit Featured Offer" : "Add New Featured Offer"}
                                 </CardTitle>
                             </div>
-                            <CardDescription className="text-slate-500">Provide details for the property being featured.</CardDescription>
+                            <CardDescription className="text-slate-500">Provide details for the package being featured.</CardDescription>
                         </CardHeader>
                         <CardContent className="p-6">
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                     {/* Left Column: Image Upload */}
                                     <div className="space-y-3">
-                                        <Label className="text-sm font-medium text-slate-600 ml-1">Property Image <span className="text-red-500">*</span></Label>
+                                        <Label className="text-sm font-medium text-slate-600 ml-1">Package Image <span className="text-red-500">*</span></Label>
                                         
                                         <input
                                             type="file"
@@ -272,7 +272,7 @@ const FeaturedOffer = ({}) => {
                                     {/* Right Column: Form Inputs */}
                                     <div className="space-y-5">
                                         <div className="grid gap-2">
-                                            <Label className="text-sm font-medium text-slate-600 ml-1">Property Name <span className="text-red-500">*</span></Label>
+                                            <Label className="text-sm font-medium text-slate-600 ml-1">Package Name <span className="text-red-500">*</span></Label>
                                             <div className="relative">
                                                 <Building className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                                 <Input 
@@ -289,12 +289,12 @@ const FeaturedOffer = ({}) => {
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="grid gap-2">
-                                                <Label className="text-sm font-medium text-slate-600 ml-1">Property Type <span className="text-red-500">*</span></Label>
+                                                <Label className="text-sm font-medium text-slate-600 ml-1">Package Type <span className="text-red-500">*</span></Label>
                                                 <div className="relative">
                                                     <Home className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                                     <Input 
                                                         name="propertyType" 
-                                                        placeholder="e.g. Villa" 
+                                                        placeholder="e.g. Package Type" 
                                                         type="text" 
                                                         value={formData.propertyType} 
                                                         onChange={handleInputChange} 
@@ -342,7 +342,7 @@ const FeaturedOffer = ({}) => {
                                                 <LinkIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                                 <Input 
                                                     name="buttonLink" 
-                                                    placeholder="https://example.com/property/123" 
+                                                    placeholder="https://example.com/package/123" 
                                                     type="url" 
                                                     value={formData.buttonLink} 
                                                     onChange={handleInputChange} 
@@ -380,7 +380,7 @@ const FeaturedOffer = ({}) => {
                                     <TableHeader className="bg-slate-50/80 border-b border-slate-100">
                                         <TableRow className="hover:bg-transparent border-0">
                                             <TableHead className="text-slate-500 font-medium h-12 w-20 text-center">Image</TableHead>
-                                            <TableHead className="text-slate-500 font-medium h-12">Property Name</TableHead>
+                                            <TableHead className="text-slate-500 font-medium h-12">Package Name</TableHead>
                                             <TableHead className="text-slate-500 font-medium h-12">Location & Type</TableHead>
                                             <TableHead className="text-slate-500 font-medium h-12">Price</TableHead>
                                             <TableHead className="text-slate-500 font-medium text-right pr-6 h-12">Actions</TableHead>
@@ -429,7 +429,7 @@ const FeaturedOffer = ({}) => {
                                         ) : (
                                             <TableRow>
                                                 <TableCell colSpan="5" className="text-center py-12 text-slate-400">
-                                                    No featured offers found. Add a property to get started.
+                                                    No featured offers found. Add a package to get started.
                                                 </TableCell>
                                             </TableRow>
                                         )}

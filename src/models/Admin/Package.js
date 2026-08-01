@@ -18,8 +18,6 @@ const PackageSchema = new Schema({
         groupBooking: { type: String },
         tourType: { type: String },
         duration: { type: Number },
-        heliBooking: { type: String },
-        planCalculator: { type: String },
         notice: { type: String },
         smallDesc: { type: String },
         fullDesc: { type: String },

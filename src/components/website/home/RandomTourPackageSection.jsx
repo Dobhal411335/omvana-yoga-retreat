@@ -143,111 +143,93 @@ export default function RandomTourPackageSection() {
             </div>
 
             {packagesLoading ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {Array.from({ length: 4 }).map((_, idx) => (
+              <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, idx) => (
                   <div
                     key={idx}
-                    className="flex flex-col gap-4 rounded-[var(--radius-card)] border border-border/60 bg-surface p-3 shadow-sm"
+                    className="flex flex-col rounded-card border border-border bg-white p-6 md:p-8"
                   >
-                    <Skeleton className="aspect-[4/3] w-full rounded-[var(--radius-image)]" />
-                    <div className="flex flex-col gap-3 px-1 pb-2">
-                      <Skeleton className="h-3 w-1/2" />
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="mt-2 h-4 w-1/3" />
+                    <Skeleton className="mb-6 aspect-[4/3] w-full rounded-[var(--radius-image)]" />
+                    <div className="flex items-start justify-between">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-8" />
                     </div>
+                    <Skeleton className="mt-4 h-8 w-3/4" />
+                    <Skeleton className="mt-2 h-4 w-1/2" />
+                    <div className="mt-6 border-t border-border pt-6">
+                      <Skeleton className="h-10 w-32" />
+                    </div>
+                    <Skeleton className="mt-8 h-10 w-full rounded-button" />
                   </div>
                 ))}
               </div>
             ) : (
-              <Carousel
-                opts={{ align: "start", loop: false }}
-                className="w-full"
-              >
-                <CarouselContent className="-ml-5">
-                  {packages.map((item) => (
-                    <CarouselItem
-                      key={item._id || item.slug}
-                      className="basis-full pl-5 py-1 sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                    >
-                      <Link
-                        href={`/package/${item.slug}`}
-                        className="group flex h-full flex-col rounded-[var(--radius-card)] border border-border/60 bg-surface p-3 shadow-sm transition-[border-color,box-shadow] duration-[var(--duration-fast)] hover:border-heading/20 hover:shadow-md"
-                      >
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-image)] bg-border">
-                          <Image
-                            src={
-                              item?.basicDetails?.thumbnail?.url ||
-                              "/RandomTourPackageImages/u1.jpg"
-                            }
-                            alt={item?.packageName || "Tour package"}
-                            fill
-                            sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 25vw"
-                            quality={60}
-                            className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
-                          />
-                        </div>
+              <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {packages.map((item) => (
+                  <article
+                    key={item._id || item.slug}
+                    className="group flex h-full flex-col justify-between rounded-card border border-border bg-white p-6 md:p-8"
+                  >
+                    <div>
+                      <div className="relative mb-6 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-image)] bg-border">
+                        <Image
+                          src={
+                            item?.basicDetails?.thumbnail?.url ||
+                            "/RandomTourPackageImages/u1.jpg"
+                          }
+                          alt={item?.packageName || "Tour package"}
+                          fill
+                          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
+                          quality={60}
+                          className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                        />
+                      </div>
 
-                        <div className="flex flex-1 flex-col justify-between gap-5 px-2 pb-2 pt-5">
-                          <div className="flex flex-col gap-3">
-                            <div className="flex flex-wrap items-center justify-between gap-2 font-ui text-xs text-muted">
-                              {item?.basicDetails?.location ? (
-                                <span className="inline-flex items-center gap-1.5">
-                                  <MapPin
-                                    className="size-3.5 text-primary"
-                                    strokeWidth={1.5}
-                                    aria-hidden="true"
-                                  />
-                                  {item.basicDetails.location}
-                                </span>
-                              ) : null}
-                              {item?.basicDetails?.duration ? (
-                                <span className="inline-flex items-center gap-1.5">
-                                  <CalendarClock
-                                    className="size-3.5 text-primary"
-                                    strokeWidth={1.5}
-                                    aria-hidden="true"
-                                  />
-                                  {item.basicDetails.duration} Days
-                                </span>
-                              ) : null}
-                            </div>
-                            <h3 className="font-heading text-xl leading-snug text-heading line-clamp-2">
-                              {item.packageName}
-                            </h3>
-                          </div>
+                      <div className="flex items-start justify-between">
+                        <span className="font-ui text-xs uppercase tracking-[0.2em] text-muted">
+                          {item?.basicDetails?.duration
+                            ? `${item.basicDetails.duration} Days`
+                            : "Flexible"}
+                        </span>
+                        {/* <span className="font-ui text-xs text-muted">from</span> */}
+                      </div>
 
-                          <div className="flex items-end justify-between gap-3 border-t border-border pt-4">
-                            <div>
-                              <p className="font-ui text-[10px] uppercase tracking-[0.2em] text-muted">
-                                From
-                              </p>
-                              <p className="mt-1 font-body text-sm text-heading">
-                                {item?.price === 0 ? (
-                                  "On request"
-                                ) : (
-                                  <>
-                                    ₹{formatNumeric(item?.price)}
-                                    <span className="text-muted">*</span>
-                                  </>
-                                )}
-                              </p>
-                            </div>
-                            <span className="inline-flex items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-[var(--duration-fast)] group-hover:text-primary-hover">
-                              Details
-                              <ArrowUpRight
-                                className="size-3.5"
-                                aria-hidden="true"
-                              />
+                      <h3 className="mt-4 font-heading text-3xl text-black">
+                        {item.packageName}
+                      </h3>
+                      {item?.basicDetails?.location && (
+                        <p className="mt-1 flex items-center gap-1.5 font-body text-sm italic text-primary/70">
+                          <MapPin className="size-3.5" />{" "}
+                          {item.basicDetails.location}
+                        </p>
+                      )}
+
+                      <div className="mt-6 border-t border-border pt-6">
+                        <p className="font-heading text-4xl text-black">
+                          {item?.price === 0 ? (
+                            "On request"
+                          ) : (
+                            <>₹{formatNumeric(item?.price)}</>
+                          )}
+                          {item?.price !== 0 && (
+                            <span className="ml-1 font-body text-sm text-muted">
+                              / person
                             </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-left-5" />
-                <CarouselNext className="right-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-right-5" />
-              </Carousel>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href={`/package/${item.slug}`}
+                      className="mt-8 inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-border bg-transparent px-5 font-body text-sm text-heading transition-colors hover:border-heading/40 hover:bg-surface"
+                    >
+                      View Details
+                      <ArrowUpRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  </article>
+                ))}
+              </div>
             )}
           </Container>
         </Section>

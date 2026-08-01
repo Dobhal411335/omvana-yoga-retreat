@@ -10,7 +10,7 @@ export async function GET(req) {
         const banners = await FeaturedBanner.find({}).sort({ createdAt: -1 });
         return NextResponse.json(banners, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: "Failed to fetch banners" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch packages" }, { status: 500 });
     }
 }
 
@@ -30,7 +30,7 @@ export async function POST(req) {
         await newBanner.save();
         return NextResponse.json(newBanner, { status: 201 });
     } catch (error) {
-        return NextResponse.json({ error: `Failed to create banner: ${error.message}` }, { status: 500 });
+        return NextResponse.json({ error: `Failed to create packages: ${error.message}` }, { status: 500 });
     }
 }
 
@@ -50,7 +50,7 @@ export async function PATCH(req) {
         const updatedBanner = await FeaturedBanner.findByIdAndUpdate(id, updateData, { new: true });
         return NextResponse.json(updatedBanner, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: "Failed to update banner" }, { status: 500 });
+        return NextResponse.json({ error: "Failed to update packages" }, { status: 500 });
     }
 }
 
@@ -62,7 +62,7 @@ export async function DELETE(req) {
         // Find the banner first
         const banner = await FeaturedBanner.findById(id);
         if (!banner) {
-            return NextResponse.json({ error: "Banner not found" }, { status: 404 });
+            return NextResponse.json({ error: "packages not found" }, { status: 404 });
         }
 
         // Delete the image from Uploadthing (if key exists)
@@ -73,8 +73,8 @@ export async function DELETE(req) {
         // Delete banner from database
         await FeaturedBanner.findByIdAndDelete(id);
 
-        return NextResponse.json({ message: "Banner deleted successfully" }, { status: 200 });
+        return NextResponse.json({ message: "packages deleted successfully" }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ error: `Failed to delete banner: ${error.message}` }, { status: 500 });
+        return NextResponse.json({ error: `Failed to delete packages: ${error.message}` }, { status: 500 });
     }
 }

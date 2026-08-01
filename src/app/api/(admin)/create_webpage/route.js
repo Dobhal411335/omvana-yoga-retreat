@@ -109,10 +109,12 @@ export async function DELETE(request) {
     addKey(webpage.mainProfileImage);
     addKey(webpage.paragraphFirstImage);
     addKey(webpage.paragraphSecondImage);
-    addKey(webpage.advertisementImage);
     addKey(webpage.sideThumbImage);
 
     // Check arrays
+    if (Array.isArray(webpage.advertisements)) {
+      webpage.advertisements.forEach(ad => addKey(ad.image));
+    }
     if (Array.isArray(webpage.imageGallery)) {
       webpage.imageGallery.forEach(addKey);
     }
@@ -152,3 +154,4 @@ export async function DELETE(request) {
     return NextResponse.json({ error: "Failed to delete webpage", message: error.message }, { status: 500 });
   }
 }
+

@@ -121,10 +121,10 @@ export default function Amenities({ roomId }) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <h2 className="font-heading text-xl font-medium text-heading">
-          Room amenities
+          Hotel amenities
         </h2>
         <p className="mt-1 font-body text-sm text-muted">
-          Select the amenities available for this room.
+          Select the amenities available for this Hotel.
         </p>
       </div>
 

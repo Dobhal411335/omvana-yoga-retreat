@@ -66,6 +66,12 @@ function TestimonialCard({ testimonial, index }) {
             <Quote className="mx-auto h-5 w-5 text-primary md:mx-0 md:h-6 md:w-6" />
           </div>
 
+          {testimonial.titleTag && (
+            <h3 className="mb-3 font-heading text-base font-medium tracking-wide text-primary uppercase sm:text-lg">
+              {testimonial.titleTag}
+            </h3>
+          )}
+
           <blockquote>
             <p className="font-heading text-lg leading-8 sm:text-xl sm:leading-9 md:text-2xl md:leading-10 lg:text-3xl lg:leading-[1.45] xl:text-[2rem]">
               {testimonial.title}
@@ -81,6 +87,18 @@ function TestimonialCard({ testimonial, index }) {
               <>
                 <span className="text-border">•</span>
                 <span>{testimonial.location}</span>
+              </>
+            )}
+
+            {testimonial.date && (
+              <>
+                <span className="text-border">•</span>
+                <time dateTime={testimonial.date}>
+                  {new Date(testimonial.date).toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </time>
               </>
             )}
           </footer>

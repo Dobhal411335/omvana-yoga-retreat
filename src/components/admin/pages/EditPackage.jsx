@@ -646,8 +646,6 @@ const EditPackage = () => {
       setValue("price", packages.price);
       setValue("priceUnit", packages.priceUnit);
       setValue("basicDetails.location", packages?.basicDetails?.location)
-      setValue("basicDetails.heliBooking", packages?.basicDetails?.heliBooking)
-      setValue("basicDetails.planCalculator", packages?.basicDetails?.planCalculator)
       setValue("basicDetails.tourType", packages?.basicDetails?.tourType)
       setValue("basicDetails.duration", packages?.basicDetails?.duration)
       setValue("basicDetails.notice", packages?.basicDetails?.notice)
@@ -744,13 +742,6 @@ const EditPackage = () => {
       }
     }
   };
-
-  const handleThumbnailUpload = async (file) => {
-    setThumbnailLoading(true);
-    setThumbnail(file[0]?.url || file[0]?.ufsUrl || null);
-    setThumbnailKey(file[0]?.key || null);
-  };
-
   const handleThumbnailLoad = () => {
     setThumbnailLoading(false);
   };
@@ -889,32 +880,6 @@ const EditPackage = () => {
           <div className="flex flex-col gap-2">
             <Label htmlFor="location" className="font-ui text-sm text-heading">Location</Label>
             <Input name="location" className="font-medium" onChange={(e) => setValue('basicDetails.location', e.target.value)} {...register('basicDetails.location')} />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="heliBooking" className="font-ui text-sm text-heading">Helicopter Booking</Label>
-            <select
-              name="heliBooking"
-              value={watch('basicDetails.heliBooking') || ""}
-              onChange={(e) => setValue('basicDetails.heliBooking', e.target.value)}
-              className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 text-sm outline-none focus:border-primary"
-            >
-              <option value="" disabled className="bg-white border border-border">Select Type</option>
-              <option value="Yes" className="bg-white border border-border">Yes</option>
-              <option value="No" className="bg-white border border-border">No</option>
-            </select>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="planCalculator" className="font-ui text-sm text-heading">Plan Calculator</Label>
-            <select
-              name="planCalculator"
-              value={watch('basicDetails.planCalculator') || ""}
-              onChange={(e) => setValue('basicDetails.planCalculator', e.target.value)}
-              className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 text-sm outline-none focus:border-primary"
-            >
-              <option value="" disabled className="bg-white border border-border">Select Type</option>
-              <option value="Yes" className="bg-white border border-border">Yes</option>
-              <option value="No" className="bg-white border border-border">No</option>
-            </select>
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="tourType" className="font-ui text-sm text-heading">Tour Type</Label>
