@@ -15,13 +15,18 @@ const ResponsiveNavbar = ({ sections = [] }) => {
     .filter((section) => section?.active)
     .sort((left, right) => (left.order || 0) - (right.order || 0));
 
-  if (!visibleSections.length) {
-    return null;
-  }
-
   return (
     <NavigationMenu.Root className="hidden relative z-[99] isolate lg:flex w-full justify-end">
       <NavigationMenu.List className="relative z-[99] flex items-center justify-center gap-1 rounded-md px-1 py-1">
+        <NavigationMenu.Item>
+          <Link
+            href="/"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-[14px] text-black transition-colors hover:bg-surface text-nowrap hover:underline"
+          >
+            Home
+          </Link>
+        </NavigationMenu.Item>
+
         {visibleSections.map((section) => {
           const hasSubSections = Array.isArray(section.subSections) && section.subSections.some((item) => item?.active);
           const sortedSubSections = (section.subSections || [])
@@ -82,6 +87,15 @@ const ResponsiveNavbar = ({ sections = [] }) => {
             </NavigationMenu.Item>
           );
         })}
+
+        <NavigationMenu.Item className="ml-2">
+          <Link
+            href="/contact"
+            className="flex items-center gap-2 rounded-full bg-[#2c2f2c] px-6 py-2.5 text-[15px] font-medium text-white transition-colors hover:opacity-90 text-nowrap"
+          >
+            Reserve a stay
+          </Link>
+        </NavigationMenu.Item>
       </NavigationMenu.List>
     </NavigationMenu.Root>
   );
@@ -137,6 +151,13 @@ export function Navbar() {
       {open && (
         <div className="border-t border-border bg-surface px-6 py-6 lg:hidden">
           <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
+            <Link
+              href="/"
+              className="font-body text-sm font-medium text-foreground hover:text-primary"
+              onClick={() => setOpen(false)}
+            >
+              Home
+            </Link>
             {sections
               .filter((section) => section?.active)
               .sort((left, right) => (left.order || 0) - (right.order || 0))
@@ -168,6 +189,13 @@ export function Navbar() {
                   )}
                 </div>
               ))}
+            <Link
+              href="/contact"
+              className="mt-2 inline-flex w-fit items-center justify-center rounded-full bg-[#2c2f2c] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+              onClick={() => setOpen(false)}
+            >
+              Reserve a stay
+            </Link>
           </nav>
         </div>
       )}
