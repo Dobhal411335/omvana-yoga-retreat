@@ -133,19 +133,19 @@ export function HeroSection() {
 
   return (
     <section className="bg-[#fcf7f1] relative xl:h-full h-full w-full overflow-hidden z-0 group">
-      <div className="hidden xl:block w-full h-[400px]">
+      <div className="hidden xl:block w-full h-[calc(100vh-80px)]">
         <div className="hidden xl:block w-full h-full">
           <Carousel
-            className="h-[400px] w-full"
+            className="h-[calc(100vh-80px)] w-full"
             plugins={[plugin.current]}
             onMouseLeave={plugin.current.reset}
             setApi={setDesktopApi}
           >
             <CarouselContent className="h-full">
               {banners.map((item, index) => (
-                <CarouselItem key={index} className="h-[100vh] md:h-[400px]">
+                <CarouselItem key={index} className="h-[calc(100vh-80px)]">
                   <Link href={item?.buttonLink || "#"} className="block h-full w-full">
-                    <div className="relative h-[100vh] md:h-[400px] w-full flex items-center justify-center bg-black">
+                    <div className="relative h-[calc(100vh-80px)] w-full flex items-center justify-center bg-black">
                       <Image
                         src={item?.frontImg?.url || "/placeholder.jpeg"}
                         alt={item?.title || "Banner Image"}
@@ -181,12 +181,12 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="block xl:hidden w-full relative h-[400px]">
+      <div className="block xl:hidden w-full relative h-[calc(100vh-80px)]">
         {/* Mobile Carousel */}
         <Carousel className="w-full h-full" plugins={[plugin.current]} onMouseLeave={plugin.current.reset} setApi={setMobileApi} >
           <CarouselContent className="h-full">
             {banners.map((banner, index) => (
-              <CarouselItem key={index} className="h-[400px]">
+              <CarouselItem key={index} className="h-[calc(100vh-80px)]">
                 <Link href={banner?.buttonLink || "#"} className="block h-full w-full">
                   <div className="relative w-full h-full bg-black">
                     <img

@@ -97,13 +97,13 @@ export function Footer() {
       href: `mailto:${email}`,
     })),
     ...(instagramLink
-      ? [{ icon: Instagram, text: instagramLink, href: instagramLink }]
+      ? [{ icon: Instagram, text: "Instagram", href: instagramLink }]
       : []),
     ...(facebookLink
-      ? [{ icon: Facebook, text: facebookLink, href: facebookLink }]
+      ? [{ icon: Facebook, text: "Facebook", href: facebookLink }]
       : []),
     ...(youtubeLink
-      ? [{ icon: Youtube, text: youtubeLink, href: youtubeLink }]
+      ? [{ icon: Youtube, text: "Youtube", href: youtubeLink }]
       : []),
   ];
 
@@ -145,7 +145,7 @@ export function Footer() {
                 {contactItems.map((item) => (
                   <li key={item.text} className="flex items-start gap-3">
                     <item.icon
-                      className="mt-0.5 size-4 shrink-0 text-white"
+                      className="mt-1 size-4 shrink-0 text-white"
                       aria-hidden="true"
                     />
                     {item.href ? (
