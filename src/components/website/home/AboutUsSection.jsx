@@ -222,7 +222,7 @@ export default function AboutUsSection() {
                     ) : null}
                   </div>
                   {/* Mobile */}
-                  <div className="relative h-[300px] px-2 w-full md:hidden">
+                  <div className="relative h-[330px] px-1 w-full md:hidden">
                     {(item.mobileImage?.url || item.image?.url) ? (
                       <Image
                         src={item.mobileImage?.url || item.image.url}

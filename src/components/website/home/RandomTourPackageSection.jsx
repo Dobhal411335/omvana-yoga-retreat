@@ -106,7 +106,7 @@ export default function RandomTourPackageSection() {
                       />
                     ) : null}
                   </div>
-                  <div className="relative h-[450px] w-full md:hidden">
+                  <div className="relative h-[350px] w-full md:hidden">
                     {(item.mobileImage?.url || item.image?.url) ? (
                       <Image
                         src={item.mobileImage?.url || item.image.url}
@@ -164,72 +164,83 @@ export default function RandomTourPackageSection() {
                 ))}
               </div>
             ) : (
-              <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {packages.map((item) => (
-                  <article
-                    key={item._id || item.slug}
-                    className="group flex h-full flex-col justify-between rounded-card border border-border bg-white p-6 md:p-8"
-                  >
-                    <div>
-                      <div className="relative mb-6 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-image)] bg-border">
-                        <Image
-                          src={
-                            item?.basicDetails?.thumbnail?.url ||
-                            "/RandomTourPackageImages/u1.jpg"
-                          }
-                          alt={item?.packageName || "Tour package"}
-                          fill
-                          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
-                          quality={60}
-                          className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
-                        />
-                      </div>
-
-                      <div className="flex items-start justify-between">
-                        <span className="font-ui text-xs uppercase tracking-[0.2em] text-muted">
-                          {item?.basicDetails?.duration
-                            ? `${item.basicDetails.duration} Days`
-                            : "Flexible"}
-                        </span>
-                        {/* <span className="font-ui text-xs text-muted">from</span> */}
-                      </div>
-
-                      <h3 className="mt-4 font-heading text-3xl text-black">
-                        {item.packageName}
-                      </h3>
-                      {item?.basicDetails?.location && (
-                        <p className="mt-1 flex items-center gap-1.5 font-body text-sm italic text-primary/70">
-                          <MapPin className="size-3.5" />{" "}
-                          {item.basicDetails.location}
-                        </p>
-                      )}
-
-                      <div className="mt-6 border-t border-border pt-6">
-                        <p className="font-heading text-4xl text-black">
-                          {item?.price === 0 ? (
-                            "On request"
-                          ) : (
-                            <>₹{formatNumeric(item?.price)}</>
-                          )}
-                          {item?.price !== 0 && (
-                            <span className="ml-1 font-body text-sm text-muted">
-                              / person
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    </div>
-
-                    <Link
-                      href={`/package/${item.slug}`}
-                      className="mt-8 inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-border bg-transparent px-5 font-body text-sm text-heading transition-colors hover:border-heading/40 hover:bg-surface"
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="mt-14 w-full"
+              >
+                <CarouselContent className="-ml-4 md:-ml-6">
+                  {packages.map((item) => (
+                    <CarouselItem
+                      key={item._id || item.slug}
+                      className="pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
                     >
-                      View Details
-                      <ArrowUpRight className="size-4" aria-hidden="true" />
-                    </Link>
-                  </article>
-                ))}
-              </div>
+                      <article className="group flex h-full flex-col justify-between rounded-card border border-border bg-white p-6 md:p-8">
+                        <div>
+                          <div className="relative mb-6 aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-image)] bg-border">
+                            <Image
+                              src={
+                                item?.basicDetails?.thumbnail?.url ||
+                                "/RandomTourPackageImages/u1.jpg"
+                              }
+                              alt={item?.packageName || "Tour package"}
+                              fill
+                              sizes="(max-width: 640px) 85vw, (max-width: 1024px) 50vw, 33vw"
+                              quality={60}
+                              className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                            />
+                          </div>
+    
+                          <div className="flex items-start justify-between">
+                            <span className="font-ui text-xs uppercase tracking-[0.2em] text-muted">
+                              {item?.basicDetails?.duration
+                                ? `${item.basicDetails.duration} Days`
+                                : "Flexible"}
+                            </span>
+                          </div>
+    
+                          <h3 className="mt-4 font-heading text-3xl text-black">
+                            {item.packageName}
+                          </h3>
+                          {item?.basicDetails?.location && (
+                            <p className="mt-1 flex items-center gap-1.5 font-body text-sm italic text-primary/70">
+                              <MapPin className="size-3.5" />{" "}
+                              {item.basicDetails.location}
+                            </p>
+                          )}
+    
+                          <div className="mt-6 border-t border-border pt-6">
+                            <p className="font-heading text-4xl text-black">
+                              {item?.price === 0 ? (
+                                "On request"
+                              ) : (
+                                <>₹{formatNumeric(item?.price)}</>
+                              )}
+                              {item?.price !== 0 && (
+                                <span className="ml-1 font-body text-sm text-muted">
+                                  / person
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        </div>
+    
+                        <Link
+                          href={`/package/${item.slug}`}
+                          className="mt-8 inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-border bg-transparent px-5 font-body text-sm text-heading transition-colors hover:border-heading/40 hover:bg-surface"
+                        >
+                          View Details
+                          <ArrowUpRight className="size-4" aria-hidden="true" />
+                        </Link>
+                      </article>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-2 size-14 border border-black/10 bg-transparent text-muted-foreground shadow-none transition-colors hover:bg-black/5 hover:text-heading md:flex xl:-left-7" />
+                <CarouselNext className="right-2 size-14 border border-black/10 bg-transparent text-muted-foreground shadow-none transition-colors hover:bg-black/5 hover:text-heading md:flex xl:-right-7" />
+              </Carousel>
             )}
           </Container>
         </Section>

@@ -21,16 +21,16 @@ export function PlanHero() {
         aria-hidden="true"
       />
       
-      {/* Extra bottom fade for a smoother transition to the white/cream section below */}
+      {/* Extra bottom fade for a smoother transition to the background section below */}
       <div
-        className="absolute inset-x-0 bottom-0 md:h-30 h-10 bg-linear-to-t from-[#fcf7f1] via-[#fcf7f1]/80 to-transparent"
+        className="absolute inset-x-0 bottom-0 md:h-20 h-10 bg-linear-to-t from-background via-background/90 to-transparent"
         aria-hidden="true"
       />
 
-      <div className="container relative z-10 md:pt-32 md:px-20 pt-10 px-5">
+      <div className="container relative z-10 md:px-20 pt-30 px-5">
         {/* Eyebrow */}
         <p className="flex items-center gap-2 font-ui text-xs uppercase tracking-[0.3em] text-white/80">
-          <span className="text-primary/80" aria-hidden="true">✦</span>
+          <span className="text-primary/80" aria-hidden="true">✿</span>
           Design your own retreat
         </p>
 
@@ -41,7 +41,7 @@ export function PlanHero() {
         </h1>
 
         {/* Subtitle */}
-        <p className="mb-30 mt-10 max-w-xl font-body text-sm leading-[1.85] text-white/80">
+        <p className="mb-40 mt-10 max-w-xl font-body text-sm leading-[1.85] text-white/80">
           If our Day, Week or Month plans don&apos;t quite match your dates or
           your hopes — sketch your own. Pick a date range, the experiences
           you&apos;d like, and we&apos;ll craft a quiet itinerary that&apos;s

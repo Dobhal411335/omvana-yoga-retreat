@@ -164,7 +164,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
                         ) : null}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-[var(--duration-fast)] group-hover:text-primary-hover">
+                    <span className="inline-flex items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-fast group-hover:text-primary-hover">
                       Details
                       <ArrowUpRight
                         className="size-3.5"
@@ -178,8 +178,8 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
           );
         })}
       </CarouselContent>
-      <CarouselPrevious className="left-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-left-5" />
-      <CarouselNext className="right-2 hidden size-10 border-border bg-surface text-heading shadow-none hover:bg-background md:flex xl:-right-5" />
+      <CarouselPrevious className="left-2 hidden size-12 border border-black bg-white text-heading shadow-md hover:bg-background md:flex xl:-left-6" />
+      <CarouselNext className="right-2 hidden size-12 border border-black bg-white text-heading shadow-md hover:bg-background md:flex xl:-right-6" />
     </Carousel>
   );
 }

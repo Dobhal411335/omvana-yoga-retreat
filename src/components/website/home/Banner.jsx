@@ -270,7 +270,7 @@ export default function Banner() {
                       />
                     ) : null}
                   </div>
-                  <div className="relative h-[450px] w-full md:hidden">
+                  <div className="relative h-[340px] w-full md:hidden">
                     {(item.mobileImage?.url || item.image?.url) ? (
                       <Image
                         src={item.mobileImage?.url || item.image.url}

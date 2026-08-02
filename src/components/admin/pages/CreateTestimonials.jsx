@@ -377,7 +377,7 @@ export default function CreateTestimonials() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              placeholder="Ananya Kapoor"
+              placeholder="Enter Your Name"
             />
           </div>
           <div className="space-y-2">

@@ -142,7 +142,7 @@ export function PlanForm() {
   return (
     <section className="bg-background py-16">
       <div className="container">
-        <div className="mx-auto max-w-5xl rounded-[var(--radius-card)] bg-surface p-8 shadow-sm ring-1 ring-border/60 md:p-12">
+        <div className="mx-auto max-w-5xl rounded-[var(--radius-card)] bg-[#f3efe6] p-8 md:p-12 border border-gray-600">
 
           {/* Card header */}
           <div className="mb-10">
@@ -155,15 +155,15 @@ export function PlanForm() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 font-medium">
 
               {/* Row 1 — Name + Email */}
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>
-                  <FieldLabel htmlFor="name">Your name</FieldLabel>
+                  <FieldLabel htmlFor="name" >Your name</FieldLabel>
                   <Input
                     id="name"
-                    placeholder="Ananya Kapoor"
+                    placeholder="Enter Your Name"
                     className="mt-2"
                     {...register("name")}
                     aria-invalid={!!errors.name}
@@ -208,7 +208,7 @@ export function PlanForm() {
                         </SelectTrigger>
                         <SelectContent>
                           {guestOptions.map((opt, index) => (
-                            <SelectItem key={opt+index} value={opt}>
+                            <SelectItem key={opt + index} value={opt}>
                               {opt}
                             </SelectItem>
                           ))}
@@ -254,7 +254,7 @@ export function PlanForm() {
                       <Checkbox
                         checked={selectedExperiences.includes(exp)}
                         onCheckedChange={() => toggleExperience(exp)}
-                        className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                        className="rounded-full border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                       />
                       {exp}
                     </label>
@@ -276,7 +276,7 @@ export function PlanForm() {
                         </SelectTrigger>
                         <SelectContent>
                           {accommodationOptions.map((opt, index) => (
-                            <SelectItem key={opt+index} value={opt}>
+                            <SelectItem key={opt + index} value={opt}>
                               {opt}
                             </SelectItem>
                           ))}
@@ -325,35 +325,35 @@ export function PlanForm() {
                   </p>
                 ) : null}
                 <div className="flex flex-wrap items-center gap-4">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={cn(
-                    "inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60",
-                  )}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                      Sending…
-                    </>
-                  ) : (
-                    <>
-                      Send my plan
-                      <ArrowUpRight className="size-4" aria-hidden="true" />
-                    </>
-                  )}
-                </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={cn(
+                      "inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60",
+                    )}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                        Sending…
+                      </>
+                    ) : (
+                      <>
+                        Send my plan
+                        <ArrowUpRight className="size-4" aria-hidden="true" />
+                      </>
+                    )}
+                  </button>
 
-                <a
-                  href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20to%20plan%20a%20retreat."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"
-                >
-                  <MessageCircle className="size-4" aria-hidden="true" />
-                  WhatsApp instead
-                </a>
+                  <a
+                    href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20to%20plan%20a%20retreat."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                  >
+                    <MessageCircle className="size-4" aria-hidden="true" />
+                    WhatsApp instead
+                  </a>
                 </div>
               </div>
 

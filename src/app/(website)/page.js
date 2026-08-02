@@ -12,7 +12,7 @@ import {
   FALLBACK_METADATA,
   getCompanyBasicInfo,
 } from "@/services/companyBasicInfo.service";
-import RetreatsSection from "@/components/website/home/RetreatsSection"
+import { RetreatsSection } from "@/components/website/home/RetreatsSection"
 export async function generateMetadata() {
   const company = await getCompanyBasicInfo();
   const title =
@@ -39,6 +39,7 @@ export default function HomePage() {
       <Banner />
       <RandomTourPackageSection />
       <RoomSection />
+      <RetreatsSection/>
       <CtaSection />
       <InstaBlog />
     </>

@@ -134,7 +134,7 @@ export function EnquiryForm() {
               <FieldLabel htmlFor="c-name">Your name</FieldLabel>
               <Input
                 id="c-name"
-                placeholder="Ananya Kapoor"
+                placeholder="Enter Your Name"
                 className="mt-1.5"
                 {...register("name")}
                 aria-invalid={!!errors.name}
@@ -249,33 +249,33 @@ export function EnquiryForm() {
               </p>
             ) : null}
             <div className="flex flex-wrap items-center gap-4">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-                  Sending…
-                </>
-              ) : (
-                <>
-                  Send enquiry
-                  <ArrowUpRight className="size-4" aria-hidden="true" />
-                </>
-              )}
-            </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] bg-primary px-7 font-body text-sm text-white transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                    Sending…
+                  </>
+                ) : (
+                  <>
+                    Send enquiry
+                    <ArrowUpRight className="size-4" aria-hidden="true" />
+                  </>
+                )}
+              </button>
 
-            <a
-              href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20a%20stay."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"
-            >
-              <MessageCircle className="size-4" aria-hidden="true" />
-              WhatsApp instead
-            </a>
+              <a
+                href="https://wa.me/919876543210?text=Hi%2C%20I%27d%20like%20to%20enquire%20about%20a%20stay."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+              >
+                <MessageCircle className="size-4" aria-hidden="true" />
+                WhatsApp instead
+              </a>
             </div>
           </div>
 

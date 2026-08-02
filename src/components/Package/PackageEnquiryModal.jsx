@@ -334,7 +334,7 @@ export default function PackageEnquiryModal({
                       <FieldLabel htmlFor="enquiry-name">Your name</FieldLabel>
                       <Input
                         id="enquiry-name"
-                        placeholder="Ananya Kapoor"
+                        placeholder="Enter Your Name"
                         className="mt-2"
                         {...register("name")}
                         aria-invalid={!!errors.name}
