@@ -221,7 +221,7 @@ export default function RoomDetailView({ data }) {
   }
 
   const whatsappMessage = [
-    "Namaste 🙏",
+    "Namaste",
     "",
     "I'd like to enquire about the following room:",
     "",
@@ -230,7 +230,7 @@ export default function RoomDetailView({ data }) {
     baseRate
       ? `Base rate: ${formatPrice(baseRate.amount)} / night (${baseRate.type})`
       : null,
-    data?.slug ? `Page: /room/${data.slug}` : null,
+    data?.slug ? `Page:${process.env.NEXT_PUBLIC_SITE_URL}/room/${data.slug}` : null,
     "",
     "Could you please share availability?",
     "",
@@ -452,7 +452,7 @@ export default function RoomDetailView({ data }) {
                     nativeButton={false}
                     render={
                       <a
-                        href={`https://wa.me/918006000325?text=${encodeURIComponent(whatsappMessage)}`}
+                        href={`https://wa.me/+919762240419?text=${encodeURIComponent(whatsappMessage)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       />

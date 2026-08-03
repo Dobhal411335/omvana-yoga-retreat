@@ -74,7 +74,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
     <Carousel opts={{ align: "start", loop: false }} className="w-full">
       <CarouselContent className="-ml-5">
         {rooms.map((item, idx) => {
-          const imageUrl = item.mainPhoto?.url || "/placeholder.jpeg";
+          const imageUrl = item.mainPhoto?.url || " ";
           const priceList = getPriceList(item);
           const mainPrice = getMainPrice(priceList);
           const occupancy = getOccupancyLabel(priceList);

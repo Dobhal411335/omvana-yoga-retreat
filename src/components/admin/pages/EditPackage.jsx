@@ -1099,12 +1099,12 @@ const EditPackage = () => {
                   alt={`Banner Preview`}
                   fill
                   sizes="100vw"
-                  className={`object-contain w-full transition-opacity duration-500 ${thumbnailLoading ? 'opacity-0' : 'opacity-100'
+                  className={`object-contain w-full transition-opacity duration-500 ${thumbnailLoading ? 'opacity-50' : 'opacity-100'
                     }`}
                   onLoad={handleThumbnailLoad}
                 />
 
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <Button
                     type="button"
                     size="icon"
@@ -1158,7 +1158,7 @@ const EditPackage = () => {
                   onLoad={handleBannerLoad}
                 />
 
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <Button
                     type="button"
                     size="icon"

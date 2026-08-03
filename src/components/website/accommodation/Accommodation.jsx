@@ -118,7 +118,7 @@ const Accommodation = () => {
                                         ...(item.mainPhoto?.url ? [item.mainPhoto.url] : []),
                                         ...(item.relatedPhotos?.length ? item.relatedPhotos.map(photo => photo.url) : [])
                                     ];
-                                    if (imageUrls.length === 0) imageUrls.push('/placeholder.jpeg');
+                                    if (imageUrls.length === 0) imageUrls.push(' ');
                                     return (
                                         <div key={item._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 my-2 md:items-center gap-6 shadow-lg md:px-5 mx-auto border border-gray-200">
                                             {/* Image Carousel */}

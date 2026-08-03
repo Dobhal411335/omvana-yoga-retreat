@@ -49,7 +49,7 @@ export default function PackageDetailClient({
         : null;
 
   const whatsappEnquiryMessage = [
-    "Namaste 🙏",
+    "Namaste",
     "",
     "I hope you're well. I'd like to enquire about the following package:",
     "",
@@ -64,7 +64,7 @@ export default function PackageDetailClient({
       ? `Category: ${packageDetails.basicDetails.tourType}`
       : null,
     priceLabel ? `Price: ${priceLabel}` : null,
-    packageDetails?.slug ? `Page: /package/${packageDetails.slug}` : null,
+    packageDetails?.slug ? `Page:${process.env.NEXT_PUBLIC_SITE_URL}/package/${packageDetails.slug}` : null,
     "",
     "Could you please share availability and more details?",
     "",
@@ -311,11 +311,10 @@ export default function PackageDetailClient({
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap border-b-2 px-4 py-3.5 font-ui text-sm font-semibold transition-colors ${
-                      activeTab === tab.id
-                        ? "border-primary text-primary"
-                        : "border-transparent text-muted hover:border-border hover:text-heading"
-                    }`}
+                    className={`whitespace-nowrap border-b-2 px-4 py-3.5 font-ui text-sm font-semibold transition-colors ${activeTab === tab.id
+                      ? "border-primary text-primary"
+                      : "border-transparent text-muted hover:border-border hover:text-heading"
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -356,70 +355,70 @@ export default function PackageDetailClient({
                     <div className="rounded-[var(--radius-card)] border border-border bg-white p-5 md:p-6">
                       {/* Description */}
                       {includedDesc && (
-                      <div className="prose custom-desc-list max-w-none leading-relaxed text-heading">
-                        <div dangerouslySetInnerHTML={{ __html: includedDesc }} />
-                      </div>
-                    )}
+                        <div className="prose custom-desc-list max-w-none leading-relaxed text-heading">
+                          <div dangerouslySetInnerHTML={{ __html: includedDesc }} />
+                        </div>
+                      )}
 
-                    {/* Highlights */}
-                    {includedHighlights.length > 0 && (
-                      <div className="mt-4 border-t border-border pt-4">
-                        <ul className="list-disc space-y-2 pl-5">
-                          {includedHighlights.map((hl, hIdx) => (
-                            <li key={hIdx}>
-                              <p className="font-heading text-lg font-medium text-heading">{hl.highlightName}</p>
-                              {hl.highlightDesc?.length > 0 && (
-                                <ul className="mt-1 list-disc space-y-1 pl-5">
-                                  {hl.highlightDesc.map((desc, dIdx) => (
-                                    <li key={dIdx} className="font-body text-sm text-muted">{desc}</li>
-                                  ))}
-                                </ul>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {/* Table */}
-                    {includedTables.length > 0 && (
-                      <div className="mt-4 pt-4">
-                        {includedTables.map((tbl, tIdx) => (
-                          <div key={tIdx} className="mb-4">
-                            <h5 className="mb-2 font-ui text-sm font-semibold text-heading">{tbl.tableName}</h5>
-                            <table className="w-full border-collapse text-sm">
-                              <tbody>
-                                {Array.from(
-                                  { length: Math.ceil((tbl.tableDesc?.length || 0) / 2) },
-                                  (_, rowIdx) => {
-                                    const col1 = tbl.tableDesc[rowIdx * 2];
-                                    const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-
-                                    return (
-                                      <tr
-                                        key={rowIdx}
-                                        className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border/40" : "bg-white hover:bg-surface"}
-                                      >
-                                        {/* Left */}
-                                        <td className="w-[32%] border-b border-r border-border px-6 py-4 font-semibold text-heading">
-                                          {col1 || ""}
-                                        </td>
-
-                                        {/* Right */}
-                                        <td className="w-[68%] border-b border-border px-6 py-4 font-medium text-muted">
-                                          {col2 || ""}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
+                      {/* Highlights */}
+                      {includedHighlights.length > 0 && (
+                        <div className="mt-4 border-t border-border pt-4">
+                          <ul className="list-disc space-y-2 pl-5">
+                            {includedHighlights.map((hl, hIdx) => (
+                              <li key={hIdx}>
+                                <p className="font-heading text-lg font-medium text-heading">{hl.highlightName}</p>
+                                {hl.highlightDesc?.length > 0 && (
+                                  <ul className="mt-1 list-disc space-y-1 pl-5">
+                                    {hl.highlightDesc.map((desc, dIdx) => (
+                                      <li key={dIdx} className="font-body text-sm text-muted">{desc}</li>
+                                    ))}
+                                  </ul>
                                 )}
-                              </tbody>
-                            </table>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {/* Table */}
+                      {includedTables.length > 0 && (
+                        <div className="mt-4 pt-4">
+                          {includedTables.map((tbl, tIdx) => (
+                            <div key={tIdx} className="mb-4">
+                              <h5 className="mb-2 font-ui text-sm font-semibold text-heading">{tbl.tableName}</h5>
+                              <table className="w-full border-collapse text-sm">
+                                <tbody>
+                                  {Array.from(
+                                    { length: Math.ceil((tbl.tableDesc?.length || 0) / 2) },
+                                    (_, rowIdx) => {
+                                      const col1 = tbl.tableDesc[rowIdx * 2];
+                                      const col2 = tbl.tableDesc[rowIdx * 2 + 1];
+
+                                      return (
+                                        <tr
+                                          key={rowIdx}
+                                          className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border/40" : "bg-white hover:bg-surface"}
+                                        >
+                                          {/* Left */}
+                                          <td className="w-[32%] border-b border-r border-border px-6 py-4 font-semibold text-heading">
+                                            {col1 || ""}
+                                          </td>
+
+                                          {/* Right */}
+                                          <td className="w-[68%] border-b border-border px-6 py-4 font-medium text-muted">
+                                            {col2 || ""}
+                                          </td>
+                                        </tr>
+                                      );
+                                    }
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
                 )}
                 {/* Description */}
                 {packageDetails.basicDetails?.fullDesc && (
@@ -1260,10 +1259,10 @@ export default function PackageDetailClient({
                             <span className="font-ui text-xs text-muted">
                               {review.createdAt
                                 ? new Date(review.createdAt).toLocaleDateString("en-IN", {
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  })
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })
                                 : ""}
                             </span>
                           </div>
@@ -1363,7 +1362,7 @@ export default function PackageDetailClient({
                       <PhoneCall className="h-4 w-4" />
                     </Link>
                     <Link
-                      href={`https://wa.me/918006000325?text=${encodeURIComponent(whatsappEnquiryMessage)}`}
+                      href={`https://wa.me/+919762240419?text=${encodeURIComponent(whatsappEnquiryMessage)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex flex-1 items-center justify-center gap-1.5 rounded-button bg-success py-2.5 font-ui text-xs font-semibold text-white transition-colors hover:bg-success/90"

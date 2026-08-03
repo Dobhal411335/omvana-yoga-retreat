@@ -532,7 +532,7 @@ export default function PackageEnquiryModal({
                     </button>
 
                     <a
-                      href={`https://wa.me/918006000325?text=${encodeURIComponent(
+                      href={`https://wa.me/+919762240419?text=${encodeURIComponent(
                         [
                           "Namaste 🙏",
                           "",

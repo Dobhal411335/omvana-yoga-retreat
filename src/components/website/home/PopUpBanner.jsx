@@ -66,19 +66,17 @@ export default function PopUpBanner() {
     >
       <button
         type="button"
-        className={`absolute inset-0 bg-image-dark/50 transition-opacity duration-[var(--duration-medium)] ease-[var(--ease-smooth)] ${
-          showAnim ? "opacity-100" : "opacity-0"
-        }`}
+        className={`absolute inset-0 bg-image-dark/50 transition-opacity duration-[var(--duration-medium)] ease-[var(--ease-smooth)] ${showAnim ? "opacity-100" : "opacity-0"
+          }`}
         aria-label="Close popup"
         onClick={handleClose}
       />
 
       <div
-        className={`relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-[var(--radius-dialog)] border border-border bg-surface shadow-sm transition-all duration-[var(--duration-slow)] ease-[var(--ease-smooth)] md:flex-row ${
-          showAnim
+        className={`relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-[var(--radius-dialog)] border border-border bg-surface shadow-sm transition-all duration-[var(--duration-slow)] ease-[var(--ease-smooth)] md:flex-row ${showAnim
             ? "translate-y-0 opacity-100"
             : "translate-y-4 opacity-0"
-        }`}
+          }`}
       >
         <button
           type="button"
@@ -91,7 +89,7 @@ export default function PopUpBanner() {
 
         <div className="relative h-52 w-full shrink-0 bg-border md:h-auto md:min-h-[380px] md:w-1/2">
           <Image
-            src={banner.image?.url || "/placeholder.jpeg"}
+            src={banner.image?.url || " "}
             alt={banner.heading || "Announcement"}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"

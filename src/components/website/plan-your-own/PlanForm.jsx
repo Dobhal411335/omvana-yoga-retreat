@@ -346,7 +346,7 @@ export function PlanForm() {
                   </button>
 
                   <a
-                    href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27d%20like%20to%20plan%20a%20retreat."
+                    href="https://wa.me/+919762240419?text=Hi%2C%20I%27d%20like%20to%20plan%20a%20retreat."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"

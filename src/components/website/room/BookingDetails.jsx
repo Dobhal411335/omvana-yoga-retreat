@@ -116,7 +116,7 @@ const BookingDetails = ({ room, onClose }) => {
   const [bookingDate, setBookingDate] = useState(null);
 
   const roomName = room?.title || "Room";
-  const roomImg = room?.mainPhoto?.url || "/placeholder.jpeg";
+  const roomImg = room?.mainPhoto?.url || " ";
   const roomCode = room?.code || "";
   const price = useMemo(() => fromPrice(room?.prices), [room?.prices]);
 

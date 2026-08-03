@@ -70,9 +70,9 @@ function ContactBlock({ label, children }) {
 export function ContactSection() {
   const companyInfo = useCompanyBasicInfo();
 
-  const contactNumbers = companyInfo?.contactNumbers?.length > 0 ? companyInfo.contactNumbers : ["+91 98765 43210"];
+  const contactNumbers = companyInfo?.contactNumbers?.length > 0 ? companyInfo.contactNumbers : [""];
   const emails = companyInfo?.emails?.length > 0 ? companyInfo.emails : ["hello@omvana.in"];
-  const officeAddresses = companyInfo?.officeAddresses?.length > 0 ? companyInfo.officeAddresses : ["Tapovan, Rishikesh, Uttarakhand, India"];
+  const officeAddresses = companyInfo?.officeAddresses?.length > 0 ? companyInfo.officeAddresses : [""];
 
   return (
     <section className="bg-background py-20 md:py-28">

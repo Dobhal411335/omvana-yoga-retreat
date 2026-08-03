@@ -124,7 +124,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
       <TopAdvertisementMarquee />
-      <div className="container flex h-20 items-center justify-between md:px-10 px-2">
+      <div className="container flex h-16 md:h-20 items-center justify-between md:px-10 px-2">
         <Logo
           name={company?.companyName}
           imageSrc={company?.mainLogo?.url}

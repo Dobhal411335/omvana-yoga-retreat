@@ -29,7 +29,7 @@ export function Logo({
           height={150}
           src={src}
           alt={imageAlt || `${displayName} logo`}
-          className="size-12 rounded-full object-cover"
+          className="size-10 md:size-12 rounded-full object-cover"
         />
       )}
       <span

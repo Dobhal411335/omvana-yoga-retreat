@@ -147,7 +147,7 @@ export function HeroSection() {
                   <Link href={item?.buttonLink || "#"} className="block h-full w-full">
                     <div className="relative h-[calc(100vh-80px)] w-full flex items-center justify-center bg-black">
                       <Image
-                        src={item?.frontImg?.url || "/placeholder.jpeg"}
+                        src={item?.frontImg?.url || " "}
                         alt={item?.title || "Banner Image"}
                         fill
                         quality={100}
@@ -181,39 +181,56 @@ export function HeroSection() {
         </div>
       </div>
 
-      <div className="block xl:hidden w-full relative h-[calc(100vh-80px)]">
-        {/* Mobile Carousel */}
-        <Carousel className="w-full h-full" plugins={[plugin.current]} onMouseLeave={plugin.current.reset} setApi={setMobileApi} >
-          <CarouselContent className="h-full">
+      {/* Mobile Carousel */}
+      <div className="block xl:hidden relative w-full h-[260px] sm:h-[320px] overflow-hidden">
+        <Carousel
+          className="w-full h-full"
+          plugins={[plugin.current]}
+          setApi={setMobileApi}
+        >
+          <CarouselContent className="h-full ml-0">
             {banners.map((banner, index) => (
-              <CarouselItem key={index} className="h-[calc(100vh-80px)]">
-                <Link href={banner?.buttonLink || "#"} className="block h-full w-full">
-                  <div className="relative w-full h-full bg-black">
+              <CarouselItem
+                key={index}
+                className="h-[260px] sm:h-[320px] pl-0"
+              >
+                <Link
+                  href={banner?.buttonLink || "#"}
+                  className="block w-full h-full"
+                >
+                  <div className="relative w-full h-full overflow-hidden bg-black">
                     <img
-                      src={banner.mobileImg?.url || banner.frontImg?.url || "/placeholder.jpeg"}
-                      alt={banner.title ? `${banner.title} Front` : "Banner Image"}
-                      className="object-cover w-full h-full opacity-90"
+                      src={
+                        banner.mobileImg?.url ||
+                        banner.frontImg?.url ||
+                        " "
+                      }
+                      alt={banner.title || "Banner Image"}
+                      className="w-full h-full object-cover object-center"
                     />
                   </div>
                 </Link>
               </CarouselItem>
             ))}
           </CarouselContent>
-          {/* Pagination dots */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  if (mobileApi && typeof mobileApi.scrollTo === 'function') {
-                    mobileApi.scrollTo(index);
-                  }
-                }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === mobileSelectedIndex ? "bg-white w-6" : "bg-white/50"}`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+
+          {/* Pagination Dots */}
+          {banners.length > 1 && (
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+              {banners.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => mobileApi?.scrollTo(index)}
+                  className={`h-2 rounded-full transition-all duration-300 ${index === mobileSelectedIndex
+                    ? "w-6 bg-white"
+                    : "w-2 bg-white/60"
+                    }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </Carousel>
       </div>
     </section>

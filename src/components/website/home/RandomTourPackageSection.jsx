@@ -192,7 +192,7 @@ export default function RandomTourPackageSection() {
                               className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
                             />
                           </div>
-    
+
                           <div className="flex items-start justify-between">
                             <span className="font-ui text-xs uppercase tracking-[0.2em] text-muted">
                               {item?.basicDetails?.duration
@@ -200,7 +200,7 @@ export default function RandomTourPackageSection() {
                                 : "Flexible"}
                             </span>
                           </div>
-    
+
                           <h3 className="mt-4 font-heading text-3xl text-black">
                             {item.packageName}
                           </h3>
@@ -210,7 +210,7 @@ export default function RandomTourPackageSection() {
                               {item.basicDetails.location}
                             </p>
                           )}
-    
+
                           <div className="mt-6 border-t border-border pt-6">
                             <p className="font-heading text-4xl text-black">
                               {item?.price === 0 ? (
@@ -226,7 +226,7 @@ export default function RandomTourPackageSection() {
                             </p>
                           </div>
                         </div>
-    
+
                         <Link
                           href={`/package/${item.slug}`}
                           className="mt-8 inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] border border-border bg-transparent px-5 font-body text-sm text-heading transition-colors hover:border-heading/40 hover:bg-surface"
@@ -280,7 +280,7 @@ export default function RandomTourPackageSection() {
                       <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-2 lg:gap-12">
                         <div className="relative min-h-[280px] overflow-hidden rounded-[var(--radius-image)] bg-border sm:min-h-[360px] lg:min-h-[420px]">
                           <Image
-                            src={item?.image?.url || "/placeholder.jpeg"}
+                            src={item?.image?.url || " "}
                             alt={item?.title || "Consultancy"}
                             fill
                             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -291,7 +291,7 @@ export default function RandomTourPackageSection() {
 
                         <div className="flex flex-col justify-center rounded-[var(--radius-card)] border border-border bg-surface p-8 md:p-12">
                           {typeof item.rating === "number" &&
-                          item.rating > 0 ? (
+                            item.rating > 0 ? (
                             <div className="mb-6 flex items-center gap-3">
                               <div
                                 className="flex items-center gap-1"
@@ -300,11 +300,10 @@ export default function RandomTourPackageSection() {
                                 {Array.from({ length: 5 }).map((_, star) => (
                                   <Star
                                     key={star}
-                                    className={`size-4 ${
-                                      star < item.rating
+                                    className={`size-4 ${star < item.rating
                                         ? "fill-warning text-warning"
                                         : "text-border"
-                                    }`}
+                                      }`}
                                     strokeWidth={1.5}
                                     aria-hidden="true"
                                   />
