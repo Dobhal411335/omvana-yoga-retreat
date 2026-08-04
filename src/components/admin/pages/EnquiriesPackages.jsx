@@ -416,6 +416,20 @@ export default function EnquiriesPackages() {
                     </span>
                   )}
                   {snapshot.tourType && <span>{snapshot.tourType}</span>}
+                  {typeof snapshot.price === "number" && (
+                    <span className="flex items-center gap-2">
+                      <span className="h-1 w-1 rounded-full bg-muted-foreground/30"></span>
+                      {snapshot.priceUnit === "Double Occupancy Per Person Price Only" && snapshot.doubleOccupancyPrice > 0 ? (
+                        <span>
+                          Single: ₹{new Intl.NumberFormat('en-IN').format(snapshot.price)} | Double: ₹{new Intl.NumberFormat('en-IN').format(snapshot.doubleOccupancyPrice)}
+                        </span>
+                      ) : (
+                        <span>
+                          Price: ₹{new Intl.NumberFormat('en-IN').format(snapshot.price)}
+                        </span>
+                      )}
+                    </span>
+                  )}
                 </div>
               </div>
 

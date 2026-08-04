@@ -18,6 +18,8 @@ const PackageEnquirySchema = new mongoose.Schema(
       duration: { type: Number },
       tourType: { type: String, default: "" },
       price: { type: Number },
+      priceUnit: { type: String, default: "" },
+      doubleOccupancyPrice: { type: Number, default: 0 },
     },
     name: {
       type: String,

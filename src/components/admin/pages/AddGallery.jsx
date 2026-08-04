@@ -155,7 +155,7 @@ const AddGallery = () => {
                                 )}
 
                                 <Image
-                                    src={file.url || 'https://dummyimage.com/600x400'}
+                                    src={file.url || '/placeholder.png'}
                                     alt={`Preview ${index + 1}`}
                                     fill
                                     className={`object-cover transition-opacity duration-500 ${loadedImages.includes(index) ? 'opacity-100' : 'opacity-0'}`}

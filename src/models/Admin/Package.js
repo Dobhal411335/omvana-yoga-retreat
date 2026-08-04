@@ -12,6 +12,7 @@ const PackageSchema = new Schema({
     keywords: { type: [String], default: [] },
     isDirect: { type: Boolean, default: false },
     price: { type: Number },
+    doubleOccupancyPrice: { type: Number, default: 0 },
     priceUnit: { type: String },
     basicDetails: {
         thumbnail: { url: { type: String }, key: { type: String } },

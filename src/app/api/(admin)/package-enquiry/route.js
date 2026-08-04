@@ -52,6 +52,11 @@ export async function POST(req) {
           typeof body?.packageSnapshot?.price === "number"
             ? body.packageSnapshot.price
             : undefined,
+        priceUnit: String(body?.packageSnapshot?.priceUnit || ""),
+        doubleOccupancyPrice:
+          typeof body?.packageSnapshot?.doubleOccupancyPrice === "number"
+            ? body.packageSnapshot.doubleOccupancyPrice
+            : 0,
       },
       name,
       email,

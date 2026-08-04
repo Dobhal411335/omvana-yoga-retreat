@@ -37,7 +37,7 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
                   <Image
                     src={
                       item?.basicDetails?.thumbnail?.url ||
-                      "/RandomTourPackageImages/u1.jpg"
+                      "/placeholder.png"
                     }
                     alt={item?.packageName || "Tour package image"}
                     fill

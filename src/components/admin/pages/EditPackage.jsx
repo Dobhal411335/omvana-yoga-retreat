@@ -647,6 +647,7 @@ const EditPackage = () => {
       setValue("titleLine", packages.titleLine || "");
       setValue("keywords", Array.isArray(packages.keywords) ? packages.keywords.filter(Boolean) : []);
       setValue("price", packages.price);
+      setValue("doubleOccupancyPrice", packages.doubleOccupancyPrice || 0);
       setValue("priceUnit", packages.priceUnit);
       setValue("basicDetails.location", packages?.basicDetails?.location)
       setValue("basicDetails.tourType", packages?.basicDetails?.tourType)
@@ -874,7 +875,7 @@ const EditPackage = () => {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="price" className="font-ui text-sm text-heading">Package Price</Label>
+            <Label htmlFor="price" className="font-ui text-sm text-heading">{watch('priceUnit') === "Double Occupancy Per Person Price Only" ? "Single Occupancy Price" : "Package Price"}</Label>
             <NumericFormat thousandSeparator={true} prefix="₹" name="price" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('price', values.floatValue)} value={packages?.price} />
           </div>
           <div className="flex flex-col gap-2">
@@ -882,16 +883,26 @@ const EditPackage = () => {
             <select
               name="priceUnit"
               value={watch('priceUnit') || ""}
-              onChange={(e) => setValue('priceUnit', e.target.value)}
+              onChange={(e) => {
+                setValue('priceUnit', e.target.value);
+                if (e.target.value !== "Double Occupancy Per Person Price Only") {
+                  setValue('doubleOccupancyPrice', 0);
+                }
+              }}
               className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 text-sm outline-none focus:border-primary"
             >
               <option value="" disabled className="bg-white border border-border">Select Price Unit</option>
-              <option value="Per Person" className="bg-white border border-border">Per Person</option>
-              <option value="2 Person" className="bg-white border border-border">2 Person</option>
-              <option value="Group" className="bg-white border border-border">Group</option>
+              <option value="Single Occupancy Per Person Price Only" className="bg-white border border-border">Single Occupancy Per Person Price Only</option>
+              <option value="Double Occupancy Per Person Price Only" className="bg-white border border-border">Double Occupancy Per Person Price Only</option>
             </select>
 
           </div>
+          {watch('priceUnit') === "Double Occupancy Per Person Price Only" && (
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="doubleOccupancyPrice" className="font-ui text-sm text-heading">Double Occupancy Price</Label>
+              <NumericFormat thousandSeparator={true} prefix="₹" name="doubleOccupancyPrice" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('doubleOccupancyPrice', values.floatValue)} value={watch('doubleOccupancyPrice') || 0} />
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <Label htmlFor="location" className="font-ui text-sm text-heading">Location</Label>
             <Input name="location" className="font-medium" onChange={(e) => setValue('basicDetails.location', e.target.value)} {...register('basicDetails.location')} />

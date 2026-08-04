@@ -1327,16 +1327,41 @@ export default function PackageDetailClient({
                   </div>
                 )}
                 <div className="p-5">
-                  <div className="mb-1 flex items-baseline gap-2">
-                    {packageDetails.price === 0 ? (
-                      <span className="font-heading text-3xl font-medium text-heading">XXXX*</span>
-                    ) : (
-                      <>
-                        <span className="font-heading text-3xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
-                        <span className="font-ui text-sm text-muted">/Adult</span>
-                      </>
-                    )}
-                  </div>
+                  {packageDetails.priceUnit === "Double Occupancy Per Person Price Only" && packageDetails.doubleOccupancyPrice > 0 ? (
+                    <>
+                      <div className="mb-2">
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-muted mb-0.5">Single Occupancy</p>
+                        <div className="flex items-baseline gap-2">
+                          {packageDetails.price === 0 ? (
+                            <span className="font-heading text-2xl font-medium text-heading">XXXX*</span>
+                          ) : (
+                            <>
+                              <span className="font-heading text-2xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                              <span className="font-ui text-sm text-muted">/Person</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="mb-1 rounded-lg bg-surface/60 py-2">
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-muted mb-0.5">Double Occupancy</p>
+                        <div className="flex items-baseline gap-2">
+                          <span className="font-heading text-2xl font-medium text-heading">₹{formatNumber(packageDetails.doubleOccupancyPrice)}</span>
+                          <span className="font-ui text-sm text-muted">/Person</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="mb-1 flex items-baseline gap-2">
+                      {packageDetails.price === 0 ? (
+                        <span className="font-heading text-3xl font-medium text-heading">XXXX*</span>
+                      ) : (
+                        <>
+                          <span className="font-heading text-3xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                          <span className="font-ui text-sm text-muted">/Adult</span>
+                        </>
+                      )}
+                    </div>
+                  )}
                   {packageDetails.basicDetails?.originalPrice > packageDetails.price && (
                     <p className="mb-1 font-ui text-sm text-muted line-through">
                       ₹{formatNumber(packageDetails.basicDetails.originalPrice)}
@@ -1380,7 +1405,7 @@ export default function PackageDetailClient({
                 <p className="font-body text-sm text-muted">
                   {packageDetails.basicDetails?.tourType || "Group Package"}
                 </p>
-              </div>
+              </div>  
 
               {/* Share Section */}
               <div className="rounded-card border border-border bg-white p-4">

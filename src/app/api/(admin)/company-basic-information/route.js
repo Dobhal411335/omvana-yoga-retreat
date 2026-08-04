@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import connectDB from '@/lib/connectDB.js'
 import CompanyBasicInfo from '@/models/Admin/CompanyBasicInfo'
 import { getCompanyBasicInfo } from '@/services/companyBasicInfo.service'
@@ -73,6 +74,7 @@ export async function POST(request) {
     }
 
     const companyBasicInfo = await CompanyBasicInfo.create(normalizedPayload)
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, data: companyBasicInfo }, { status: 201 })
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })
@@ -123,6 +125,7 @@ export async function PUT(request) {
       return NextResponse.json({ success: false, error: 'Company basic info not found' }, { status: 404 })
     }
 
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, data: companyBasicInfo }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 })

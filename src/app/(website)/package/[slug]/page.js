@@ -189,7 +189,7 @@ const PackageDetailsPage = async ({ params }) => {
                         <div className="flex md:flex-row flex-col items-center gap-4">
                             {packageDetails.thumbUrl ? (
                                 <Image
-                                    src={packageDetails.bannerUrl || "https://dummyimage.com/600x400/000/fff"}
+                                    src={packageDetails.bannerUrl || "/placeholder.png"}
                                     alt="Tour package image"
                                     width={300}
                                     height={300}

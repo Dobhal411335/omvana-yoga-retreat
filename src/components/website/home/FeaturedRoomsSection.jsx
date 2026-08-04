@@ -74,7 +74,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
     <Carousel opts={{ align: "start", loop: false }} className="w-full">
       <CarouselContent className="-ml-5">
         {rooms.map((item, idx) => {
-          const imageUrl = item.mainPhoto?.url || " ";
+          const imageUrl = item.mainPhoto?.url || "/placeholder.png";
           const priceList = getPriceList(item);
           const mainPrice = getMainPrice(priceList);
           const occupancy = getOccupancyLabel(priceList);
@@ -95,7 +95,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-border">
                   <Image
-                    src={imageUrl}
+                    src={imageUrl || "/placeholder.png"}
                     alt={item.title || "Room"}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 33vw"

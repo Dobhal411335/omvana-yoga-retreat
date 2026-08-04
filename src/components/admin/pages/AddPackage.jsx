@@ -40,6 +40,7 @@ const AddPackage = ({ id }) => {
     const [packageCode, setPackageCode] = useState("")
     const [selectedPriceUnit, setSelectedPriceUnit] = useState("")
     const [priceValue, setPriceValue] = useState(0)
+    const [doubleOccupancyPriceValue, setDoubleOccupancyPriceValue] = useState(0)
     const [editingPackageId, setEditingPackageId] = useState(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -62,10 +63,12 @@ const AddPackage = ({ id }) => {
         setPackageCode(newCode);
         setSelectedPriceUnit("");
         setPriceValue(0);
+        setDoubleOccupancyPriceValue(0);
         reset({
             packages: {
                 packageName: "",
                 price: 0,
+                doubleOccupancyPrice: 0,
                 priceUnit: "",
                 packageCode: newCode,
             },
@@ -84,8 +87,10 @@ const AddPackage = ({ id }) => {
         setPackageCode(pkg.packageCode || "");
         setSelectedPriceUnit(pkg.priceUnit || "");
         setPriceValue(pkg.price || 0);
+        setDoubleOccupancyPriceValue(pkg.doubleOccupancyPrice || 0);
         setValue("packages.packageName", pkg.packageName || "");
         setValue("packages.price", pkg.price || 0);
+        setValue("packages.doubleOccupancyPrice", pkg.doubleOccupancyPrice || 0);
         setValue("packages.priceUnit", pkg.priceUnit || "");
         setValue("packages.packageCode", pkg.packageCode || "");
     };
@@ -182,6 +187,7 @@ const AddPackage = ({ id }) => {
                             pkgId: editingPackageId,
                             packageName: data.packages.packageName,
                             price: Number(data.packages.price) || 0,
+                            doubleOccupancyPrice: Number(data.packages.doubleOccupancyPrice) || 0,
                             priceUnit: data.packages.priceUnit,
                             packageCode,
                             slug: slugify(data.packages.packageName),
@@ -191,6 +197,7 @@ const AddPackage = ({ id }) => {
                             packages: {
                                 packageName: data.packages.packageName,
                                 price: Number(data.packages.price) || 0,
+                                doubleOccupancyPrice: Number(data.packages.doubleOccupancyPrice) || 0,
                                 priceUnit: data.packages.priceUnit,
                                 packageCode,
                                 link: packageCode,
@@ -225,40 +232,58 @@ const AddPackage = ({ id }) => {
     return (
         <>
             <form className="flex flex-col items-center justify-center gap-8 my-20 bg-card border border-border shadow-sm w-full max-w-xl md:max-w-7xl mx-auto p-6 md:p-8 rounded-xl" onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex md:flex-row flex-col items-center md:items-end gap-6 w-full">
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="packageCode" className="font-medium text-foreground text-sm">Package Code</label>
-                        <Input name="packageCode" className="w-32 border-border bg-muted focus-visible:ring-primary font-medium" readOnly value={packageCode} />
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-6 w-full items-end">
+                    <div className="flex items-center w-full gap-4">
+                        <div className="flex flex-col gap-2 w-full">
+                            <label htmlFor="packageCode" className="font-medium text-foreground text-sm">Package Code</label>
+                            <Input name="packageCode" className="border-border bg-muted focus-visible:ring-primary font-medium" readOnly value={packageCode} />
+                        </div>
+                        <div className="flex flex-col gap-2 w-full">
+                            <label htmlFor="packageName" className="font-medium text-foreground text-sm">Package Name</label>
+                            <Input name="packageName" className="w-full font-medium border-border focus-visible:ring-primary bg-background" {...register('packages.packageName')} />
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-2 flex-1">
-                        <label htmlFor="packageName" className="font-medium text-foreground text-sm">Package Name</label>
-                        <Input name="packageName" className="w-full font-medium border-border focus-visible:ring-primary bg-background" {...register('packages.packageName')} />
+                    <div className="flex items-center gap-2">
+
+                    <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="priceUnit" className="font-medium text-foreground text-sm">Price Unit</label>
+                        <Select value={selectedPriceUnit} name="priceUnit" onValueChange={(value) => {
+                            setSelectedPriceUnit(value);
+                            setValue("packages.priceUnit", value);
+                            if (value !== "Double Occupancy Per Person Price Only") {
+                                setDoubleOccupancyPriceValue(0);
+                                setValue("packages.doubleOccupancyPrice", 0);
+                            }
+                        }}>
+                            <SelectTrigger className="w-full border-border bg-background focus:ring-primary">
+                                <SelectValue placeholder="Select Price Unit" />
+                            </SelectTrigger>
+                            <SelectContent className="border-border bg-popover min-w-[280px]">
+                                <SelectGroup>
+                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Single Occupancy Per Person Price Only">Single Occupancy Per Person Price Only</SelectItem>
+                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Double Occupancy Per Person Price Only">Double Occupancy Per Person Price Only</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="price" className="font-medium text-foreground text-sm">Package Price</label>
+                    <div className="flex flex-col gap-2 w-full">
+                        <label htmlFor="price" className="font-medium text-foreground text-sm">{selectedPriceUnit === "Double Occupancy Per Person Price Only" ? "Single Occupancy Price" : "Package Price"}</label>
                         <NumericFormat thousandSeparator={true} prefix="₹" name="price" value={priceValue} className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium" onValueChange={(values) => {
                             const value = values.floatValue || 0;
                             setPriceValue(value);
                             setValue("packages.price", value);
                         }} />
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="priceUnit" className="font-medium text-foreground text-sm">Price Unit</label>
-                        <Select value={selectedPriceUnit} name="priceUnit" onValueChange={(value) => {
-                            setSelectedPriceUnit(value);
-                            setValue("packages.priceUnit", value);
-                        }}>
-                            <SelectTrigger className="w-52 border-border bg-background focus:ring-primary">
-                                <SelectValue placeholder="Select Price Unit" />
-                            </SelectTrigger>
-                            <SelectContent className="border-border bg-popover">
-                                <SelectGroup>
-                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Per Person">Per Person</SelectItem>
-                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="2 Person">2 Person</SelectItem>
-                                    <SelectItem className="focus:bg-accent focus:text-accent-foreground font-medium" value="Group">Group</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                    {selectedPriceUnit === "Double Occupancy Per Person Price Only" && (
+                        <div className="flex flex-col gap-2 w-full">
+                            <label htmlFor="doubleOccupancyPrice" className="font-medium text-foreground text-sm">Double Occupancy Price</label>
+                            <NumericFormat thousandSeparator={true} prefix="₹" name="doubleOccupancyPrice" value={doubleOccupancyPriceValue} className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary font-medium" onValueChange={(values) => {
+                                const value = values.floatValue || 0;
+                                setDoubleOccupancyPriceValue(value);
+                                setValue("packages.doubleOccupancyPrice", value);
+                            }} />
+                        </div>
+                    )}
                     </div>
                 </div>
                 <div className="flex items-center gap-3">

@@ -21,7 +21,7 @@ async function getTestimonials() {
       name: item.name || "",
       location: item.location || "",
       image: {
-        url: item.image?.url || "",
+        url: item.image?.url || "/placeholder.png",
         key: item.image?.key || "",
       },
     }));
