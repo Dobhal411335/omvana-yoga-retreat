@@ -125,6 +125,10 @@ export async function PUT(req) {
         const nextPackageName = body.packageName ?? existingPackage.packageName;
         const nextSlug = await generateUniqueSlug(body.slug || nextPackageName, body.pkgId);
 
+        const nextKeywords = Array.isArray(body.keywords)
+            ? body.keywords.map((k) => (k || "").trim()).filter(Boolean)
+            : existingPackage.keywords || [];
+
         const updatedData = {
             packageName: nextPackageName,
             price: body.price ?? existingPackage.price,
@@ -135,6 +139,11 @@ export async function PUT(req) {
             order: body.order ?? existingPackage.order,
             packageCode: body.packageCode ?? existingPackage.packageCode,
             slug: nextSlug || existingPackage.slug,
+            titleLine:
+                body.titleLine !== undefined
+                    ? String(body.titleLine || "").trim()
+                    : existingPackage.titleLine || "",
+            keywords: nextKeywords,
 
             basicDetails: {
                 ...existingPackage.basicDetails,

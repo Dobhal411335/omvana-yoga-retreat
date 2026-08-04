@@ -16,6 +16,7 @@ import { Color } from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
 import toast from "react-hot-toast"
 import { useRouter } from 'next/navigation';
+import SeoFields from '@/components/admin/common/SeoFields'
 import {
   Bold,
   Italic,
@@ -126,6 +127,10 @@ const EditWebpages = ({ activityId }) => {
             ...prev,
             ...data,
             templateType: data.templateType || 'design1',
+            titleLine: data.titleLine || '',
+            keywords: Array.isArray(data.keywords) && data.keywords.filter(Boolean).length > 0
+              ? data.keywords.filter(Boolean)
+              : [''],
             imageFirst: data.imageFirst || { url: '', key: '' },
             bannerImage: data.bannerImage || { url: '', key: '' },
             mainProfileImage: data.mainProfileImage || { url: '', key: '' },
@@ -479,6 +484,8 @@ const EditWebpages = ({ activityId }) => {
     title: '',
     slug: '',
     active: true,
+    titleLine: '',
+    keywords: [''],
     templateType: 'design1',
     firstTitle: '',
     imageFirst: { url: '', key: '' },
@@ -725,7 +732,13 @@ const EditWebpages = ({ activityId }) => {
     e.preventDefault();
     try {
       const { _id, __v, createdAt, updatedAt, ...restPayload } = form;
-      const payload = { ...restPayload };
+      const payload = {
+        ...restPayload,
+        titleLine: (restPayload.titleLine || '').trim(),
+        keywords: Array.isArray(restPayload.keywords)
+          ? restPayload.keywords.map((k) => (k || '').trim()).filter(Boolean)
+          : [],
+      };
       const firstParagraphSection = Array.isArray(payload.paragraphSections) && payload.paragraphSections.length > 0
         ? payload.paragraphSections[0]
         : null;
@@ -758,6 +771,10 @@ const EditWebpages = ({ activityId }) => {
                 ...prev,
                 ...data,
                 templateType: data.templateType || 'design1',
+                titleLine: data.titleLine || '',
+                keywords: Array.isArray(data.keywords) && data.keywords.filter(Boolean).length > 0
+                  ? data.keywords.filter(Boolean)
+                  : [''],
                 imageFirst: data.imageFirst || { url: '', key: '' },
                 bannerImage: data.bannerImage || { url: '', key: '' },
                 mainProfileImage: data.mainProfileImage || { url: '', key: '' },
@@ -869,13 +886,22 @@ const EditWebpages = ({ activityId }) => {
           <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
             <Settings className="w-4 h-4 text-slate-500" /> Page Settings
           </h3>
+
+          <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+            <SeoFields
+              titleLine={form.titleLine || ''}
+              keywords={Array.isArray(form.keywords) ? form.keywords.filter(Boolean) : []}
+              onTitleLineChange={(value) => setForm((prev) => ({ ...prev, titleLine: value }))}
+              onKeywordsChange={(next) => setForm((prev) => ({ ...prev, keywords: next }))}
+            />
+          </div>
           
           {(isDesignOneOrTwo || isDesignThree || isDesignFour || isDesignFive || isDesignSix || isDesignSeven) && (
             <div className="space-y-6">
               {/* Top Section View Toggle */}
               {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Top Section View Layout</label>
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-10">Top Section View Layout</label>
                   <div className="inline-flex rounded-xl border border-slate-200 p-1 bg-slate-50 shadow-sm">
                     <button
                       type="button"

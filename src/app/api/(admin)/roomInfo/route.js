@@ -4,10 +4,14 @@ import Room from '@/models/Admin/Room';
 export async function POST(req) {
   await connectDB();
   try {
-    const { roomId, heading, paragraph, mainPhoto, relatedPhotos } = await req.json();
+    const { roomId, heading, paragraph, mainPhoto, relatedPhotos, titleLine, keywords } = await req.json();
     if (!roomId || !heading || !mainPhoto) {
       return Response.json({ error: 'Missing roomId, heading, or mainPhoto' }, { status: 400 });
     }
+
+    const normalizedKeywords = Array.isArray(keywords)
+      ? keywords.map((k) => (k || '').trim()).filter(Boolean)
+      : [];
 
     const updatedRoom = await Room.findByIdAndUpdate(
       roomId,
@@ -16,6 +20,8 @@ export async function POST(req) {
         paragraph,
         mainPhoto,
         relatedPhotos,
+        titleLine: typeof titleLine === 'string' ? titleLine.trim() : '',
+        keywords: normalizedKeywords,
       },
       { new: true }
     );

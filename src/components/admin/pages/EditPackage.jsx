@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import toast from "react-hot-toast"
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import {TextStyle} from '@tiptap/extension-text-style'
+import { TextStyle } from '@tiptap/extension-text-style'
 import { FontFamily } from '@tiptap/extension-font-family'
 import Typography from '@tiptap/extension-typography'
 import TextAlign from '@tiptap/extension-text-align'
@@ -49,6 +49,7 @@ import { Switch } from "@/components/ui/switch";
 import { tableExtensions } from '@/components/admin/common/tiptap-table-extensions';
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import SeoFields from "@/components/admin/common/SeoFields"
 
 // Create a FontSize extension
 const FontSize = Extension.create({
@@ -643,6 +644,8 @@ const EditPackage = () => {
   useEffect(() => {
     if (packages) {
       setValue("packageName", packages.packageName);
+      setValue("titleLine", packages.titleLine || "");
+      setValue("keywords", Array.isArray(packages.keywords) ? packages.keywords.filter(Boolean) : []);
       setValue("price", packages.price);
       setValue("priceUnit", packages.priceUnit);
       setValue("basicDetails.location", packages?.basicDetails?.location)
@@ -675,7 +678,7 @@ const EditPackage = () => {
       }
     }
   }, [packages, setValue]);
- // Highlights state: array of { highlightName: '', highlightDesc: [''] }
+  // Highlights state: array of { highlightName: '', highlightDesc: [''] }
   const [highlights, setHighlights] = useState([]);
   const [editHighlights, setEditHighlights] = useState([]);
 
@@ -796,6 +799,10 @@ const EditPackage = () => {
     data.basicDetails.highlights = normalizedHighlights;
     data.basicDetails.tableData = normalizedTableData;
     data.basicDetails.nightStops = editNightStops.map(ns => (ns || '').trim()).filter(Boolean);
+    data.titleLine = (data.titleLine || '').trim();
+    data.keywords = Array.isArray(data.keywords)
+      ? data.keywords.map((k) => (k || '').trim()).filter(Boolean)
+      : [];
 
     if (!data.basicDetails.duration) {
       toast.error("Duration Field is required", {
@@ -857,6 +864,14 @@ const EditPackage = () => {
           <div className="flex flex-col gap-2">
             <Label htmlFor="packageName" className="font-ui text-sm text-heading">Package Name</Label>
             <Input name="packageName" className="font-medium" onChange={(e) => setValue('packageName', e.target.value)} {...register('packageName')} />
+          </div>
+          <div className="flex flex-col gap-2 col-span-1 md:col-span-2 xl:col-span-4 rounded-[var(--radius-card)] border border-border/60 bg-card/40 p-4">
+            <SeoFields
+              titleLine={watch('titleLine') || ''}
+              keywords={watch('keywords') || []}
+              onTitleLineChange={(value) => setValue('titleLine', value)}
+              onKeywordsChange={(next) => setValue('keywords', next)}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="price" className="font-ui text-sm text-heading">Package Price</Label>
@@ -1124,7 +1139,7 @@ const EditPackage = () => {
             onClick={() => thumbnailInputRef.current?.click()}
             disabled={thumbnailUploading}
           >
-              {thumbnailUploading ? "Uploading..." : "Upload Thumbnail"}
+            {thumbnailUploading ? "Uploading..." : "Upload Thumbnail"}
           </Button>
           <input
             ref={thumbnailInputRef}
@@ -1178,7 +1193,7 @@ const EditPackage = () => {
             onClick={() => bannerInputRef.current?.click()}
             disabled={bannerUploading}
           >
-              {bannerUploading ? "Uploading..." : "Upload Banner Image"}
+            {bannerUploading ? "Uploading..." : "Upload Banner Image"}
           </Button>
           <input
             ref={bannerInputRef}

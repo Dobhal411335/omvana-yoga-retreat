@@ -8,6 +8,8 @@ const PackageSchema = new Schema({
     packageCode: { type: String },
     packageName: { type: String },
     slug: { type: String, unique: true },
+    titleLine: { type: String, default: "" },
+    keywords: { type: [String], default: [] },
     isDirect: { type: Boolean, default: false },
     price: { type: Number },
     priceUnit: { type: String },

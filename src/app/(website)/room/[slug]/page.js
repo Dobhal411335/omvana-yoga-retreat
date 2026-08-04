@@ -26,11 +26,14 @@ async function getRoomBySlug(slug) {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const room = await getRoomBySlug(slug);
+  const keywords = Array.isArray(room?.keywords)
+    ? room.keywords.filter(Boolean)
+    : [];
+
   return {
-    title: room?.title || "Room",
-    description:
-      room?.heading ||
-      "Explore accommodation options at Omvana Yoga Retreat.",
+    title: room?.titleLine || room?.title || "Room",
+    description: room?.heading || "",
+    ...(keywords.length > 0 ? { keywords } : {}),
   };
 }
 

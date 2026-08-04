@@ -99,7 +99,7 @@ const SearchLocationSchema = new Schema(
   {
     locationName: { type: String, default: "" },
     count: { type: String, default: "" },
-    url:{type:String,default:""}
+    url: { type: String, default: "" }
   },
   { _id: false }
 );
@@ -117,6 +117,8 @@ const WebpageSchema = new Schema(
     title: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, trim: true, lowercase: true },
     active: { type: Boolean, default: true },
+    titleLine: { type: String, default: "" },
+    keywords: { type: [String], default: [] },
     templateType: {
       type: String,
       enum: ["design1", "design2", "design3", "design4", "design5", "design6", "design7"],

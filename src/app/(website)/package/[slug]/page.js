@@ -30,6 +30,25 @@ const getPackageBySlug = async (slug) => {
     }
 }
 
+export async function generateMetadata({ params }) {
+    const { slug } = await params
+    const packageDetails = await getPackageBySlug(slug)
+
+    if (!packageDetails) {
+        return { title: "Package" }
+    }
+
+    const keywords = Array.isArray(packageDetails.keywords)
+        ? packageDetails.keywords.filter(Boolean)
+        : []
+
+    return {
+        title: packageDetails.titleLine || packageDetails.packageName || "Package",
+        description: packageDetails?.basicDetails?.smallDesc || "",
+        ...(keywords.length > 0 ? { keywords } : {}),
+    }
+}
+
 const getApprovedReviews = async (packageId) => {
     try {
         if (!packageId) return []
@@ -211,7 +230,7 @@ const PackageDetailsPage = async ({ params }) => {
                                 <div className="flex items-center gap-4 mt-4">
                                     <Button
                                         size="icon"
-                                        render={<Link href="tel:+919762240419" />}
+                                        render={<Link href="tel:+918006000325" />}
                                         className="border-2 border-primary !p-6"
                                         variant="outline"
                                     >
@@ -220,7 +239,7 @@ const PackageDetailsPage = async ({ params }) => {
                                     <Button
                                         render={
                                             <Link
-                                                href={`https://wa.me/+919762240419?text=${encodeURIComponent(`I'm interested in your package ${packageDetails?.title || ""}`)}`}
+                                                href={`https://wa.me/918006000325?text=${encodeURIComponent(`I'm interested in your package ${packageDetails?.title || ""}`)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             />

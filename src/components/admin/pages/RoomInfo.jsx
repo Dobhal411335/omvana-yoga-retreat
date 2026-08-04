@@ -34,6 +34,7 @@ import {
   Heading3,
   PilcrowSquare,
 } from 'lucide-react'
+import SeoFields from '@/components/admin/common/SeoFields'
 
 // Create a FontSize extension
 const FontSize = Extension.create({
@@ -79,6 +80,8 @@ const productInfo = ({ roomData, roomId }) => {
   const [editSubImages, setEditSubImages] = useState([]);
   const [heading, setHeading] = useState("");
   const [paragraph, setParagraph] = useState("");
+  const [titleLine, setTitleLine] = useState("");
+  const [keywords, setKeywords] = useState([]);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -112,6 +115,12 @@ const productInfo = ({ roomData, roomId }) => {
         if (res.ok && data.room) {
           setHeading(data.room.heading || "");
           setParagraph(data.room.paragraph || "");
+          setTitleLine(data.room.titleLine || "");
+          setKeywords(
+            Array.isArray(data.room.keywords)
+              ? data.room.keywords.filter(Boolean)
+              : []
+          );
           setSelectedMainImage(data.room.mainPhoto || null);
           setSelectedSubImages(data.room.relatedPhotos || []);
           if (editor && data.room.paragraph) {
@@ -300,13 +309,17 @@ const productInfo = ({ roomData, roomId }) => {
       return;
     }
     setLoading(true);
+    const seoPayload = {
+      titleLine: titleLine.trim(),
+      keywords: keywords.map((k) => (k || '').trim()).filter(Boolean),
+    };
     try {
       if (editMode && editIndex !== null) {
         // PATCH to update section
         const res = await fetch('/api/roomInfo', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ roomId, heading: heading.trim(), paragraph: description, mainPhoto: selectedMainImage, relatedPhotos: selectedSubImages })
+          body: JSON.stringify({ roomId, heading: heading.trim(), paragraph: description, mainPhoto: selectedMainImage, relatedPhotos: selectedSubImages, ...seoPayload })
         });
         const data = await res.json();
         if (!res.ok || data.error) {
@@ -324,7 +337,7 @@ const productInfo = ({ roomData, roomId }) => {
         const res = await fetch('/api/roomInfo', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ roomId, heading: heading.trim(), paragraph: description, mainPhoto: selectedMainImage, relatedPhotos: selectedSubImages })
+          body: JSON.stringify({ roomId, heading: heading.trim(), paragraph: description, mainPhoto: selectedMainImage, relatedPhotos: selectedSubImages, ...seoPayload })
         });
         const data = await res.json();
         if (!res.ok || data.error) {
@@ -363,6 +376,15 @@ const productInfo = ({ roomData, roomId }) => {
           disabled
           readOnly
           className="bg-surface"
+        />
+      </div>
+
+      <div className="rounded-[var(--radius-card)] border border-border/60 bg-card/40 p-4">
+        <SeoFields
+          titleLine={titleLine}
+          keywords={keywords}
+          onTitleLineChange={setTitleLine}
+          onKeywordsChange={setKeywords}
         />
       </div>
 

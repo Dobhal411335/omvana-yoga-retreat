@@ -38,6 +38,8 @@ const ALLOWED_UPDATE_FIELDS = new Set([
   "title",
   "slug",
   "active",
+  "titleLine",
+  "keywords",
   "templateType",
   "firstTitle",
   "imageFirst",
@@ -125,6 +127,14 @@ export async function PATCH(request, { params }) {
 
     if (typeof body.title === "string") {
       update.title = body.title.trim();
+    }
+    
+    if (typeof body.titleLine === "string") {
+      update.titleLine = body.titleLine.trim();
+    }
+
+    if (Array.isArray(body.keywords)) {
+      update.keywords = body.keywords.map((k) => String(k || "").trim()).filter(Boolean);
     }
 
     if (body.sideThumbImage && typeof body.sideThumbImage === "object") {

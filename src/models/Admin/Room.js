@@ -5,6 +5,8 @@ const roomSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   active: { type: Boolean, default: true },
   code: { type: String, required: true },
+  titleLine: { type: String, default: "" },
+  keywords: { type: [String], default: [] },
   heading: { type: String },
   paragraph: { type: String },
   mainPhoto: { url: { type: String }, key: { type: String } },
