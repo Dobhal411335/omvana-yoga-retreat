@@ -1,5 +1,5 @@
 import connectDB from "@/lib/connectDB";
-import Room from "@/models/Admin/Room";
+import Hotel from "@/models/Admin/Hotel.js";
 import "@/models/Admin/RoomAmenities";
 import "@/models/Admin/RoomPrice";
 
@@ -14,7 +14,7 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    const room = await Room.create({ title, code, slug, ...rest });
+    const room = await Hotel.create({ title, code, slug, ...rest });
     return new Response(JSON.stringify(room), { status: 201 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
@@ -26,7 +26,7 @@ export async function POST(req) {
 export async function GET() {
   try {
     await connectDB();
-    const rooms = await Room.find({})
+    const rooms = await Hotel.find({})
       .populate("amenities")
       .populate("prices")
       .lean();

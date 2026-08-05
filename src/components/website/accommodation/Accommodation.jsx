@@ -118,7 +118,7 @@ const Accommodation = () => {
                                         ...(item.mainPhoto?.url ? [item.mainPhoto.url] : []),
                                         ...(item.relatedPhotos?.length ? item.relatedPhotos.map(photo => photo.url) : [])
                                     ];
-                                    if (imageUrls.length === 0) imageUrls.push(' ');
+                                    if (imageUrls.length === 0) imageUrls.push('');
                                     return (
                                         <div key={item._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 my-2 md:items-center gap-6 shadow-lg md:px-5 mx-auto border border-gray-200">
                                             {/* Image Carousel */}
@@ -126,15 +126,21 @@ const Accommodation = () => {
                                                 <Carousel className="w-full h-full" opts={{ loop: true }}>
                                                     <CarouselContent>
                                                         {imageUrls.map((img, i) => (
-                                                            <CarouselItem key={i} className="w-full h-full flex items-center justify-center">
-                                                                <Image
-                                                                    src={img}
-                                                                    alt={item.title || 'Room'}
-                                                                    width={420}
-                                                                    height={420}
-                                                                    className="object-contain object-top w-[420px] h-[500px] rounded-xl"
-                                                                    priority={i === 0}
-                                                                />
+                                                            <CarouselItem key={i} className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl">
+                                                                {img ? (
+                                                                    <Image
+                                                                        src={img}
+                                                                        alt={item.title || 'Room'}
+                                                                        width={420}
+                                                                        height={420}
+                                                                        className="object-contain object-top w-[420px] h-[500px] rounded-xl"
+                                                                        priority={i === 0}
+                                                                    />
+                                                                ) : (
+                                                                    <div className="flex w-full h-full items-center justify-center text-gray-400">
+                                                                        <Loader2 className="animate-spin mr-2" /> No Image Available
+                                                                    </div>
+                                                                )}
                                                             </CarouselItem>
                                                         ))}
                                                     </CarouselContent>
@@ -200,7 +206,7 @@ const Accommodation = () => {
                                                             <span className="text-md text-gray-700">/ Per Night</span>
                                                             <Link
                                                                 className="ml-auto bg-green-700 hover:bg-green-800 text-white font-semibold md:px-16 md:px-8 px-3 md:py-2 py-1 rounded-md"
-                                                                href={`/room/${item.slug}`}
+                                                                href={`/hotel/${item.slug}`}
                                                             >View More</Link>
                                                         </div>
                                                     );

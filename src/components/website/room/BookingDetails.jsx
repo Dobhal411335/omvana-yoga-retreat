@@ -59,13 +59,8 @@ const INITIAL = {
   offers: [],
 };
 
-function fromPrice(prices) {
-  const rows = prices?.[0]?.prices || [];
-  const main =
-    rows.find((p) => p.type === "02 Pax") ||
-    rows.find((p) => p.type === "01 Pax") ||
-    rows[0];
-  return Number(main?.amount) || 0;
+function fromPrice(room) {
+  return Number(room?.doubleOccupancyPrice) || Number(room?.singleOccupancyPrice) || 0;
 }
 
 function Err({ message }) {
@@ -105,7 +100,7 @@ function Stepper({ label, value, min = 1, onChange, error }) {
   );
 }
 
-const BookingDetails = ({ room, onClose }) => {
+const BookingDetails = ({ hotel, room, onClose }) => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(INITIAL);
   const [errors, setErrors] = useState({});
@@ -118,7 +113,7 @@ const BookingDetails = ({ room, onClose }) => {
   const roomName = room?.title || "Room";
   const roomImg = room?.mainPhoto?.url || " ";
   const roomCode = room?.code || "";
-  const price = useMemo(() => fromPrice(room?.prices), [room?.prices]);
+  const price = useMemo(() => fromPrice(room), [room]);
 
   const set = (field, value) => setForm((p) => ({ ...p, [field]: value }));
   const toggleOffer = (offer) =>
@@ -163,10 +158,13 @@ const BookingDetails = ({ room, onClose }) => {
 
   const booking = {
     ...form,
+    hotelName: hotel?.title || "Hotel",
+    hotel,
     roomName,
     room,
     numRoom: form.roomNo,
     roomId: room?._id,
+    hotelId: hotel?._id,
     estimatedAmount: price * Number(form.days || 1) * Number(form.roomNo || 1),
     finalAmount: price * Number(form.days || 1) * Number(form.roomNo || 1),
     roomSnapshot: { image: roomImg, code: roomCode, price },
@@ -191,6 +189,8 @@ const BookingDetails = ({ room, onClose }) => {
           adult: Number(form.adult) || 0,
           infant: Number(form.infant) || 0,
           child: Number(form.child) || 0,
+          hotelId: hotel?._id,
+          hotelName: hotel?.title || "Hotel",
           roomId: room?._id,
           roomName,
           estimatedAmount,
@@ -293,7 +293,7 @@ const BookingDetails = ({ room, onClose }) => {
                       </Field>
                     ))}
                     <Field label="State" error={errors.state} className="sm:col-span-2">
-                      <Select value={form.state || undefined} onValueChange={(v) => set("state", v)}>
+                      <Select value={form.state} onValueChange={(v) => set("state", v)}>
                         <SelectTrigger className="mt-2 w-full rounded-button bg-card">
                           <SelectValue placeholder="Select state" />
                         </SelectTrigger>

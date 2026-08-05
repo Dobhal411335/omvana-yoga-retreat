@@ -253,6 +253,7 @@ export default function RoomEnquiries() {
                 <TableRow className="border-border hover:bg-transparent">
                   <TableHead className="font-ui text-heading">Date</TableHead>
                   <TableHead className="font-ui text-heading">Ref</TableHead>
+                  <TableHead className="font-ui text-heading">Hotel</TableHead>
                   <TableHead className="font-ui text-heading">Room</TableHead>
                   <TableHead className="font-ui text-heading">Guest</TableHead>
                   <TableHead className="font-ui text-heading">Arrival</TableHead>
@@ -277,6 +278,9 @@ export default function RoomEnquiries() {
                       </TableCell>
                       <TableCell className="font-ui text-xs text-heading">
                         {enquiry.enquiryId || "—"}
+                      </TableCell>
+                      <TableCell className="max-w-[180px] truncate font-body text-sm text-heading">
+                        {enquiry.hotelName || enquiry.hotel?.title || "—"}
                       </TableCell>
                       <TableCell className="max-w-[180px] truncate font-body text-sm text-heading">
                         {enquiry.roomName || enquiry.room?.title || "—"}
@@ -314,7 +318,7 @@ export default function RoomEnquiries() {
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={7} className="h-48">
+                    <TableCell colSpan={8} className="h-48">
                       <div className="flex flex-col items-center justify-center gap-2 text-center">
                         <Inbox className="size-8 text-muted" />
                         <p className="font-heading text-lg text-heading">
@@ -385,10 +389,16 @@ export default function RoomEnquiries() {
             <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-5">
               <div className="rounded-card border border-border/60 bg-surface p-4">
                 <p className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+                  Hotel
+                </p>
+                <h3 className="mt-1 font-heading text-xl font-medium text-heading">
+                  {selectedEnquiry.hotelName || selectedEnquiry.hotel?.title || "—"}
+                </h3>
+                <p className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted mt-2">
                   Room
                 </p>
                 <h3 className="mt-1 font-heading text-xl font-medium text-heading">
-                  {selectedEnquiry.roomName || selectedEnquiry.room?.title}
+                  {selectedEnquiry.roomName || selectedEnquiry.room?.title || "—"}
                 </h3>
                 {selectedEnquiry.roomSnapshot?.code ? (
                   <p className="mt-1 font-ui text-xs text-muted">

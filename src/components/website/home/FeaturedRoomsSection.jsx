@@ -90,12 +90,12 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
               className="basis-full pl-5 py-1 sm:basis-1/2 lg:basis-1/3"
             >
               <Link
-                href={`/room/${item.slug}`}
+                href={`/hotel/${item.slug}`}
                 className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface transition-colors duration-[var(--duration-fast)] hover:border-heading/20"
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-border">
                   <Image
-                    src={imageUrl || "/placeholder.png"}
+                    src={imageUrl ||"/"}
                     alt={item.title || "Room"}
                     fill
                     sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 33vw"
@@ -164,7 +164,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
                         ) : null}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-fast group-hover:text-primary-hover">
+                    <span className="inline-flex border border-black rounded-full px-4 py-2 items-center gap-1 font-ui text-xs uppercase tracking-[0.15em] text-primary transition-colors duration-fast group-hover:text-primary-hover">
                       Details
                       <ArrowUpRight
                         className="size-3.5"

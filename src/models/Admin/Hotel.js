@@ -1,19 +1,20 @@
 import mongoose from 'mongoose';
 
-const roomSchema = new mongoose.Schema({
+const hotelSchema = new mongoose.Schema({
   title: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
   active: { type: Boolean, default: true },
   code: { type: String, required: true },
   titleLine: { type: String, default: "" },
   keywords: { type: [String], default: [] },
+  heading: { type: String },
   paragraph: { type: String },
   mainPhoto: { url: { type: String }, key: { type: String } },
   relatedPhotos: [{ url: { type: String }, key: { type: String } }],
-  singleOccupancyPrice: { type: Number, default: 0 },
-  doubleOccupancyPrice: { type: Number, default: 0 },
-  amenities: [{ type: String }],
-  hotelId: { type: mongoose.Schema.Types.ObjectId, ref: 'Hotel' },
+  prices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RoomPrice' }],
+  amenities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RoomAmenities' }],
+  rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
+
 });
 
-export default mongoose.models.Room || mongoose.model('Room', roomSchema);
+export default mongoose.models.Hotel || mongoose.model('Hotel', hotelSchema);

@@ -19,6 +19,7 @@ import {
   Tv,
   Utensils,
   Wifi,
+  Loader2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -50,6 +51,7 @@ import { Section } from "@/components/common/Section";
 import { cn } from "@/lib/utils";
 import Autoplay from "embla-carousel-autoplay";
 import BookingDetails from "@/components/website/room/BookingDetails";
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
 
 const amenityIcons = {
   Restaurant: Utensils,
@@ -105,8 +107,10 @@ function stripHtmlPreview(html = "", wordLimit = 36) {
 }
 
 export default function RoomDetailView({ data }) {
+  const companyInfo = useCompanyBasicInfo();
   const [showExpertModal, setShowExpertModal] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
   const [expertForm, setExpertForm] = useState({
     name: "",
     email: "",
@@ -149,17 +153,20 @@ export default function RoomDetailView({ data }) {
 
   useEffect(() => {
     if (typeof window !== "undefined" && data?.slug) {
-      setProductUrl(`${window.location.origin}/room/${data.slug}`);
+      setProductUrl(`${window.location.origin}/hotel/${data.slug}`);
     }
   }, [data?.slug]);
 
   useEffect(() => {
-    if (!data?.slug) return;
-    fetch(`/api/room/relatedRooms?slug=${encodeURIComponent(data.slug)}`)
-      .then((res) => res.json())
-      .then((res) => setRooms(res.relatedRooms || []))
-      .catch(() => setRooms([]));
-  }, [data?.slug]);
+    if (data?.rooms) {
+      setRooms(data.rooms);
+    } else if (data?.slug) {
+      fetch(`/api/room/relatedRooms?slug=${encodeURIComponent(data.slug)}`)
+        .then((res) => res.json())
+        .then((res) => setRooms(res.relatedRooms || []))
+        .catch(() => setRooms([]));
+    }
+  }, [data?.slug, data?.rooms]);
 
   useEffect(() => {
     if (!carouselApi) return;
@@ -179,62 +186,23 @@ export default function RoomDetailView({ data }) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showShareBox]);
 
-  function handleExpertInputChange(e) {
-    const { name, value } = e.target;
-    setExpertForm((prev) => ({ ...prev, [name]: value }));
-  }
-
-  async function handleExpertSubmit(e) {
-    e.preventDefault();
-    setSubmittingExpert(true);
-    try {
-      const res = await fetch("/api/askExpertsEnquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...expertForm,
-          type: "room",
-          room: data._id,
-          queryName: data.title || "",
-        }),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        toast.error(error.message || "Failed to submit your question.");
-        return;
-      }
-      setShowExpertModal(false);
-      setExpertForm({
-        name: "",
-        email: "",
-        phone: "",
-        need: "Appointment",
-        question: "",
-        contactMethod: "Phone",
-      });
-      toast.success("Your question has been submitted.");
-    } catch {
-      toast.error("Failed to submit your question.");
-    } finally {
-      setSubmittingExpert(false);
-    }
-  }
 
   const whatsappMessage = [
-    "Namaste",
+    "Dear Reservations Team,",
     "",
-    "I'd like to enquire about the following room:",
+    "Greetings For Hotel Kedar Heaven!",
     "",
+    "We are writing to inquire about room availability at your esteemed property for our upcoming dates. Could you please share the availability status along with the pricing details for your Deluxe Room category?",
+    "",
+    "We look forward to your prompt response so we can proceed with our travel plans.",
+    "",
+    "--- Details ---",
     `Room: ${data?.title || "—"}`,
     data?.code ? `Code: ${data.code}` : null,
     baseRate
       ? `Base rate: ${formatPrice(baseRate.amount)} / night (${baseRate.type})`
       : null,
-    data?.slug ? `Page:${process.env.NEXT_PUBLIC_SITE_URL}/room/${data.slug}` : null,
-    "",
-    "Could you please share availability?",
-    "",
-    "Thank you!",
+    data?.slug ? `Page: ${process.env.NEXT_PUBLIC_SITE_URL}/hotel/${data.slug}` : null,
   ]
     .filter((line) => line !== null)
     .join("\n");
@@ -438,13 +406,6 @@ export default function RoomDetailView({ data }) {
               </div>
 
               <div className="space-y-2 pt-1">
-                <Button
-                  type="button"
-                  className="w-full"
-                  onClick={() => setBookingOpen(true)}
-                >
-                  Book now
-                </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
@@ -452,7 +413,7 @@ export default function RoomDetailView({ data }) {
                     nativeButton={false}
                     render={
                       <a
-                        href={`https://wa.me/+919762240419?text=${encodeURIComponent(whatsappMessage)}`}
+                        href={`https://wa.me/918006000325?text=${encodeURIComponent(whatsappMessage)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       />
@@ -574,51 +535,117 @@ export default function RoomDetailView({ data }) {
         <Section spacing="md">
           <Container>
             <h2 className="font-heading text-3xl font-medium text-heading">
-              Other rooms
+              Our Rooms
             </h2>
-            <p className="mt-2 font-body text-sm text-muted">
-              More places to rest at Omvana.
+            <p className="mt-2 font-body text-sm text-muted mb-8">
+              Explore the rooms available at {data?.title || companyInfo?.companyName || "our retreat"}.
             </p>
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {rooms.map((room) => {
-                const image =
-                  room.mainPhoto?.url || room.relatedPhotos?.[0]?.url || "";
-                return (
-                  <Link
-                    key={room._id}
-                    href={`/room/${room.slug}`}
-                    className="group overflow-hidden rounded-card border border-border bg-card transition-colors hover:border-primary/40"
-                  >
-                    <div className="relative aspect-[4/3] bg-surface">
-                      {image ? (
-                        <Image
-                          src={image}
-                          alt={room.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          sizes="(max-width: 768px) 50vw, 25vw"
-                        />
-                      ) : null}
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-heading text-lg font-medium text-heading">
-                        {room.title}
-                      </h3>
-                      {room.code ? (
-                        <p className="mt-1 font-ui text-xs text-muted">
-                          {room.code}
-                        </p>
-                      ) : null}
-                    </div>
-                  </Link>
-                );
+            <div className="w-full flex flex-col gap-6 lg:w-[90%] mx-auto">
+              {rooms.map((room, idx) => {
+                  const imageUrls = [
+                      ...(room.mainPhoto?.url ? [room.mainPhoto.url] : []),
+                      ...(room.relatedPhotos?.length ? room.relatedPhotos.map(photo => photo.url) : [])
+                  ];
+                  if (imageUrls.length === 0) imageUrls.push('');
+                  
+                  return (
+                      <div key={room._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 md:items-center gap-6 shadow-lg border border-gray-200">
+                          {/* Image Carousel */}
+                          <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 flex-shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
+                              <Carousel className="w-full h-full" opts={{ loop: true }}>
+                                  <CarouselContent>
+                                      {imageUrls.map((img, i) => (
+                                          <CarouselItem key={i} className="w-full h-full flex items-center justify-center">
+                                              {img ? (
+                                                  <Image
+                                                      src={img}
+                                                      alt={room.title || 'Room'}
+                                                      width={420}
+                                                      height={290}
+                                                      className="object-cover w-full h-full rounded-xl"
+                                                      priority={i === 0}
+                                                  />
+                                              ) : (
+                                                  <div className="flex w-full h-full items-center justify-center text-muted">
+                                                      <Loader2 className="animate-spin mr-2" /> No Image Available
+                                                  </div>
+                                              )}
+                                          </CarouselItem>
+                                      ))}
+                                  </CarouselContent>
+                                  <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-8" />
+                                  <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-8" />
+                              </Carousel>
+                          </div>
+                          
+                          {/* Details */}
+                          <div className="flex-1 flex flex-col gap-3 justify-between relative min-h-[260px]">
+                              <div>
+                                <h3 className="md:text-2xl text-xl font-bold text-gray-900">{room.title || "Room"}</h3>
+                                {room.code && <p className="text-xs text-muted mt-1">Code: {room.code}</p>}
+                              </div>
+                              
+                              {room.paragraph && (
+                                <div className="text-gray-800 text-sm mb-1" dangerouslySetInnerHTML={{ __html: room.paragraph }} />
+                              )}
+                              
+                              {room.amenities?.length > 0 && (
+                                <>
+                                  <div className="font-semibold text-gray-800 text-sm mt-1">Room Amenities</div>
+                                  <TooltipProvider>
+                                      <div className="flex gap-2 flex-wrap mb-2">
+                                          {room.amenities.map((am, i) => {
+                                              const label = typeof am === 'string' ? am : am.label;
+                                              return (
+                                              <Tooltip key={i}>
+                                                  <TooltipTrigger asChild>
+                                                      <span className="bg-gray-100 px-2 py-1 rounded text-xs flex items-center justify-center cursor-default border border-border">
+                                                          {label}
+                                                      </span>
+                                                  </TooltipTrigger>
+                                                  <TooltipContent side="top">
+                                                      {label}
+                                                  </TooltipContent>
+                                              </Tooltip>
+                                          )})}
+                                      </div>
+                                  </TooltipProvider>
+                                </>
+                              )}
+
+                              <div className="flex gap-8 text-sm py-2">
+                                  <span>
+                                      Single Occupancy: <strong>{formatPrice(room.singleOccupancyPrice)}</strong>
+                                  </span>
+                                  <span>
+                                      Double Occupancy: <strong>{formatPrice(room.doubleOccupancyPrice)}</strong>
+                                  </span>
+                              </div>
+
+                              <div className="mt-auto pt-4 flex items-center justify-end border-t border-border/50 gap-2">
+                                  <Button
+                                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-md transition-colors"
+                                      onClick={() => {
+                                        setSelectedRoom(room);
+                                        setBookingOpen(true);
+                                      }}
+                                  >
+                                      Book Room
+                                  </Button>
+                              </div>
+                          </div>
+                      </div>
+                  );
               })}
             </div>
           </Container>
         </Section>
       ) : null}
-      {bookingOpen ? (
-        <BookingDetails room={data} onClose={() => setBookingOpen(false)} />
+      {bookingOpen && selectedRoom ? (
+        <BookingDetails hotel={data} room={selectedRoom} onClose={() => {
+          setBookingOpen(false);
+          setSelectedRoom(null);
+        }} />
       ) : null}
     </div>
   );

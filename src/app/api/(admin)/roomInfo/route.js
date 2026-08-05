@@ -1,5 +1,5 @@
 import connectDB from "@/lib/connectDB";
-import Room from '@/models/Admin/Room';
+import Hotel from '@/models/Admin/Hotel';
 
 export async function POST(req) {
   await connectDB();
@@ -13,7 +13,7 @@ export async function POST(req) {
       ? keywords.map((k) => (k || '').trim()).filter(Boolean)
       : [];
 
-    const updatedRoom = await Room.findByIdAndUpdate(
+    const updatedRoom = await Hotel.findByIdAndUpdate(
       roomId,
       {
         heading,
@@ -27,7 +27,7 @@ export async function POST(req) {
     );
 
     if (!updatedRoom) {
-      return Response.json({ error: 'Room not found' }, { status: 404 });
+      return Response.json({ error: 'Hotel not found' }, { status: 404 });
     }
 
     return Response.json({ success: true, room: updatedRoom });
@@ -45,7 +45,7 @@ export async function GET(req) {
     if (!roomId) {
       return Response.json({ error: 'Missing roomId' }, { status: 400 });
     }
-    const room = await Room.findOne({ _id: roomId });
+    const room = await Hotel.findOne({ _id: roomId });
     return Response.json({ room });
   } catch (err) {
     return Response.json({ error: err.message }, { status: 500 });
@@ -60,9 +60,9 @@ export async function PATCH(req) {
     if (!roomId || sectionIndex === undefined || !title || !description) {
       return Response.json({ error: 'Missing roomId, sectionIndex, title, or description' }, { status: 400 });
     }
-    const room = await Room.findOne({ _id: roomId });
+    const room = await Hotel.findOne({ _id: roomId });
     if (!room) {
-      return Response.json({ error: 'Room not found' }, { status: 404 });
+      return Response.json({ error: 'Hotel not found' }, { status: 404 });
     }
     room.heading = title;
     room.paragraph = description;
@@ -82,7 +82,7 @@ export async function DELETE(req) {
     if (!roomId || isNaN(index)) {
       return Response.json({ error: 'Missing roomId or sectionIndex' }, { status: 400 });
     }
-    const room = await Room.findOne({ _id: roomId });
+    const room = await Hotel.findOne({ _id: roomId });
     room.heading = "";
     room.paragraph = "";
     await room.save();

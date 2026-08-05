@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   BedDouble,
   IndianRupee,
+  Hotel,
   Loader2,
   Sparkles,
 } from "lucide-react";
@@ -15,9 +16,10 @@ import { cn } from "@/lib/utils";
 import RoomInfo from "./RoomInfo.jsx";
 import RoomPrice from "./RoomPrice.jsx";
 import Amenities from "./Amenities.jsx";
-
+import CreateRoom from "./CreateRoom.jsx"
 const sections = [
   { key: "info", label: "Basic Info", icon: BedDouble },
+  { key: "create_room", label: "Create Hotel Room", icon: Hotel },
   { key: "quantity", label: "Price", icon: IndianRupee },
   { key: "amenities", label: "Amenities", icon: Sparkles },
 ];
@@ -49,7 +51,7 @@ export default function EditRoom({ roomId }) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.push("/admin/manage_rooms")}
+            onClick={() => router.push("/admin/manage_hotels")}
           >
             <ArrowLeft className="size-4" />
             Back to hotels
@@ -93,6 +95,10 @@ export default function EditRoom({ roomId }) {
             {activeSection === "info" ? (
               <RoomInfo roomData={roomData} roomId={roomId} />
             ) : null}
+            {activeSection === "create_room" ? (
+              <CreateRoom roomData={roomData} roomId={roomId} hotelId={roomId} />
+            ) : null}
+            
             {activeSection === "quantity" ? (
               <RoomPrice roomData={roomData} roomId={roomId} />
             ) : null}

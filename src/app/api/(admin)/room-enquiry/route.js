@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
 import RoomEnquiry from "@/models/Enquries/RoomEnquriy";
+import "@/models/Admin/Hotel";
 import "@/models/Admin/Room";
 
 function json(success, message, data = null, status = 200) {
@@ -15,6 +16,15 @@ function createEnquiryId() {
 
 function serializeEnquiry(enquiry) {
   if (!enquiry) return null;
+  const hotelRef =
+    enquiry.hotelId && typeof enquiry.hotelId === "object"
+      ? {
+          _id: enquiry.hotelId._id?.toString?.() || String(enquiry.hotelId._id || ""),
+          title: enquiry.hotelId.title || "",
+          slug: enquiry.hotelId.slug || "",
+          code: enquiry.hotelId.code || "",
+        }
+      : null;
   const roomRef =
     enquiry.roomId && typeof enquiry.roomId === "object"
       ? {
@@ -28,6 +38,11 @@ function serializeEnquiry(enquiry) {
   return {
     ...enquiry,
     _id: enquiry._id?.toString?.() || String(enquiry._id),
+    hotelId:
+      hotelRef?._id ||
+      enquiry.hotelId?.toString?.() ||
+      String(enquiry.hotelId || ""),
+    hotel: hotelRef,
     roomId:
       roomRef?._id ||
       enquiry.roomId?.toString?.() ||
@@ -49,20 +64,21 @@ export async function GET() {
   try {
     await connectDB();
     const enquiries = await RoomEnquiry.find({})
+      .populate("hotelId", "title slug code")
       .populate("roomId", "title slug code")
       .sort({ createdAt: -1 })
       .lean();
 
     return json(
       true,
-      "Room enquiries fetched.",
+      "Hotel enquiries fetched.",
       enquiries.map(serializeEnquiry),
       200
     );
   } catch (error) {
     return json(
       false,
-      error.message || "Failed to fetch room enquiries.",
+      error.message || "Failed to fetch Hotel enquiries.",
       null,
       500
     );
@@ -74,6 +90,8 @@ export async function POST(req) {
     await connectDB();
     const body = await req.json();
 
+    const hotelId = body?.hotelId;
+    const hotelName = String(body?.hotelName || "").trim();
     const roomId = body?.roomId;
     const roomName = String(body?.roomName || "").trim();
     const firstName = String(body?.firstName || "").trim();
@@ -89,6 +107,9 @@ export async function POST(req) {
     const days = Number(body?.days);
     const adult = Number(body?.adult);
 
+    if (!hotelId || !hotelName) {
+      return json(false, "Hotel information is required.", null, 400);
+    }
     if (!roomId || !roomName) {
       return json(false, "Room information is required.", null, 400);
     }
@@ -96,7 +117,7 @@ export async function POST(req) {
       return json(false, "Arrival date is required.", null, 400);
     }
     if (!Number.isFinite(roomNo) || roomNo < 1) {
-      return json(false, "Number of rooms must be at least 1.", null, 400);
+      return json(false, "Number of Hotels must be at least 1.", null, 400);
     }
     if (!Number.isFinite(days) || days < 1) {
       return json(false, "Number of days must be at least 1.", null, 400);
@@ -118,6 +139,8 @@ export async function POST(req) {
     }
 
     const enquiry = await RoomEnquiry.create({
+      hotelId,
+      hotelName,
       roomId,
       roomName,
       roomSnapshot: {
@@ -161,7 +184,7 @@ export async function POST(req) {
   } catch (error) {
     return json(
       false,
-      error.message || "Failed to submit room enquiry.",
+      error.message || "Failed to submit Hotel enquiry.",
       null,
       500
     );

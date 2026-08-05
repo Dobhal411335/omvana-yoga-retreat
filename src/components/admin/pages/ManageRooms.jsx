@@ -182,8 +182,8 @@ export default function ManageRoom() {
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8">
       <AdminPageHeader
-        title="Manage Rooms"
-        description="Create rooms and open the editor to add photos, prices, and amenities."
+        title="Manage Hotels"
+        description="Create hotels and open the editor to add photos, prices, and amenities."
       />
 
       <form
@@ -225,7 +225,7 @@ export default function ManageRoom() {
           <div>
             <p className="font-ui text-sm font-medium text-heading">Active</p>
             <p className="font-body text-xs text-muted">
-              Inactive rooms stay hidden on the website.
+              Inactive hotels stay hidden on the website.
             </p>
           </div>
           <Switch checked={active} onCheckedChange={setActive} />
@@ -283,7 +283,7 @@ export default function ManageRoom() {
                 products.map((prod, index) => {
                   const url =
                     typeof window !== "undefined"
-                      ? `${window.location.origin}/room/${prod.slug || slugify(prod.title)}`
+                      ? `${window.location.origin}/hotel/${prod.slug || slugify(prod.title)}`
                       : "";
                   return (
                     <TableRow
@@ -354,7 +354,7 @@ export default function ManageRoom() {
                 <TableRow>
                   <TableCell colSpan={5} className="h-40 text-center">
                     <p className="font-heading text-lg text-heading">
-                      No rooms yet
+                      No hotels yet
                     </p>
                     <p className="mt-1 font-body text-sm text-muted">
                       Create your first hotel above.

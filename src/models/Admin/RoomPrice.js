@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const RoomPriceSchema = new mongoose.Schema({
-  room: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true, unique: true },
+  room: { type: mongoose.Schema.Types.ObjectId, ref: 'Hotel', required: true, unique: true },
   prices: [{
     type: { type: String, enum: ['01 Pax', '02 Pax', 'Extra Bed'], required: true },
     amount: { type: Number, required: true },

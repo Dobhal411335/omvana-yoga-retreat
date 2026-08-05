@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/connectDB";
-import Room from "@/models/Admin/Room";
+import Hotel from "@/models/Admin/Hotel";
 import RoomPrice from "@/models/Admin/RoomPrice";
 
 function json(success, message, data = null, status = 200) {
@@ -35,7 +35,7 @@ export async function POST(req) {
       return json(false, "Room id is required.", null, 400);
     }
 
-    const room = await Room.findById(roomId);
+    const room = await Hotel.findById(roomId);
     if (!room) {
       return json(false, "Room not found.", null, 404);
     }

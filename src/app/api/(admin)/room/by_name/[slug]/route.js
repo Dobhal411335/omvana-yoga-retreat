@@ -1,5 +1,5 @@
 import connectDB from "@/lib/connectDB";
-import Room from "@/models/Admin/Room";
+import Hotel from "@/models/Admin/Hotel";
 import "@/models/Admin/RoomAmenities";
 import "@/models/Admin/RoomPrice";
 
@@ -7,13 +7,13 @@ export async function GET(req, { params }) {
   try {
     await connectDB();
     const { slug } = await params;
-    const room = await Room.findOne({ slug })
+    const room = await Hotel.findOne({ slug })
       .populate("amenities")
       .populate("prices")
       .lean();
 
     if (!room) {
-      return new Response(JSON.stringify({ error: "Room not found" }), {
+      return new Response(JSON.stringify({ error: "Hotel not found" }), {
         status: 404,
       });
     }
