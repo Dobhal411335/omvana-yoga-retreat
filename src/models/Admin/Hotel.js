@@ -14,7 +14,6 @@ const hotelSchema = new mongoose.Schema({
   prices: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RoomPrice' }],
   amenities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RoomAmenities' }],
   rooms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Room' }],
-
 });
 
 export default mongoose.models.Hotel || mongoose.model('Hotel', hotelSchema);
