@@ -140,7 +140,7 @@ export default function InvoiceModal({
               {booking?.lastName}
             </p>
             <p>
-              <span className="text-heading">Call:</span> {booking?.callNo}
+              <span className="text-heading">Call:</span> {booking?.countryCode ? `${booking?.countryCode} ` : ""}{booking?.callNo}
             </p>
             <p>
               <span className="text-heading">Email:</span> {booking?.email}

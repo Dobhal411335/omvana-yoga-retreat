@@ -129,7 +129,7 @@ const PackageDetailsPage = async ({ params }) => {
         : []
 
     const packages = serializePackage(
-        await Package.find({ active: true }).limit(10).lean().exec()
+        await Package.find({ active: true, slug: { $ne: slug } }).limit(10).lean().exec()
     ) || []
 
     const featuredPackages = await getFeaturedPackages()

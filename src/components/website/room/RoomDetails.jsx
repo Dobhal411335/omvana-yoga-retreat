@@ -20,6 +20,8 @@ import {
   Utensils,
   Wifi,
   Loader2,
+  Wind,
+  Briefcase,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import {
@@ -67,6 +69,46 @@ const amenityIcons = {
   Laggage: Luggage,
   "Tea Maker": Coffee,
   "Room AC": Snowflake,
+  // Bedding
+  "Plush mattresses": Bed,
+  "clean linens": Bed,
+  "extra pillows": Bed,
+  "blackout curtains": Bed,
+  // Climate Control
+  "Air conditioning": Wind,
+  "Room Heating": Wind,
+  // Furniture & Setup
+  "Work desk with a chair": Briefcase,
+  "luggage rack": Briefcase,
+  "Wardrobe": Briefcase,
+  "Full-length mirror": Briefcase,
+  // Bathroom
+  "Shampoo": Bath,
+  "Conditioner": Bath,
+  "Body wash/soap": Bath,
+  "Dental kit": Bath,
+  "Shaving kit": Bath,
+  "Bath Towels": Bath,
+  "Hand towels": Bath,
+  "Bath mats": Bath,
+  "Hairdryer": Bath,
+  "Bathrobes": Bath,
+  "Bathroom Slippers": Bath,
+  // Electronics & Comfort
+  "Free high-speed Wi-Fi": Tv,
+  "Smart TV": Tv,
+  "Bedside power outlets": Tv,
+  "USB charging ports": Tv,
+  "Tea/coffee maker": Tv,
+  "Bottled water": Tv,
+  "Mini-fridge or minibar": Tv,
+  "Electronic safe deposit box": Tv,
+  "Iron and ironing board": Tv,
+  // Other Features
+  "Window": Coffee,
+  "Balcony": Coffee,
+  "Sofa / Chair / Table": Coffee,
+  "News Paper": Coffee,
 };
 
 function formatPrice(value) {
@@ -551,7 +593,7 @@ export default function RoomDetailView({ data }) {
                   return (
                       <div key={room._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 md:items-center gap-6 shadow-lg border border-gray-200">
                           {/* Image Carousel */}
-                          <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 flex-shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
+                          <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
                               <Carousel className="w-full h-full" opts={{ loop: true }}>
                                   <CarouselContent>
                                       {imageUrls.map((img, i) => (
@@ -596,12 +638,12 @@ export default function RoomDetailView({ data }) {
                                       <div className="flex gap-2 flex-wrap mb-2">
                                           {room.amenities.map((am, i) => {
                                               const label = typeof am === 'string' ? am : am.label;
+                                              const Icon = amenityIcons[label] || Bed;
                                               return (
                                               <Tooltip key={i}>
-                                                  <TooltipTrigger asChild>
-                                                      <span className="bg-gray-100 px-2 py-1 rounded text-xs flex items-center justify-center cursor-default border border-border">
-                                                          {label}
-                                                      </span>
+                                                  <TooltipTrigger className="bg-gray-100 px-2 py-1.5 rounded-md text-xs flex items-center justify-center cursor-default border border-border gap-1.5 transition-colors hover:text-primary">
+                                                      <Icon className="size-3.5" />
+                                                      {label}
                                                   </TooltipTrigger>
                                                   <TooltipContent side="top">
                                                       {label}

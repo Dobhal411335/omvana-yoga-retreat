@@ -31,11 +31,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { countryCodes } from "@/lib/countryCodes";
 
 const schema = z.object({
   packageName: z.string().min(1),
   name: z.string().min(2, "Please enter your name"),
   email: z.string().email("Please enter a valid email"),
+  countryCode: z.string().optional(),
   phone: z.string().optional(),
   guests: z.string().min(1, "Please select number of guests"),
   dates: z.string().optional(),
@@ -188,6 +190,7 @@ export default function PackageEnquiryModal({
           },
           name: data.name,
           email: data.email,
+          countryCode: data.countryCode || "",
           phone: data.phone || "",
           guests: data.guests,
           dates: data.dates || "",
@@ -282,6 +285,20 @@ export default function PackageEnquiryModal({
             within a day.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="w-full overflow-hidden py-2 bg-white/50 border-b border-red-100">
+          <div className="animate-marquee whitespace-nowrap inline-block">
+            <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+              ongoing retreat-join on any day with advance booking
+            </span>
+            <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+              ongoing retreat-join on any day with advance booking
+            </span>
+            <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+              ongoing retreat-join on any day with advance booking
+            </span>
+          </div>
+        </div>
 
         <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[1.2fr_0.8fr]">
           {/* Left — scrollable form */}
@@ -381,13 +398,37 @@ export default function PackageEnquiryModal({
                       <FieldLabel htmlFor="enquiry-phone" optional>
                         Phone
                       </FieldLabel>
-                      <Input
-                        id="enquiry-phone"
-                        type="tel"
-                        placeholder="+91 98XXXXXXXX"
-                        className="mt-2"
-                        {...register("phone")}
-                      />
+                      <div className="mt-2 flex rounded-button border border-border bg-card">
+                        <Controller
+                          name="countryCode"
+                          control={control}
+                          defaultValue="+91"
+                          render={({ field }) => (
+                            <Select value={field.value} onValueChange={field.onChange}>
+                              <SelectTrigger className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border focus:ring-0 bg-transparent">
+                                <SelectValue placeholder="Code" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {countryCodes.map((c) => (
+                                  <SelectItem key={`${c.name}-${c.code}`} value={c.code}>
+                                    <div className="flex w-full items-center justify-between gap-4">
+                                      <span>{c.name}</span>
+                                      <span className="text-muted">{c.code}</span>
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                        <Input
+                          id="enquiry-phone"
+                          type="tel"
+                          placeholder="98XXXXXXXX"
+                          className="flex-1 rounded-l-none border-0 focus-visible:ring-0 bg-transparent"
+                          {...register("phone")}
+                        />
+                      </div>
                     </div>
                     <div>
                       <FieldLabel htmlFor="enquiry-guests">Guests</FieldLabel>

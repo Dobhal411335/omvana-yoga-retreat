@@ -97,6 +97,7 @@ export async function POST(req) {
     const firstName = String(body?.firstName || "").trim();
     const lastName = String(body?.lastName || "").trim();
     const email = String(body?.email || "").trim().toLowerCase();
+    const countryCode = String(body?.countryCode || "+91").trim();
     const callNo = String(body?.callNo || "").trim();
     const address = String(body?.address || "").trim();
     const city = String(body?.city || "").trim();
@@ -158,6 +159,7 @@ export async function POST(req) {
       firstName,
       lastName,
       email,
+      countryCode,
       callNo,
       altCallNo: String(body?.altCallNo || "").trim(),
       address,

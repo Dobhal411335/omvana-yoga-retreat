@@ -60,6 +60,7 @@ export async function POST(req) {
       },
       name,
       email,
+      countryCode: String(body?.countryCode || "+91").trim(),
       phone: String(body?.phone || "").trim(),
       guests,
       dates: String(body?.dates || "").trim(),

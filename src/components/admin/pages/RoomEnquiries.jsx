@@ -60,7 +60,7 @@ function statusBadgeClass(status) {
     return "border-primary/30 bg-primary/10 text-primary";
   }
   if (status === "Closed") {
-    return "border-border bg-muted text-muted";
+    return "border-border bg-red-400 text-white";
   }
   return "border-warning/30 bg-warning/10 text-warning";
 }
@@ -425,17 +425,21 @@ export default function RoomEnquiries() {
                   label="Phone"
                   value={
                     <a
-                      href={`tel:${selectedEnquiry.callNo}`}
+                      href={`tel:${selectedEnquiry.countryCode || ""}${selectedEnquiry.callNo}`}
                       className="inline-flex items-center gap-1.5 text-primary hover:underline"
                     >
                       <Phone className="size-3.5" />
-                      {selectedEnquiry.callNo}
+                      {selectedEnquiry.countryCode ? `${selectedEnquiry.countryCode} ` : ""}{selectedEnquiry.callNo}
                     </a>
                   }
                 />
                 <DetailRow
                   label="Alt phone"
-                  value={selectedEnquiry.altCallNo || "—"}
+                  value={
+                    selectedEnquiry.countryCode
+                      ? `${selectedEnquiry.countryCode} ${selectedEnquiry.altCallNo}`
+                      : selectedEnquiry.altCallNo || "—"
+                  }
                 />
                 <DetailRow
                   label="Arrival"

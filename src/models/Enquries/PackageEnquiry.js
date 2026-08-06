@@ -32,6 +32,10 @@ const PackageEnquirySchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    countryCode: {
+      type: String,
+      default: "+91",
+    },
     phone: {
       type: String,
       trim: true,

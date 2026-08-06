@@ -63,6 +63,12 @@ const RoomEnquirySchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    countryCode: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "+91",
+    },
     callNo: {
       type: String,
       required: true,

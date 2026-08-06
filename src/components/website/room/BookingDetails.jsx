@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { statesIndia } from "@/lib/IndiaStates";
 import { cn } from "@/lib/utils";
+import { countryCodes } from "@/lib/countryCodes";
 
 const STEPS = ["Stay", "Guest", "Extras", "Review"];
 const OFFERS = [
@@ -46,6 +47,7 @@ const INITIAL = {
   firstName: "",
   lastName: "",
   email: "",
+  countryCode: "+91",
   callNo: "",
   altCallNo: "",
   address: "",
@@ -211,11 +213,13 @@ const BookingDetails = ({ hotel, room, onClose }) => {
     }
   };
 
-  const guestFields = [
+  const topGuestFields = [
     ["firstName", "First name"],
     ["lastName", "Last name"],
     ["email", "Email", "email"],
-    ["callNo", "Phone"],
+  ];
+
+  const bottomGuestFields = [
     ["altCallNo", "Alt. phone"],
     ["address", "Address"],
     ["city", "City"],
@@ -229,6 +233,19 @@ const BookingDetails = ({ hotel, room, onClose }) => {
           showCloseButton
           className="max-h-[90dvh] w-full max-w-4xl overflow-y-auto rounded-dialog bg-surface p-2 sm:max-w-4xl"
         >
+          <div className="w-full overflow-hidden py-2 rounded-t-dialog bg-white/50 border-b border-red-100">
+            <div className="animate-marquee whitespace-nowrap inline-block">
+              <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+                ongoing retreat-join on any day with advance booking
+              </span>
+              <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+                ongoing retreat-join on any day with advance booking
+              </span>
+              <span className="mx-4 text-sm font-medium text-red-600 uppercase tracking-wider">
+                ongoing retreat-join on any day with advance booking
+              </span>
+            </div>
+          </div>
           <DialogHeader className="border-b border-border px-5 py-4 sm:px-6">
             <DialogTitle className="font-heading text-xl text-heading md:text-2xl">
               {success ? "Enquiry received" : "Room enquiry"}
@@ -287,7 +304,38 @@ const BookingDetails = ({ hotel, room, onClose }) => {
 
                 {step === 2 && (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {guestFields.map(([key, label, type = "text"]) => (
+                    {topGuestFields.map(([key, label, type = "text"]) => (
+                      <Field key={key} id={key} label={label} error={errors[key]} className={key === "address" || key === "email" ? "sm:col-span-2" : undefined}>
+                        <Input id={key} type={type} className="mt-2 rounded-button bg-card" value={form[key]} onChange={(e) => set(key, e.target.value)} />
+                      </Field>
+                    ))}
+                    <Field id="callNo" label="Phone" error={errors.callNo}>
+                      <div className="mt-2 flex rounded-button border border-border bg-card">
+                        <Select value={form.countryCode} onValueChange={(v) => set("countryCode", v)}>
+                          <SelectTrigger className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border focus:ring-0 bg-transparent">
+                            <SelectValue placeholder="Code" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryCodes.map((c) => (
+                              <SelectItem key={`${c.name}-${c.code}`} value={c.code}>
+                                <div className="flex w-full items-center justify-between gap-4">
+                                  <span>{c.name}</span>
+                                  <span className="text-muted">{c.code}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Input
+                          id="callNo"
+                          type="tel"
+                          className="flex-1 rounded-l-none border-0 focus-visible:ring-0 bg-transparent"
+                          value={form.callNo}
+                          onChange={(e) => set("callNo", e.target.value)}
+                        />
+                      </div>
+                    </Field>
+                    {bottomGuestFields.map(([key, label, type = "text"]) => (
                       <Field key={key} id={key} label={label} error={errors[key]} className={key === "address" ? "sm:col-span-2" : undefined}>
                         <Input id={key} type={type} className="mt-2 rounded-button bg-card" value={form[key]} onChange={(e) => set(key, e.target.value)} />
                       </Field>

@@ -452,11 +452,11 @@ export default function EnquiriesPackages() {
                   value={
                     selectedEnquiry.phone ? (
                       <a
-                        href={`tel:${selectedEnquiry.phone}`}
+                        href={`tel:${selectedEnquiry.countryCode || ""}${selectedEnquiry.phone}`}
                         className="inline-flex items-center gap-1.5 text-primary hover:underline"
                       >
                         <Phone className="size-3.5" />
-                        {selectedEnquiry.phone}
+                        {selectedEnquiry.countryCode ? `${selectedEnquiry.countryCode} ` : ""}{selectedEnquiry.phone}
                       </a>
                     ) : (
                       "—"
