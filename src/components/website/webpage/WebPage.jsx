@@ -9,6 +9,7 @@ import {
   Phone,
   Quote,
   Share2,
+  AlertTriangle 
 } from "lucide-react";
 import {
   Carousel,
@@ -309,8 +310,8 @@ const WebPage = ({ data }) => {
         >
           <div className="absolute inset-0 bg-black/5"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">{data.firstTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold">{data.secondTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{data.firstTitle || ""}</h1>
+            <p className="text-md md:text-lg font-semibold text-white">{data.secondTitle || ""}</p>
           </div>
         </div>
 
@@ -654,8 +655,8 @@ const WebPage = ({ data }) => {
         >
           <div className="absolute inset-0 bg-black/40"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">{data.secondTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold">{data.firstTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{data.secondTitle || ""}</h1>
+            <p className="text-md textw-white md:text-lg font-semibold">{data.firstTitle || ""}</p>
           </div>
         </div>
 
@@ -740,8 +741,8 @@ const WebPage = ({ data }) => {
         >
           <div className="absolute inset-0 bg-black/5"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">{data.firstTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold">{data.secondTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{data.firstTitle || ""}</h1>
+            <p className="text-md md:text-lg font-semibold text-white">{data.secondTitle || ""}</p>
           </div>
         </div>
 

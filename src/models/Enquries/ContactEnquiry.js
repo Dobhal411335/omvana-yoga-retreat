@@ -13,10 +13,16 @@ const ContactEnquirySchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    countryCode: {
+      type: String,
+      default: "+91",
+      required: true,
+    },
     phone: {
       type: String,
       trim: true,
       default: "",
+      required: true,
     },
     guests: {
       type: String,

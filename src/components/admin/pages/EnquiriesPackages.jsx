@@ -489,14 +489,6 @@ export default function EnquiriesPackages() {
                   label="Accommodation"
                   value={selectedEnquiry.accommodation || "—"}
                 />
-                <DetailRow
-                  label="Dietary notes"
-                  value={selectedEnquiry.dietary || "—"}
-                />
-                <DetailRow
-                  label="Budget / person"
-                  value={selectedEnquiry.budget || "—"}
-                />
               </div>
 
               <Separator className="my-5" />

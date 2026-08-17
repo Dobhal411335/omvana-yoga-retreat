@@ -33,7 +33,7 @@ export function CtaSection() {
               </Link>
               <Link
                 href="/gallery"
-                className="inline-flex h-11 items-center rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-heading/30 hover:bg-surface"
+                className="inline-flex h-11 items-center rounded-[var(--radius-button)] border border-black px-7 font-body text-sm text-black transition-colors hover:border-heading/30 hover:bg-surface"
               >
                 See the pace
               </Link>
@@ -42,9 +42,9 @@ export function CtaSection() {
 
           <div className="relative h-96 lg:h-[400px]">
             {/* Photo 1 */}
-            <div className="absolute left-0 top-0 h-72 w-56 overflow-hidden rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-64">
+            <div className="absolute left-0 top-0 h-72 w-52 overflow-hidden rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-64">
               <Image
-                src="/sunset-road.jpg"
+                src="/sunset.png"
                 alt="Sunrise landscape"
                 fill
                 className="object-cover"
@@ -53,7 +53,7 @@ export function CtaSection() {
             {/* Photo 2 */}
             <div className="absolute bottom-0 right-0 h-64 w-52 overflow-hidden rounded-[var(--radius-image)] bg-muted/20 lg:h-72 lg:w-60">
               <Image
-                src="/cta1.png"
+                src="/yoga.png"
                 alt="Warmth close-up"
                 fill
                 className="object-cover"

@@ -54,6 +54,23 @@ function Youtube({ className }) {
     </svg>
   );
 }
+
+function Google({ className }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M21.6 12.23c0-.74-.07-1.45-.19-2.13H12v4.03h5.38a4.6 4.6 0 0 1-2 3.02v2.5h3.23c1.89-1.74 2.99-4.3 2.99-7.42Z" />
+      <path d="M12 22c2.7 0 4.96-.9 6.62-2.35l-3.23-2.5c-.9.6-2.04.96-3.39.96-2.61 0-4.82-1.76-5.61-4.13H3.06v2.58A10 10 0 0 0 12 22Z" />
+      <path d="M6.39 13.98A6.01 6.01 0 0 1 6.08 12c0-.69.12-1.35.31-1.98V7.44H3.06A10 10 0 0 0 2 12c0 1.61.39 3.14 1.06 4.56l3.33-2.58Z" />
+      <path d="M12 5.89c1.47 0 2.79.5 3.82 1.5l2.87-2.87C16.95 2.89 14.7 2 12 2A10 10 0 0 0 3.06 7.44l3.33 2.58C7.18 7.65 9.39 5.89 12 5.89Z" />
+    </svg>
+  );
+}
 /* ── Contact detail block ─────────────────────────── */
 function ContactBlock({ label, children }) {
   return (
@@ -171,9 +188,12 @@ export function ContactSection() {
               </ContactBlock>
 
               {/* Social Media */}
-              {(companyInfo?.facebookLink || companyInfo?.instagramLink || companyInfo?.youtubeLink) && (
+              {(companyInfo?.facebookLink ||
+                companyInfo?.instagramLink ||
+                companyInfo?.youtubeLink ||
+                companyInfo?.googleLink) && (
                 <ContactBlock label="Social Media">
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
                     {companyInfo.facebookLink && (
                       <a
                         href={companyInfo.facebookLink}
@@ -205,6 +225,17 @@ export function ContactSection() {
                       >
                         <Youtube className="size-4 text-primary" aria-hidden="true" />
                         YouTube
+                      </a>
+                    )}
+                    {companyInfo.googleLink && (
+                      <a
+                        href={companyInfo.googleLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 font-body text-sm text-heading transition-colors hover:text-primary"
+                      >
+                        <Google className="size-4 text-primary" aria-hidden="true" />
+                        Google
                       </a>
                     )}
                   </div>

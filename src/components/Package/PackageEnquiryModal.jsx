@@ -37,13 +37,14 @@ const schema = z.object({
   packageName: z.string().min(1),
   name: z.string().min(2, "Please enter your name"),
   email: z.string().email("Please enter a valid email"),
-  countryCode: z.string().optional(),
-  phone: z.string().optional(),
+  countryCode: z.string().min(1, "Country code is required"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10,15}$/, "Enter a valid phone number (10–15 digits)"),
   guests: z.string().min(1, "Please select number of guests"),
   dates: z.string().optional(),
   accommodation: z.string().optional(),
-  dietary: z.string().optional(),
-  budget: z.string().optional(),
   hopes: z.string().optional(),
 });
 
@@ -119,7 +120,10 @@ export default function PackageEnquiryModal({
     resolver: zodResolver(schema),
     defaultValues: {
       packageName,
+      countryCode: "+91",
+      phone: "",
       guests: "1 guest",
+      accommodation: "",
     },
   });
 
@@ -130,12 +134,11 @@ export default function PackageEnquiryModal({
         packageName,
         name: "",
         email: "",
+        countryCode: "+91",
         phone: "",
         guests: "1 guest",
         dates: "",
         accommodation: "",
-        dietary: "",
-        budget: "",
         hopes: "",
       });
     }
@@ -165,13 +168,11 @@ export default function PackageEnquiryModal({
           },
           name: data.name,
           email: data.email,
-          countryCode: data.countryCode || "",
-          phone: data.phone || "",
+          countryCode: data.countryCode,
+          phone: data.phone,
           guests: data.guests,
           dates: data.dates || "",
           accommodation: data.accommodation || "",
-          dietary: data.dietary || "",
-          budget: data.budget || "",
           hopes: data.hopes || "",
         }),
       });
@@ -369,17 +370,24 @@ export default function PackageEnquiryModal({
 
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div>
-                      <FieldLabel htmlFor="enquiry-phone" optional>
-                        Phone
-                      </FieldLabel>
-                      <div className="mt-2 flex rounded-button border border-border bg-card">
+                      <FieldLabel htmlFor="enquiry-phone">Phone</FieldLabel>
+                      <div
+                        className={cn(
+                          "mt-2 flex rounded-button border bg-card",
+                          errors.countryCode || errors.phone
+                            ? "border-error"
+                            : "border-border"
+                        )}
+                      >
                         <Controller
                           name="countryCode"
                           control={control}
-                          defaultValue="+91"
                           render={({ field }) => (
-                            <Select value={field.value} onValueChange={field.onChange}>
-                              <SelectTrigger className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border focus:ring-0 bg-transparent">
+                            <Select value={field.value ?? "+91"} onValueChange={field.onChange}>
+                              <SelectTrigger
+                                className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border focus:ring-0 bg-transparent"
+                                aria-invalid={!!errors.countryCode}
+                              >
                                 <SelectValue placeholder="Code" />
                               </SelectTrigger>
                               <SelectContent>
@@ -398,11 +406,15 @@ export default function PackageEnquiryModal({
                         <Input
                           id="enquiry-phone"
                           type="tel"
+                          inputMode="numeric"
                           placeholder="98XXXXXXXX"
                           className="flex-1 rounded-l-none border-0 focus-visible:ring-0 bg-transparent"
                           {...register("phone")}
+                          aria-invalid={!!errors.phone}
                         />
                       </div>
+                      <FieldError message={errors.countryCode?.message} />
+                      <FieldError message={errors.phone?.message} />
                     </div>
                     <div>
                       <FieldLabel htmlFor="enquiry-guests">Guests</FieldLabel>
@@ -411,7 +423,7 @@ export default function PackageEnquiryModal({
                         control={control}
                         render={({ field }) => (
                           <Select
-                            value={field.value}
+                            value={field.value ?? "1 guest"}
                             onValueChange={field.onChange}
                           >
                             <SelectTrigger
@@ -463,7 +475,7 @@ export default function PackageEnquiryModal({
                         control={control}
                         render={({ field }) => (
                           <Select
-                            value={field.value}
+                            value={field.value ?? ""}
                             onValueChange={field.onChange}
                           >
                             <SelectTrigger
@@ -481,28 +493,6 @@ export default function PackageEnquiryModal({
                             </SelectContent>
                           </Select>
                         )}
-                      />
-                    </div>
-                    <div>
-                      <FieldLabel htmlFor="enquiry-dietary" optional>
-                        Dietary notes
-                      </FieldLabel>
-                      <Input
-                        id="enquiry-dietary"
-                        placeholder="e.g. vegan, gluten-free"
-                        className="mt-2"
-                        {...register("dietary")}
-                      />
-                    </div>
-                    <div className="sm:col-span-2 lg:col-span-1">
-                      <FieldLabel htmlFor="enquiry-budget" optional>
-                        Budget / person (₹)
-                      </FieldLabel>
-                      <Input
-                        id="enquiry-budget"
-                        placeholder="Optional"
-                        className="mt-2"
-                        {...register("budget")}
                       />
                     </div>
                   </div>

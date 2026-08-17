@@ -19,6 +19,7 @@ const CompanyBasicInfoSchema = new mongoose.Schema(
     emails: { type: [String], default: [] },
     officeAddresses: { type: [String], default: [] },
     googleAddress: { type: String, default: '' },
+    googleLink: { type: String, default: '' },
     facebookLink: { type: String, default: '' },
     instagramLink: { type: String, default: '' },
     youtubeLink: { type: String, default: '' },

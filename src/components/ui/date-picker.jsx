@@ -70,7 +70,7 @@ function DatePicker({
       </PopoverTrigger>
       <PopoverContent align={align} className="z-60 w-auto p-0">
         <Calendar
-          mode="single"
+         mode="single"
           selected={selected}
           onSelect={handleSelect}
           disabled={

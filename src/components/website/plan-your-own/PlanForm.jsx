@@ -17,12 +17,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { countryCodes } from "@/lib/countryCodes";
 
 /* ── Validation schema ─────────────────────────────── */
 const schema = z.object({
   name: z.string().min(2, "Please enter your name"),
   email: z.string().email("Please enter a valid email"),
-  phone: z.string().optional(),
+  countryCode: z.string().min(1, "Country code is required"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10,15}$/, "Enter a valid phone number (10–15 digits)"),
   guests: z.string().min(1, "Please select number of guests"),
   dates: z.string().optional(),
   experiences: z.array(z.string()).optional(),
@@ -43,18 +48,22 @@ const experiences = [
 ];
 
 const guestOptions = ["1 guest", "2 guests", "3 guests", "4 guests", "5 guests", "6+ guests"];
-const accommodationOptions = ["Deluxe room", "Premium suite", "Garden cottage", "Dormitory", "Not sure yet"];
-
+const accommodationOptions = [
+  "1 room - single occupancy",
+  "2 rooms - single occupancy",
+  "1 room - double occupancy",
+  "2 rooms - double occupancy",
+];
 /* ── Field label component ─────────────────────────── */
 function FieldLabel({ htmlFor, children, optional }) {
   return (
     <label
       htmlFor={htmlFor}
-      className="block font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted"
+      className="block font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-black"
     >
       {children}
       {optional && (
-        <span className="ml-1 font-normal normal-case tracking-normal text-muted/70">
+        <span className="ml-1 font-normal normal-case tracking-normal text-black/70">
           (optional)
         </span>
       )}
@@ -88,7 +97,10 @@ export function PlanForm() {
     resolver: zodResolver(schema),
     defaultValues: {
       guests: "1 guest",
+      accommodation: "",
       experiences: [],
+      countryCode: "+91",
+      phone: "",
     },
   });
 
@@ -127,11 +139,11 @@ export function PlanForm() {
   if (submitted) {
     return (
       <div className="flex flex-col items-center py-24 text-center">
-        <span className="font-heading text-5xl text-primary">✦</span>
+        <span className="font-heading text-5xl text-black">✦</span>
         <h2 className="mt-6 font-heading text-4xl text-heading">
           We&apos;ve received your sketch.
         </h2>
-        <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-foreground">
+        <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-black">
           We&apos;ll reach out within 24 hours with a quiet itinerary crafted
           just for you.
         </p>
@@ -149,7 +161,7 @@ export function PlanForm() {
             <h2 className="font-heading text-4xl text-heading">
               Sketch your stay
             </h2>
-            <p className="mt-2 font-body text-sm text-primary">
+            <p className="mt-2 font-body text-sm text-black">
               Fill what you know. Leave the rest to us.
             </p>
           </div>
@@ -187,14 +199,51 @@ export function PlanForm() {
               {/* Row 2 — Phone + Guests */}
               <div className="grid gap-6 sm:grid-cols-2">
                 <div>
-                  <FieldLabel htmlFor="phone" optional>Phone</FieldLabel>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="+91 98XXXXXXXX"
-                    className="mt-2"
-                    {...register("phone")}
-                  />
+                  <FieldLabel htmlFor="phone">Phone</FieldLabel>
+                  <div
+                    className={cn(
+                      "mt-2 flex rounded-button border bg-card",
+                      errors.countryCode || errors.phone
+                        ? "border-error"
+                        : "border-border"
+                    )}
+                  >
+                    <Controller
+                      name="countryCode"
+                      control={control}
+                      render={({ field }) => (
+                        <Select value={field.value ?? "+91"} onValueChange={field.onChange}>
+                          <SelectTrigger
+                            className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border bg-transparent focus:ring-0"
+                            aria-invalid={!!errors.countryCode}
+                          >
+                            <SelectValue placeholder="Code" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {countryCodes.map((c) => (
+                              <SelectItem key={`${c.name}-${c.code}`} value={c.code}>
+                                <div className="flex w-full items-center justify-between gap-4">
+                                  <span>{c.name}</span>
+                                  <span className="text-black">{c.code}</span>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder="98XXXXXXXX"
+                      className="flex-1 rounded-l-none border-0 bg-transparent focus-visible:ring-0"
+                      {...register("phone")}
+                      aria-invalid={!!errors.phone}
+                    />
+                  </div>
+                  <FieldError message={errors.countryCode?.message} />
+                  <FieldError message={errors.phone?.message} />
                 </div>
                 <div>
                   <FieldLabel htmlFor="guests">Guests</FieldLabel>
@@ -202,7 +251,7 @@ export function PlanForm() {
                     name="guests"
                     control={control}
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select value={field.value ?? "1 guest"} onValueChange={field.onChange}>
                         <SelectTrigger id="guests" className="mt-2 w-full">
                           <SelectValue placeholder="1 guest" />
                         </SelectTrigger>
@@ -242,14 +291,14 @@ export function PlanForm() {
               {/* Row 4 — Experience checkboxes */}
               <div>
                 <FieldLabel>What would you like to weave in?</FieldLabel>
-                <p className="mt-1 font-body text-xs text-primary">
+                <p className="mt-1 font-body text-xs text-black">
                   Pick as few or as many as you&apos;d like.
                 </p>
                 <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                   {experiences.flat().map((exp) => (
                     <label
                       key={exp}
-                      className="flex cursor-pointer items-center gap-3 font-body text-sm text-foreground"
+                      className="flex cursor-pointer items-center gap-3 font-body text-sm text-black"
                     >
                       <Checkbox
                         checked={selectedExperiences.includes(exp)}
@@ -270,7 +319,7 @@ export function PlanForm() {
                     name="accommodation"
                     control={control}
                     render={({ field }) => (
-                      <Select value={field.value} onValueChange={field.onChange}>
+                      <Select value={field.value ?? ""} onValueChange={field.onChange}>
                         <SelectTrigger id="accommodation" className="mt-2 w-full">
                           <SelectValue placeholder="Choose" />
                         </SelectTrigger>
@@ -295,7 +344,7 @@ export function PlanForm() {
                   />
                 </div>
                 <div>
-                  <FieldLabel htmlFor="budget" optional>Budget / person (₹)</FieldLabel>
+                  <FieldLabel htmlFor="budget" optional>Budget / person</FieldLabel>
                   <Input
                     id="budget"
                     placeholder="Optional"
@@ -312,7 +361,7 @@ export function PlanForm() {
                   id="hopes"
                   placeholder="A few lines about what you're hoping for — pace, intention, any constraints we should know."
                   rows={4}
-                  className="mt-2 resize-y"
+                  className="mt-2 resize-y text-black placeholder:text-black/70"
                   {...register("hopes")}
                 />
               </div>
@@ -349,7 +398,7 @@ export function PlanForm() {
                     href="https://wa.me/+919762240419?text=Hi%2C%20I%27d%20like%20to%20plan%20a%20retreat."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-border px-7 font-body text-sm text-foreground transition-colors hover:border-primary/50 hover:text-primary"
+                    className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-button)] border border-black text-black px-7 font-body text-sm transition-colors hover:border-primary/50 hover:text-primary"
                   >
                     <MessageCircle className="size-4" aria-hidden="true" />
                     WhatsApp instead

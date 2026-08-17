@@ -6,7 +6,8 @@ import {
   getCompanyBasicInfo,
 } from "@/services/companyBasicInfo.service";
 import "./globals.css";
-
+import OverlayButton from "@/components/website/OverlayButton";
+import EnrollNow from "@/components/website/EnrollNow";
 const heading = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -37,6 +38,8 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ToasterProvider />
         <TooltipProvider>{children}</TooltipProvider>
+        <EnrollNow />
+        {/* <OverlayButton /> */}
       </body>
     </html>
   );

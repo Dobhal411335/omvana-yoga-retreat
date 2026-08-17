@@ -15,12 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { countryCodes } from "@/lib/countryCodes";
 
 /* ── Validation schema ──────────────────────────────── */
 const schema = z.object({
   name: z.string().min(2, "Please enter your name"),
   email: z.string().email("Please enter a valid email"),
-  phone: z.string().optional(),
+  countryCode: z.string().min(1, "Country code is required"),
+  phone: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d{10,15}$/, "Enter a valid phone number (10–15 digits)"),
   guests: z.string().min(1, "Please select number of guests"),
   plan: z.string().optional(),
   startDate: z.string().optional(),
@@ -29,11 +35,11 @@ const schema = z.object({
 
 const guestOptions = ["1 guest", "2 guests", "3 guests", "4 guests", "5 guests", "6+ guests"];
 const planOptions = [
-  "Day Sojourn",
-  "Week of Stillness",
-  "Month of Becoming",
-  "Custom / Bespoke",
-  "Not sure yet",
+  "3 Days & 2 Nights",
+  "4 Days & 3 Nights",
+  "5 Days & 4 Nights",
+  "6 Days & 5 Nights",
+  "7 Days & 6 Nights",
 ];
 
 /* ── Shared field label ─────────────────────────────── */
@@ -78,6 +84,8 @@ export function EnquiryForm() {
       guests: "1 guest",
       plan: "",
       startDate: "",
+      countryCode: "+91",
+      phone: "",
     },
   });
 
@@ -158,14 +166,51 @@ export function EnquiryForm() {
           {/* Row 2 — Phone + Guests */}
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <FieldLabel htmlFor="c-phone" optional>Phone</FieldLabel>
-              <Input
-                id="c-phone"
-                type="tel"
-                placeholder="+91 98XXXXXXXX"
-                className="mt-1.5"
-                {...register("phone")}
-              />
+              <FieldLabel htmlFor="c-phone">Phone</FieldLabel>
+              <div
+                className={cn(
+                  "mt-1.5 flex rounded-button border bg-card",
+                  errors.countryCode || errors.phone
+                    ? "border-error"
+                    : "border-border"
+                )}
+              >
+                <Controller
+                  name="countryCode"
+                  control={control}
+                  render={({ field }) => (
+                    <Select value={field.value ?? "+91"} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        className="w-[110px] rounded-l-button rounded-r-none border-0 border-r border-border bg-transparent focus:ring-0"
+                        aria-invalid={!!errors.countryCode}
+                      >
+                        <SelectValue placeholder="Code" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {countryCodes.map((c) => (
+                          <SelectItem key={`${c.name}-${c.code}`} value={c.code}>
+                            <div className="flex w-full items-center justify-between gap-4">
+                              <span>{c.name}</span>
+                              <span className="text-muted">{c.code}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                <Input
+                  id="c-phone"
+                  type="tel"
+                  inputMode="numeric"
+                  placeholder="98XXXXXXXX"
+                  className="flex-1 rounded-l-none border-0 bg-transparent focus-visible:ring-0"
+                  {...register("phone")}
+                  aria-invalid={!!errors.phone}
+                />
+              </div>
+              <FieldError message={errors.countryCode?.message} />
+              <FieldError message={errors.phone?.message} />
             </div>
             <div>
               <FieldLabel htmlFor="c-guests">Guests</FieldLabel>

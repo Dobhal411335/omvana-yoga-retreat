@@ -1,11 +1,18 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   const [banners, setBanners] = useState([]);
@@ -62,7 +69,11 @@ export function HeroSection() {
   if (isLoading) {
     return (
       <section className="relative h-[100px] md:h-[430px] w-full overflow-hidden z-[160]">
-        <Carousel className="h-full w-full" plugins={[plugin.current]} onMouseLeave={plugin.current.reset}>
+        <Carousel
+          className="h-full w-full"
+          plugins={[plugin.current]}
+          onMouseLeave={plugin.current.reset}
+        >
           <CarouselContent className="h-full">
             {[...Array(4)].map((_, index) => (
               <CarouselItem key={index} className="h-[100px] md:h-[430px]">
@@ -88,7 +99,7 @@ export function HeroSection() {
           priority
           className="object-cover object-center"
         />
-
+   
         {/* Dark gradient overlay so text stays readable */}
         <div
           className="absolute inset-0 bg-linear-to-t from-image-dark via-image-dark/55 to-image-dark/10"
@@ -144,7 +155,10 @@ export function HeroSection() {
             <CarouselContent className="h-full">
               {banners.map((item, index) => (
                 <CarouselItem key={index} className="h-[calc(100vh-80px)]">
-                  <Link href={item?.buttonLink || "#"} className="block h-full w-full">
+                  <Link
+                    href={item?.buttonLink || "#"}
+                    className="block h-full w-full"
+                  >
                     <div className="relative h-[calc(100vh-80px)] w-full flex items-center justify-center bg-black">
                       <Image
                         src={item?.frontImg?.url || " "}
@@ -171,13 +185,15 @@ export function HeroSection() {
               <button
                 key={index}
                 onClick={() => desktopApi?.scrollTo(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${index === desktopSelectedIndex ? "bg-white w-6" : "bg-white/50"
-                  }`}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === desktopSelectedIndex
+                    ? "bg-white w-6"
+                    : "bg-white/50"
+                }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
-
         </div>
       </div>
 
@@ -190,21 +206,14 @@ export function HeroSection() {
         >
           <CarouselContent className="h-full ml-0">
             {banners.map((banner, index) => (
-              <CarouselItem
-                key={index}
-                className="h-[260px] sm:h-[320px] pl-0"
-              >
+              <CarouselItem key={index} className="h-[260px] sm:h-[320px] pl-0">
                 <Link
                   href={banner?.buttonLink || "#"}
                   className="block w-full h-full"
                 >
                   <div className="relative w-full h-full overflow-hidden bg-black">
                     <img
-                      src={
-                        banner.mobileImg?.url ||
-                        banner.frontImg?.url ||
-                        " "
-                      }
+                      src={banner.mobileImg?.url || banner.frontImg?.url || " "}
                       alt={banner.title || "Banner Image"}
                       className="w-full h-full object-cover object-center"
                     />
@@ -222,10 +231,11 @@ export function HeroSection() {
                   key={index}
                   type="button"
                   onClick={() => mobileApi?.scrollTo(index)}
-                  className={`h-2 rounded-full transition-all duration-300 ${index === mobileSelectedIndex
-                    ? "w-6 bg-white"
-                    : "w-2 bg-white/60"
-                    }`}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === mobileSelectedIndex
+                      ? "w-6 bg-white"
+                      : "w-2 bg-white/60"
+                  }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -233,7 +243,15 @@ export function HeroSection() {
           )}
         </Carousel>
       </div>
+
+      <Button
+        type="button"
+        className="w-full h-10 absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 rounded-button bg-primary text-white hover:bg-primary-hover"
+        onClick={() => router.push("/plan-your-own")}
+      >
+        Explore packages
+        <ArrowUpRight className="size-4" aria-hidden="true" />
+      </Button>
     </section>
   );
 }
-

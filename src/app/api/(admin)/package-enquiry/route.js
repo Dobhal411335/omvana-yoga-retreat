@@ -16,15 +16,25 @@ export async function POST(req) {
     const packageName = String(body?.packageName || "").trim();
     const name = String(body?.name || "").trim();
     const email = String(body?.email || "").trim().toLowerCase();
+    const countryCode = String(body?.countryCode || "").trim();
+    const phone = String(body?.phone || "").trim();
     const guests = String(body?.guests || "").trim();
 
-    if (!packageId || !packageName || !name || !email || !guests) {
+    if (!packageId || !packageName || !name || !email || !countryCode || !phone || !guests) {
       return json(
         false,
-        "Package, name, email, and guests are required.",
+        "Package, name, email, country code, phone, and guests are required.",
         null,
         400
       );
+    }
+
+    if (!/^\+\d{1,4}$/.test(countryCode)) {
+      return json(false, "Please select a valid country code.", null, 400);
+    }
+
+    if (!/^\d{10,15}$/.test(phone)) {
+      return json(false, "Please enter a valid phone number (10–15 digits).", null, 400);
     }
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -60,16 +70,14 @@ export async function POST(req) {
       },
       name,
       email,
-      countryCode: String(body?.countryCode || "+91").trim(),
-      phone: String(body?.phone || "").trim(),
+      countryCode,
+      phone,
       guests,
       dates: String(body?.dates || "").trim(),
       experiences: Array.isArray(body?.experiences)
         ? body.experiences.map((item) => String(item)).filter(Boolean)
         : [],
       accommodation: String(body?.accommodation || "").trim(),
-      dietary: String(body?.dietary || "").trim(),
-      budget: String(body?.budget || "").trim(),
       hopes: String(body?.hopes || "").trim(),
       status: "Pending",
     });

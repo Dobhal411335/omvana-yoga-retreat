@@ -218,3 +218,249 @@
     width: min(100% - 32px, 1280px);
   }
 }
+/* Tiptap editor styles */
+.ProseMirror1 {
+  min-height: 100px;
+  padding: 0.5rem;
+  overflow-y: auto;
+  word-break: break-word;
+  white-space: pre-wrap;
+  background-color: transparent;
+}
+
+.ProseMirror1 p {
+  margin: 0.5em 0;
+}
+
+/* Style the font size and line height dropdowns */
+.tiptap-editor select {
+  font-size: 0.875rem;
+  min-width: 100px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.tiptap-editor select:focus {
+  outline: none;
+  border-color: var(--border);
+}
+
+.tiptap-editor select option {
+  background-color: white;
+  color: black;
+  padding: 4px;
+}
+
+/* Ensure styles are properly inherited */
+.ProseMirror1 [style] {
+  margin: inherit;
+  line-height: inherit;
+}
+
+.tiptap-editor .ProseMirror1 {
+  
+  min-height: 200px;
+  max-height: none;
+  border: 1px solid transparent;
+  background-color: transparent;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.5rem;
+  box-shadow: none;
+  width: 100%;
+  word-break: break-word;
+  white-space: pre-wrap;
+  overflow-y: auto;
+}
+
+/* Make sure the toolbar also matches */
+.tiptap-editor .toolbar {
+  background-color: transparent;
+  border-bottom: 1px solid var(--border);
+}
+
+.ProseMirror1 h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+.ProseMirror1 a {
+  text-decoration: underline;
+  color:#2563eb
+}
+.ProseMirror1 a:hover {
+  text-decoration: underline;
+  color:#2563eb
+}
+.ProseMirror1 h2 {
+  font-size: 1.5em;
+  margin: 1em 0 0.5em;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.ProseMirror1 p {
+  margin: 0.5em 0;
+  line-height: 1.6;
+}
+
+.ProseMirror1 p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror1 p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror1 strong {
+  font-weight: 600;
+}
+.ProseMirror1 h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror1 blockquote {
+  border-left: 3px solid #b4b4b4;
+  padding-left: 1em;
+  margin: 1em 0;
+
+  margin-left: 0;
+  font-style: italic;
+}
+
+.ProseMirror1 ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+}
+
+.ProseMirror1 ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+}
+
+.ProseMirror1 code {
+  background-color: #f5f5f5;
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: monospace;
+}
+
+.ProseMirror1 a {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+}
+
+.ProseMirror1 a:hover {
+  color: #2563eb !important;
+}
+
+.custom-desc-list {
+  font-family: inherit;
+  font-size: 1.05rem; /* Adjust as needed */
+  line-height: 1.6;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.custom-desc-list p {
+  margin: 0 0 0.7em 0; /* Add space below paragraphs */
+}
+
+.custom-desc-list ul,
+.custom-desc-list ol {
+  margin: 0 0 1em 1.5em; /* Add space below lists, keep indent */
+  padding-left: 1.5em;
+}
+
+.custom-desc-list li {
+  margin-bottom: 0.35em; /* Space between list items */
+  line-height: 1.5;
+}
+
+.custom-desc-list strong,
+.custom-desc-list b {
+  font-weight: bold;
+}
+
+.custom-desc-list em,
+.custom-desc-list i {
+  font-style: italic;
+}
+
+/* Allow <br> tags to create visible line breaks */
+.custom-desc-list br {
+  content: '';
+  display: block;
+  margin-bottom: 0.5em;
+}
+
+.custom-desc-list ul {
+  list-style-type: disc !important;
+  margin-left: 1.5em;
+  padding-left: 1.5em;
+}
+
+.custom-desc-list ol {
+  list-style-type: decimal !important;
+  margin-left: 1.5em;
+  padding-left: 1.5em;
+}
+
+.custom-desc-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: inherit;
+}
+
+.custom-desc-list th,
+.custom-desc-list td {
+  border: 1px solid #0e69e1; /* Updated border color for better contrast */
+  padding: 2px 4px; /* Minimum padding: 2px top/bottom, 4px left/right */
+  text-align: left;
+}
+
+.custom-desc-list th {
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+/* .custom-desc-list tr:nth-child(even) {
+  background-color: #f8fafc;
+} */
+
+.custom-desc-list tr:hover {
+  background-color: #edf2f7;
+}
+
+.custom-table-reset td {
+  border: none !important;
+}
+
+.custom-table-reset td:last-child {
+  border-left: 1px solid #d1d5db !important;
+}
+
+.custom-table-reset tr td {
+  border-bottom: 1px solid #d1d5db !important;
+}
+.custom-desc-list tr:hover {
+  background-color: #edf2f7;
+}
+/* Status Badges */
+.status-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+/* Order Item Card */
+.order-item {
+  @apply p-6 flex border-b last:border-b-0 hover:bg-gray-50 transition-colors;
+}
+
+/* Action Buttons */
+.action-btn {
+  @apply flex items-center justify-center w-full py-2 px-4 border rounded-md text-sm font-medium transition-colors;
+}

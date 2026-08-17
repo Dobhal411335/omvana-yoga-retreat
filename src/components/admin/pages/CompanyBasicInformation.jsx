@@ -27,6 +27,7 @@ const createEmptyFormData = () => ({
   emails: [''],
   officeAddresses: [''],
   googleAddress: '',
+  googleLink: '',
   facebookLink: '',
   instagramLink: '',
   youtubeLink: '',
@@ -58,6 +59,7 @@ const normalizeCompanyInfo = (record) => ({
   emails: normalizeArray(record?.emails),
   officeAddresses: normalizeArray(record?.officeAddresses),
   googleAddress: record?.googleAddress || '',
+  googleLink: record?.googleLink || '',
   facebookLink: record?.facebookLink || '',
   instagramLink: record?.instagramLink || '',
   youtubeLink: record?.youtubeLink || '',
@@ -454,6 +456,10 @@ const CompanyBasicInformation = () => {
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-5">
+              <div className="space-y-2">
+                  <Label className="text-sm font-medium text-slate-600 ml-1">Google</Label>
+                  <Input name="googleLink" value={formData.googleLink} onChange={handleScalarChange} placeholder="https://google.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
+                </div>
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-600 ml-1">Facebook</Label>
                   <Input name="facebookLink" value={formData.facebookLink} onChange={handleScalarChange} placeholder="https://facebook.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />

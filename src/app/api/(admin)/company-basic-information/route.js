@@ -37,6 +37,7 @@ const normalizePayload = (payload) => ({
   emails: normalizeArray(payload?.emails),
   officeAddresses: normalizeArray(payload?.officeAddresses),
   googleAddress: String(payload?.googleAddress || ''),
+  googleLink: String(payload?.googleLink || ''),
   facebookLink: String(payload?.facebookLink || ''),
   instagramLink: String(payload?.instagramLink || ''),
   youtubeLink: String(payload?.youtubeLink || ''),
@@ -87,14 +88,6 @@ export async function PUT(request) {
     const payload = await request.json()
     const normalizedPayload = normalizePayload(payload)
     const { id } = payload || {}
-
-    if (!String(normalizedPayload.instagramLink || '').trim()) {
-      return NextResponse.json({ success: false, error: 'Instagram link is required' }, { status: 400 })
-    }
-
-    if (!String(normalizedPayload.youtubeLink || '').trim()) {
-      return NextResponse.json({ success: false, error: 'Youtube link is required' }, { status: 400 })
-    }
 
     const invalidContactNumber = normalizedPayload.contactNumbers.find((number) => String(number).length !== 10)
     if (invalidContactNumber) {

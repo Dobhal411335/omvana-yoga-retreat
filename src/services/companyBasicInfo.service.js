@@ -53,6 +53,7 @@ function serializeCompanyBasicInfo(record) {
       ? record.officeAddresses.filter(Boolean)
       : [],
     googleAddress: record.googleAddress || "",
+    googleLink: record.googleLink || "",
     facebookLink: record.facebookLink || "",
     instagramLink: record.instagramLink || "",
     youtubeLink: record.youtubeLink || "",

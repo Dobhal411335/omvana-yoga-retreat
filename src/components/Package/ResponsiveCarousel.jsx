@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, CalendarClock } from "lucide-react";
+import { MapPin, CalendarClock, ArrowUpRight } from "lucide-react";
 
 const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
   const formatNumeric = new Function("return " + formatNumericStr)();
@@ -36,8 +36,7 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <Image
                     src={
-                      item?.basicDetails?.thumbnail?.url ||
-                      "/placeholder.png"
+                      item?.basicDetails?.thumbnail?.url || "/placeholder.png"
                     }
                     alt={item?.packageName || "Tour package image"}
                     fill
@@ -48,22 +47,25 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-ui text-xs font-medium text-primary">
+                    {item?.basicDetails?.location && (
                     <span className="inline-flex items-center gap-1">
                       <MapPin className="size-3.5 shrink-0" />
                       {item?.basicDetails?.location || "—"}
                     </span>
+                    )}
                     <span className="inline-flex items-center gap-1">
                       <CalendarClock className="size-3.5 shrink-0" />
                       {item?.basicDetails?.duration || 0} Days{" "}
-                      {Math.max((item?.basicDetails?.duration || 1) - 1, 0)} Nights
+                      {Math.max((item?.basicDetails?.duration || 1) - 1, 0)}{" "}
+                      Nights
                     </span>
                   </div>
 
-                  <h4 className="font-heading text-lg font-medium leading-snug text-heading line-clamp-2">
+                  <h4 className="font-sans text-md font-medium leading-snug text-black line-clamp-2">
                     {item?.packageName || "Untitled package"}
                   </h4>
 
-                  <div className="line-clamp-2 min-h-[2.5rem] font-body text-sm text-muted">
+                  <div className="line-clamp-2 min-h-[4rem] font-body text-sm text-muted">
                     {typeof item?.basicDetails?.smallDesc === "string" &&
                     item.basicDetails.smallDesc.trim() ? (
                       <span
@@ -76,8 +78,8 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
                     )}
                   </div>
 
-                  <div className="mt-auto flex items-end justify-between gap-3 border-t border-border/60 pt-4">
-                    <div className="min-w-0">
+                  <div className="mt-auto flex w-full items-center justify-center gap-3 pt-4">
+                    {/* <div className="min-w-0">
                       <p className="font-ui text-[11px] uppercase tracking-[0.08em] text-muted">
                         Starting from
                       </p>
@@ -92,16 +94,14 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
                         )}
                       </p>
                       <p className="font-ui text-xs text-muted">Onwards</p>
-                    </div>
-
-                    <Button
-                      size="sm"
-                      nativeButton={false}
-                      render={<Link href={`/package/${item?.slug}`} />}
-                      className="shrink-0"
+                    </div> */}
+                    <Link
+                      href={`/package/${item.slug}`}
+                      className="mt-8 inline-flex h-10 items-center justify-center gap-2 rounded-button border border-border px-5 font-body text-sm transition-colors bg-foreground text-white hover:border-heading/40 w-full"
                     >
-                      Learn more
-                    </Button>
+                      View Details
+                      <ArrowUpRight className="size-4" aria-hidden="true" />
+                    </Link>
                   </div>
                 </div>
               </article>

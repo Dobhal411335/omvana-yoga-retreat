@@ -35,11 +35,13 @@ const PackageEnquirySchema = new mongoose.Schema(
     countryCode: {
       type: String,
       default: "+91",
+      required: true,
     },
     phone: {
       type: String,
       trim: true,
       default: "",
+      required: true,
     },
     guests: {
       type: String,
@@ -50,14 +52,6 @@ const PackageEnquirySchema = new mongoose.Schema(
       default: "",
     },
     accommodation: {
-      type: String,
-      default: "",
-    },
-    dietary: {
-      type: String,
-      default: "",
-    },
-    budget: {
       type: String,
       default: "",
     },

@@ -204,21 +204,21 @@ export default function PackageDetailClient({
       {/* ========== HEADER: Package Name + Tags + Itinerary ========== */}
       <div className="w-full border-b border-border/60 bg-background">
         <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-          <p className="mb-2 font-ui text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-black">
             Retreat package
           </p>
-          <h1 className="mb-4 font-heading text-3xl font-medium leading-tight text-heading md:text-4xl lg:text-[2.75rem]">
+          <h1 className="mb-4 font-sans text-3xl font-medium leading-tight text-heading md:text-3xl">
             {packageDetails.packageName}
           </h1>
 
           {/* Tags row */}
           <div className="mb-2 flex flex-wrap items-center gap-2">
             {packageDetails.basicDetails?.tourType && (
-              <span className="rounded-button border border-border bg-white px-3.5 py-1.5 font-ui text-xs font-medium text-heading">
+              <span className="rounded-button border border-border bg-white px-3.5 py-1.5 font-ui text-sm font-medium text-heading">
                 {packageDetails.basicDetails.tourType}
               </span>
             )}
-            <span className="rounded-button bg-primary px-3.5 py-1.5 font-ui text-xs font-semibold text-primary-foreground">
+            <span className="rounded-button bg-primary px-3.5 py-1.5 font-ui text-sm font-semibold text-primary-foreground">
               {packageDetails.basicDetails?.duration || "7N/8D"} Days
             </span>
 
@@ -228,10 +228,10 @@ export default function PackageDetailClient({
                 {nightStops.map((stop, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-1.5 rounded-button border border-border bg-surface px-3 py-1.5"
+                    className="flex items-center gap-1.5 rounded-button border border-border bg-surface px-3 py-2"
                   >
-                    <span className="font-ui text-xs text-muted">•</span>
-                    <span className="font-ui text-xs font-medium text-heading">{stop}</span>
+                    <span className="font-ui text-sm text-black">•</span>
+                    <span className="font-ui text-sm font-medium text-heading">{stop}</span>
                   </div>
                 ))}
               </div>
@@ -311,7 +311,7 @@ export default function PackageDetailClient({
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap border-b-2 px-4 py-3.5 font-ui text-sm font-semibold transition-colors ${activeTab === tab.id
+                    className={`whitespace-nowrap border-b-2 pr-4 pl-3 py-3.5 font-ui text-sm font-semibold transition-colors ${activeTab === tab.id
                       ? "border-primary text-primary"
                       : "border-transparent text-muted hover:border-border hover:text-heading"
                       }`}
@@ -1330,23 +1330,23 @@ export default function PackageDetailClient({
                   {packageDetails.priceUnit === "Double Occupancy Per Person Price Only" && packageDetails.doubleOccupancyPrice > 0 ? (
                     <>
                       <div className="mb-2">
-                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-muted mb-0.5">Single Occupancy</p>
-                        <div className="flex items-baseline gap-2">
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Single Occupancy</p>
+                        <div className="flex items-baseline gap-2"> 
                           {packageDetails.price === 0 ? (
                             <span className="font-heading text-2xl font-medium text-heading">XXXX*</span>
                           ) : (
                             <>
-                              <span className="font-heading text-2xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
-                              <span className="font-ui text-sm text-muted">/Person</span>
+                              <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                              <span className="font-ui text-sm text-black">/Person</span>
                             </>
                           )}
                         </div>
                       </div>
                       <div className="mb-1 rounded-lg bg-surface/60 py-2">
-                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-muted mb-0.5">Double Occupancy</p>
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Double Occupancy</p>
                         <div className="flex items-baseline gap-2">
-                          <span className="font-heading text-2xl font-medium text-heading">₹{formatNumber(packageDetails.doubleOccupancyPrice)}</span>
-                          <span className="font-ui text-sm text-muted">/Person</span>
+                          <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.doubleOccupancyPrice)}</span>
+                          <span className="font-ui text-sm text-black">/Person</span>
                         </div>
                       </div>
                     </>
@@ -1357,21 +1357,21 @@ export default function PackageDetailClient({
                       ) : (
                         <>
                           <span className="font-heading text-3xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
-                          <span className="font-ui text-sm text-muted">/Adult</span>
+                          <span className="font-ui text-sm text-black">/Adult</span>
                         </>
                       )}
                     </div>
                   )}
                   {packageDetails.basicDetails?.originalPrice > packageDetails.price && (
-                    <p className="mb-1 font-ui text-sm text-muted line-through">
+                    <p className="mb-1 font-ui text-sm text-black line-through">
                       ₹{formatNumber(packageDetails.basicDetails.originalPrice)}
                     </p>
                   )}
-                  <p className="mb-5 font-ui text-xs text-muted">Excluding applicable taxes</p>
+                  <p className="mb-5 font-ui text-xs text-black">Excluding applicable taxes</p>
 
                   <Button
                     type="button"
-                    className="w-full"
+                    className="w-full h-10"
                     onClick={() => setEnquiryOpen(true)}
                   >
                     Make an enquiry
@@ -1380,7 +1380,7 @@ export default function PackageDetailClient({
                   {/* Contact buttons */}
                   <div className="mt-3 flex gap-2">
                     <Link
-                      href={`tel:+918006000325`}
+                      href={`tel:+919762240419`}
                       target="_blank"
                       className="flex items-center justify-center rounded-button border border-border p-3 text-heading transition-colors hover:bg-surface"
                     >
