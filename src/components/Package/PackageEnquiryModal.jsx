@@ -41,21 +41,11 @@ const schema = z.object({
   phone: z.string().optional(),
   guests: z.string().min(1, "Please select number of guests"),
   dates: z.string().optional(),
-  experiences: z.array(z.string()).optional(),
   accommodation: z.string().optional(),
   dietary: z.string().optional(),
   budget: z.string().optional(),
   hopes: z.string().optional(),
 });
-
-const experiences = [
-  ["Daily yoga & pranayama", "Meditation & silence"],
-  ["Ganga Aarti at Parmarth", "Sunrise hike (Kunjapuri)"],
-  ["Neelkanth Mahadev temple", "Beatles Ashram visit"],
-  ["River rafting / nature walk", "Ayurvedic consult / therapy"],
-  ["Sound healing", "Cooking class (sattvic)"],
-  ["Vedic chanting & philosophy", "Journaling & solo time"],
-];
 
 const guestOptions = [
   "1 guest",
@@ -67,12 +57,12 @@ const guestOptions = [
 ];
 
 const accommodationOptions = [
-  "Deluxe room",
-  "Premium suite",
-  "Garden cottage",
-  "Dormitory",
-  "Not sure yet",
+  "1 room - single occupancy",
+  "2 rooms - single occupancy",
+  "1 room - double occupancy",
+  "2 rooms - double occupancy",
 ];
+
 
 function FieldLabel({ htmlFor, children, optional }) {
   return (
@@ -107,7 +97,7 @@ export default function PackageEnquiryModal({
   const [submitted, setSubmitted] = useState(false);
 
   const packageName = packageDetails?.packageName || "";
-  const packageImage =
+  const packageImage =  
     packageDetails?.basicDetails?.thumbnail?.url ||
     packageDetails?.gallery?.[0]?.url ||
     packageDetails?.basicDetails?.imageBanner?.url ||
@@ -130,7 +120,6 @@ export default function PackageEnquiryModal({
     defaultValues: {
       packageName,
       guests: "1 guest",
-      experiences: [],
     },
   });
 
@@ -144,7 +133,6 @@ export default function PackageEnquiryModal({
         phone: "",
         guests: "1 guest",
         dates: "",
-        experiences: [],
         accommodation: "",
         dietary: "",
         budget: "",
@@ -152,19 +140,6 @@ export default function PackageEnquiryModal({
       });
     }
   }, [open, packageName, reset]);
-
-  const selectedExperiences = watch("experiences") ?? [];
-
-  function toggleExperience(exp) {
-    if (selectedExperiences.includes(exp)) {
-      setValue(
-        "experiences",
-        selectedExperiences.filter((e) => e !== exp)
-      );
-    } else {
-      setValue("experiences", [...selectedExperiences, exp]);
-    }
-  }
 
   async function onSubmit(data) {
     try {
@@ -194,7 +169,6 @@ export default function PackageEnquiryModal({
           phone: data.phone || "",
           guests: data.guests,
           dates: data.dates || "",
-          experiences: data.experiences || [],
           accommodation: data.accommodation || "",
           dietary: data.dietary || "",
           budget: data.budget || "",
@@ -479,29 +453,6 @@ export default function PackageEnquiryModal({
                       />
                     </div>
                   </div>
-
-                  <div>
-                    <FieldLabel>What would you like to weave in?</FieldLabel>
-                    <p className="mt-1 font-body text-xs text-primary">
-                      Pick as few or as many as you&apos;d like.
-                    </p>
-                    <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-                      {experiences.flat().map((exp) => (
-                        <label
-                          key={exp}
-                          className="flex cursor-pointer items-center gap-3 font-body text-sm text-foreground"
-                        >
-                          <Checkbox
-                            checked={selectedExperiences.includes(exp)}
-                            onCheckedChange={() => toggleExperience(exp)}
-                            className="border-border data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-                          />
-                          {exp}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <div>
                       <FieldLabel htmlFor="enquiry-accommodation" optional>

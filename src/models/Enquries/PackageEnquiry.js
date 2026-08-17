@@ -49,10 +49,6 @@ const PackageEnquirySchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    experiences: {
-      type: [String],
-      default: [],
-    },
     accommodation: {
       type: String,
       default: "",

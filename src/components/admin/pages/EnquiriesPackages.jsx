@@ -502,27 +502,6 @@ export default function EnquiriesPackages() {
               <Separator className="my-5" />
 
               <div className="space-y-4">
-                <div>
-                  <p className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
-                    Experiences
-                  </p>
-                  {selectedEnquiry.experiences?.length ? (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {selectedEnquiry.experiences.map((item) => (
-                        <Badge
-                          key={item}
-                          variant="outline"
-                          className="border-border bg-card font-body text-xs text-heading"
-                        >
-                          {item}
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="mt-2 font-body text-sm text-muted">—</p>
-                  )}
-                </div>
-
                 <DetailRow
                   label="Hopes / notes"
                   value={selectedEnquiry.hopes || "—"}

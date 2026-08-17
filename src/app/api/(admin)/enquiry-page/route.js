@@ -33,9 +33,6 @@ export async function POST(req) {
       phone: String(body?.phone || "").trim(),
       guests,
       dates: String(body?.dates || "").trim(),
-      experiences: Array.isArray(body?.experiences)
-        ? body.experiences.map((item) => String(item)).filter(Boolean)
-        : [],
       accommodation: String(body?.accommodation || "").trim(),
       dietary: String(body?.dietary || "").trim(),
       budget: String(body?.budget || "").trim(),
