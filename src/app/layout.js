@@ -39,7 +39,7 @@ export default function RootLayout({ children }) {
         <ToasterProvider />
         <TooltipProvider>{children}</TooltipProvider>
         <EnrollNow />
-        {/* <OverlayButton /> */}
+        <OverlayButton />
       </body>
     </html>
   );

@@ -35,6 +35,8 @@ export default function PackageDetailClient({
   const sidebarRef = useRef(null);
 
   const formatNumber = (number) => new Intl.NumberFormat("en-IN").format(number);
+  const formatUsd = (number) => new Intl.NumberFormat("en-US").format(number);
+  const hasUsdPrice = (amount) => Number(amount) > 0;
 
   const duration = packageDetails?.basicDetails?.duration;
   const nights =
@@ -1331,12 +1333,16 @@ export default function PackageDetailClient({
                     <>
                       <div className="mb-2">
                         <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Single Occupancy</p>
-                        <div className="flex items-baseline gap-2"> 
+                        <div className="flex flex-wrap items-baseline gap-2"> 
                           {packageDetails.price === 0 ? (
                             <span className="font-heading text-2xl font-medium text-heading">XXXX*</span>
                           ) : (
                             <>
                               <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                              <span className="font-ui text-xl text-black">/</span>
+                              {hasUsdPrice(packageDetails.priceUsd) && (
+                                <span className="font-sans text-lg font-medium text-heading">${formatUsd(packageDetails.priceUsd)}</span>
+                              )}
                               <span className="font-ui text-sm text-black">/Person</span>
                             </>
                           )}
@@ -1344,19 +1350,26 @@ export default function PackageDetailClient({
                       </div>
                       <div className="mb-1 rounded-lg bg-surface/60 py-2">
                         <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Double Occupancy</p>
-                        <div className="flex items-baseline gap-2">
+                        <div className="flex flex-wrap items-baseline gap-2">
                           <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.doubleOccupancyPrice)}</span>
+                          <span className="font-ui text-xl text-black">/</span>
+                          {hasUsdPrice(packageDetails.doubleOccupancyPriceUsd) && (
+                            <span className="font-sans text-lg font-medium text-heading">${formatUsd(packageDetails.doubleOccupancyPriceUsd)}</span>
+                          )}
                           <span className="font-ui text-sm text-black">/Person</span>
                         </div>
                       </div>
                     </>
                   ) : (
-                    <div className="mb-1 flex items-baseline gap-2">
+                    <div className="mb-1 flex flex-wrap items-baseline gap-2">
                       {packageDetails.price === 0 ? (
                         <span className="font-heading text-3xl font-medium text-heading">XXXX*</span>
                       ) : (
                         <>
                           <span className="font-heading text-3xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                          {hasUsdPrice(packageDetails.priceUsd) && (
+                            <span className="font-heading text-2xl font-medium text-heading">${formatUsd(packageDetails.priceUsd)}</span>
+                          )}
                           <span className="font-ui text-sm text-black">/Adult</span>
                         </>
                       )}

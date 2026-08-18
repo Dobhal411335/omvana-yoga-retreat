@@ -26,7 +26,7 @@ const EnrollNow = () => {
   return (
     <Button
       type="button"
-      className="rounded-md bg-red-600 hover:bg-red-700 text-white px-4 h-13 font-bold shadow-lg sticky bottom-1/2 left-15 transform -translate-x-1/2 z-20 print:hidden"
+      className="fixed top-1/2 left-0 z-20 h-8 -translate-y-1/2 rounded bg-red-600 font-bold text-white shadow-lg print:hidden hover:bg-red-700"
       onClick={() => router.push("/plan-your-own")}
     >
       Enroll Now

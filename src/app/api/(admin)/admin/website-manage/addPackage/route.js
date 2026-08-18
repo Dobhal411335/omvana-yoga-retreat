@@ -57,7 +57,9 @@ export async function POST(req) {
             packageName: body.packages.packageName,
             slug,
             price: body.packages.price,
+            priceUsd: body.packages.priceUsd || 0,
             doubleOccupancyPrice: body.packages.doubleOccupancyPrice || 0,
+            doubleOccupancyPriceUsd: body.packages.doubleOccupancyPriceUsd || 0,
             priceUnit: body.packages.priceUnit
         });
 
@@ -133,7 +135,9 @@ export async function PUT(req) {
         const updatedData = {
             packageName: nextPackageName,
             price: body.price ?? existingPackage.price,
+            priceUsd: body.priceUsd ?? existingPackage.priceUsd ?? 0,
             doubleOccupancyPrice: body.doubleOccupancyPrice ?? existingPackage.doubleOccupancyPrice ?? 0,
+            doubleOccupancyPriceUsd: body.doubleOccupancyPriceUsd ?? existingPackage.doubleOccupancyPriceUsd ?? 0,
             priceUnit: body.priceUnit ?? existingPackage.priceUnit,
             link: body.link ?? existingPackage.link,
             active: body.active ?? existingPackage.active,

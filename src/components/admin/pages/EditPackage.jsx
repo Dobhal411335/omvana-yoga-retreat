@@ -647,7 +647,9 @@ const EditPackage = () => {
       setValue("titleLine", packages.titleLine || "");
       setValue("keywords", Array.isArray(packages.keywords) ? packages.keywords.filter(Boolean) : []);
       setValue("price", packages.price);
+      setValue("priceUsd", packages.priceUsd || 0);
       setValue("doubleOccupancyPrice", packages.doubleOccupancyPrice || 0);
+      setValue("doubleOccupancyPriceUsd", packages.doubleOccupancyPriceUsd || 0);
       setValue("priceUnit", packages.priceUnit);
       setValue("basicDetails.location", packages?.basicDetails?.location)
       setValue("basicDetails.tourType", packages?.basicDetails?.tourType)
@@ -855,7 +857,7 @@ const EditPackage = () => {
 
   return (
     <>
-      <form className="flex w-full max-w-full flex-col gap-8 rounded-[var(--radius-card)] bg-white p-6 ring-1 ring-border/50 md:p-8" onSubmit={handleSubmit(onSubmit)}>
+      <form className="flex w-full max-w-full flex-col gap-8 rounded-[var(--radius-card)] bg-white p-4 ring-1 ring-border/50" onSubmit={handleSubmit(onSubmit)}>
         <h1 className="font-heading text-3xl text-heading md:text-4xl">Basic Detail</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 w-full">
           <div className="flex flex-col gap-2">
@@ -876,7 +878,11 @@ const EditPackage = () => {
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="price" className="font-ui text-sm text-heading">{watch('priceUnit') === "Double Occupancy Per Person Price Only" ? "Single Occupancy Price" : "Package Price"}</Label>
-            <NumericFormat thousandSeparator={true} prefix="₹" name="price" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('price', values.floatValue)} value={packages?.price} />
+            <NumericFormat thousandSeparator={true} prefix="₹" name="price" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('price', values.floatValue || 0)} value={watch('price') || 0} />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="priceUsd" className="font-ui text-sm text-heading">{watch('priceUnit') === "Double Occupancy Per Person Price Only" ? "Single Occupancy Price ($)" : "Package Price ($)"}</Label>
+            <NumericFormat thousandSeparator={true} prefix="$" name="priceUsd" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('priceUsd', values.floatValue || 0)} value={watch('priceUsd') || 0} />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="priceUnit" className="font-ui text-sm text-heading">Price Unit</Label>
@@ -887,6 +893,7 @@ const EditPackage = () => {
                 setValue('priceUnit', e.target.value);
                 if (e.target.value !== "Double Occupancy Per Person Price Only") {
                   setValue('doubleOccupancyPrice', 0);
+                  setValue('doubleOccupancyPriceUsd', 0);
                 }
               }}
               className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 text-sm outline-none focus:border-primary"
@@ -898,10 +905,16 @@ const EditPackage = () => {
 
           </div>
           {watch('priceUnit') === "Double Occupancy Per Person Price Only" && (
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="doubleOccupancyPrice" className="font-ui text-sm text-heading">Double Occupancy Price</Label>
-              <NumericFormat thousandSeparator={true} prefix="₹" name="doubleOccupancyPrice" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('doubleOccupancyPrice', values.floatValue)} value={watch('doubleOccupancyPrice') || 0} />
-            </div>
+            <>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="doubleOccupancyPrice" className="font-ui text-sm text-heading">Double Occupancy Price</Label>
+                <NumericFormat thousandSeparator={true} prefix="₹" name="doubleOccupancyPrice" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('doubleOccupancyPrice', values.floatValue || 0)} value={watch('doubleOccupancyPrice') || 0} />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="doubleOccupancyPriceUsd" className="font-ui text-sm text-heading">Double Occupancy Price($)</Label>
+                <NumericFormat thousandSeparator={true} prefix="$" name="doubleOccupancyPriceUsd" className="h-8 w-full rounded-[var(--radius-input)] border border-border bg-transparent px-2.5 py-1 text-sm font-medium outline-none focus:border-primary" onValueChange={(values) => setValue('doubleOccupancyPriceUsd', values.floatValue || 0)} value={watch('doubleOccupancyPriceUsd') || 0} />
+              </div>
+            </>
           )}
           <div className="flex flex-col gap-2">
             <Label htmlFor="location" className="font-ui text-sm text-heading">Location</Label>
