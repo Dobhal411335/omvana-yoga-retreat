@@ -1,5 +1,5 @@
 "use client"
-import { ArrowLeftIcon, Trash2, Plus, Sparkles, Image as ImageIcon, Settings, FileText, Check, AlertCircle, Share2, Phone, AlignLeft, Info, HelpCircle, ShieldAlert } from 'lucide-react';
+import { ArrowLeftIcon, Trash2, Plus, Sparkles, Image as ImageIcon, Settings, FileText, Check, AlertCircle, Share2, Phone, AlignLeft, Info, HelpCircle, ShieldAlert, Loader2 } from 'lucide-react';
 import React from 'react'
 
 import { useState } from 'react';
@@ -17,6 +17,11 @@ import ListItem from '@tiptap/extension-list-item';
 import toast from "react-hot-toast"
 import { useRouter } from 'next/navigation';
 import SeoFields from '@/components/admin/common/SeoFields'
+import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
+import { ROOM_AMENITY_CATEGORIES } from "@/lib/roomAmenityCategories";
+import { getHotelAmenityIcon } from "@/lib/hotelAmenityIcons";
+import { getRoomAmenityCategoryIcon } from "@/lib/roomAmenityIcons";
 import {
   Bold,
   Italic,
@@ -47,7 +52,50 @@ const initialAccordionTags = [{ left: '', right: '' }];
 const initialNotices = [{ title: "", description: "", type: "warning" }];
 const initialSearchLocations = [{ locationName: "", count: "", url: "" }];
 const initialGridCards = [{ image: { url: '', key: '' }, chipName: '', title: '', link: '', galleryDate: '', postedBy: '', galleryDescription: '', bentoImages: [], youtubeShorts: [], youtubeVideos: [] }];
-const initialTeamCards = [{ image: { url: '', key: '' }, name: '', designation: '', phone: '', facebook: '', instagram: '', youtube: '' }];
+const initialTeamCards = [{ image: { url: '', key: '' }, name: '', designation: '', qualification: '', specialization: '', phone: '', facebook: '', instagram: '', youtube: '' }];
+const createEmptyDesign9Card = () => ({ heading: '', description: '', images: [] });
+const initialDesign9Cards = [createEmptyDesign9Card()];
+
+const normalizeTeamCards = (cards) => {
+  if (!Array.isArray(cards) || cards.length === 0) {
+    return initialTeamCards;
+  }
+  return cards.map((card) => ({
+    image: card?.image || { url: '', key: '' },
+    name: card?.name || '',
+    designation: card?.designation || '',
+    qualification: card?.qualification || '',
+    specialization: card?.specialization || '',
+    phone: card?.phone || '',
+    facebook: card?.facebook || '',
+    instagram: card?.instagram || '',
+    youtube: card?.youtube || '',
+  }));
+};
+
+const normalizeDesign9Cards = (cards) => {
+  if (!Array.isArray(cards) || cards.length === 0) {
+    return initialDesign9Cards;
+  }
+  return cards.map((card) => ({
+    heading: card?.heading || '',
+    description: card?.description || '',
+    images: Array.isArray(card?.images) ? card.images : [],
+  }));
+};
+
+const mapDesignEightNineFields = (data) => ({
+  design8Heading: data.design8Heading || '',
+  design8Description: data.design8Description || '',
+  design8HotelAmenities: Array.isArray(data.design8HotelAmenities) ? data.design8HotelAmenities : [],
+  design8RoomDescription: data.design8RoomDescription || '',
+  design8RoomAmenities: Array.isArray(data.design8RoomAmenities) ? data.design8RoomAmenities : [],
+  design9MiniHeading: data.design9MiniHeading || '',
+  design9MainHeading: data.design9MainHeading || '',
+  design9Description: data.design9Description || '',
+  design9Cards: normalizeDesign9Cards(data.design9Cards),
+});
+
 const initialAdvertisements = [{ image: { url: '', key: '' }, url: '' }];
 
 const normalizeParagraphSections = (sections) => {
@@ -104,6 +152,45 @@ const InlineRichTextEditor = ({ value, onChange }) => {
     </div>
   );
 };
+
+const BannerImageField = ({ value, uploading, onChange, onDelete, inputId }) => (
+  <div className="space-y-2">
+    <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Header Banner Image</label>
+    <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50/30 flex flex-col items-center justify-center text-center">
+      <input
+        type="file"
+        accept="image/*"
+        onChange={onChange}
+        className="hidden"
+        id={inputId}
+      />
+      <div className="mb-3 rounded-full bg-slate-100 p-2.5 text-slate-600 border border-slate-200/50">
+        <ImageIcon className="w-5 h-5" />
+      </div>
+      <label
+        htmlFor={inputId}
+        className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer shadow-sm transition-colors mb-1"
+      >
+        Choose Banner Image
+      </label>
+      <p className="text-[11px] text-slate-400">Recommended size: 1200x400 px</p>
+      {uploading && <div className="text-blue-600 text-xs font-semibold mt-2 animate-pulse">Uploading to Cloudinary...</div>}
+      {value?.url && (
+        <div className="relative w-full max-w-md h-44 border border-slate-200/80 rounded-xl overflow-hidden mt-4 bg-white shadow-sm">
+          <img src={value.url} alt="Banner Preview" className="object-cover w-full h-full" />
+          <button
+            type="button"
+            onClick={onDelete}
+            className="absolute top-2 right-2 bg-white/95 hover:bg-rose-50 border border-slate-200 text-rose-600 rounded-lg p-2 transition-colors shadow-sm"
+            title="Remove image"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+);
 
 const EditWebpages = ({ activityId }) => {
   const router = useRouter();
@@ -174,7 +261,8 @@ const EditWebpages = ({ activityId }) => {
             design6Author: data.design6Author || '',
             design6MidHeading: data.design6MidHeading || '',
             design6MidLink: data.design6MidLink || '',
-            teamCards: Array.isArray(data.teamCards) && data.teamCards.length > 0 ? data.teamCards : initialTeamCards,
+            teamCards: normalizeTeamCards(data.teamCards),
+            ...mapDesignEightNineFields(data),
           }));
         } else {
           setError(data.error || 'Could not load webpage');
@@ -480,6 +568,63 @@ const EditWebpages = ({ activityId }) => {
     setForm(prev => ({ ...prev, teamCards: newCards }));
   };
 
+  const handleDesign9CardImagesChange = async (e, cardIndex) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    try {
+      const uploadPromises = files.map(async (file) => {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', file);
+        const res = await fetch('/api/cloudinary', {
+          method: 'POST',
+          body: formDataUpload
+        });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          return { url: data.url, key: data.key || '' };
+        }
+        throw new Error(data.error || 'Unknown error');
+      });
+      const uploadedImages = await Promise.all(uploadPromises);
+      setForm((prev) => {
+        const nextCards = [...(prev.design9Cards || [])];
+        const images = nextCards[cardIndex]?.images || [];
+        nextCards[cardIndex] = {
+          ...nextCards[cardIndex],
+          images: [...images, ...uploadedImages],
+        };
+        return { ...prev, design9Cards: nextCards };
+      });
+      toast.success(`${uploadedImages.length} image(s) uploaded!`);
+    } catch (err) {
+      toast.error('Upload error: ' + err.message);
+    }
+    e.target.value = '';
+  };
+
+  const handleDeleteDesign9CardImage = async (cardIndex, imgIndex) => {
+    const card = form.design9Cards?.[cardIndex];
+    const image = card?.images?.[imgIndex];
+    if (image?.key) {
+      try {
+        await fetch('/api/cloudinary', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ publicId: image.key }),
+        });
+      } catch (err) {
+        console.error('Failed to delete design 9 card image from Cloudinary', err);
+      }
+    }
+    setForm((prev) => {
+      const nextCards = [...(prev.design9Cards || [])];
+      const nextImages = [...(nextCards[cardIndex]?.images || [])];
+      nextImages.splice(imgIndex, 1);
+      nextCards[cardIndex] = { ...nextCards[cardIndex], images: nextImages };
+      return { ...prev, design9Cards: nextCards };
+    });
+  };
+
   const initialForm = {
     title: '',
     slug: '',
@@ -527,6 +672,15 @@ const EditWebpages = ({ activityId }) => {
     design6MidHeading: '',
     design6MidLink: '',
     teamCards: initialTeamCards,
+    design8Heading: '',
+    design8Description: '',
+    design8HotelAmenities: [],
+    design8RoomDescription: '',
+    design8RoomAmenities: [],
+    design9MiniHeading: '',
+    design9MainHeading: '',
+    design9Description: '',
+    design9Cards: initialDesign9Cards,
   };
 
   const [form, setForm] = useState(initialForm);
@@ -536,7 +690,48 @@ const EditWebpages = ({ activityId }) => {
   const isDesignFive = form.templateType === 'design5';
   const isDesignSix = form.templateType === 'design6';
   const isDesignSeven = form.templateType === 'design7';
+  const isDesignEight = form.templateType === 'design8';
+  const isDesignNine = form.templateType === 'design9';
+  const isCustomTemplate = isDesignFive || isDesignSix || isDesignSeven || isDesignEight || isDesignNine;
   const [topSectionView, setTopSectionView] = useState('all');
+  const [hotelAmenitiesList, setHotelAmenitiesList] = useState([]);
+  const [loadingHotelAmenities, setLoadingHotelAmenities] = useState(false);
+
+  React.useEffect(() => {
+    if (!isDesignEight) return undefined;
+    let cancelled = false;
+    async function loadHotelAmenities() {
+      setLoadingHotelAmenities(true);
+      try {
+        const res = await fetch("/api/roomAmenities");
+        const allAmenities = await res.json();
+        const list = Array.isArray(allAmenities)
+          ? allAmenities
+          : Array.isArray(allAmenities?.data)
+            ? allAmenities.data
+            : [];
+        if (!cancelled) setHotelAmenitiesList(list);
+      } catch {
+        if (!cancelled) setHotelAmenitiesList([]);
+      } finally {
+        if (!cancelled) setLoadingHotelAmenities(false);
+      }
+    }
+    loadHotelAmenities();
+    return () => {
+      cancelled = true;
+    };
+  }, [isDesignEight]);
+
+  const toggleStringListValue = (field, value) => {
+    setForm((prev) => {
+      const current = Array.isArray(prev[field]) ? prev[field] : [];
+      const next = current.includes(value)
+        ? current.filter((item) => item !== value)
+        : [...current, value];
+      return { ...prev, [field]: next };
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -749,7 +944,7 @@ const EditWebpages = ({ activityId }) => {
 
       const hasTopText = hasTopTextSectionContent(payload);
       const hasTopBanner = hasTopBannerContent(payload);
-      if (hasTopText && hasTopBanner) {
+      if (!isDesignEight && !isDesignNine && hasTopText && hasTopBanner) {
         toast.error('Please fill either top text section or top banner image, not both.');
         return;
       }
@@ -805,7 +1000,8 @@ const EditWebpages = ({ activityId }) => {
                 facebookUrl: data.facebookUrl || '',
                 youtubeUrl: data.youtubeUrl || '',
                 instaUrl: data.instaUrl || '',
-                googleUrl: data.googleUrl || ''
+                googleUrl: data.googleUrl || '',
+                ...mapDesignEightNineFields(data),
               }));
             }
           });
@@ -899,7 +1095,7 @@ const EditWebpages = ({ activityId }) => {
           {(isDesignOneOrTwo || isDesignThree || isDesignFour || isDesignFive || isDesignSix || isDesignSeven) && (
             <div className="space-y-6">
               {/* Top Section View Toggle */}
-              {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+              {!isDesignFour && !isCustomTemplate && (
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-10">Top Section View Layout</label>
                   <div className="inline-flex rounded-xl border border-slate-200 p-1 bg-slate-50 shadow-sm">
@@ -998,7 +1194,7 @@ const EditWebpages = ({ activityId }) => {
               )}
 
               {/* Main Banner Image Option */}
-              {(topSectionView === 'bannerOnly' && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven) && (
+              {(topSectionView === 'bannerOnly' && !isDesignFour && !isCustomTemplate) && (
                 <div className="space-y-2">
                   <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Main Top Banner Image</label>
                   <div className="border-2 border-dashed border-slate-200 rounded-2xl p-6 bg-slate-50/30 flex flex-col items-center justify-center text-center">
@@ -1045,7 +1241,7 @@ const EditWebpages = ({ activityId }) => {
               )}
 
               {/* Tags Section */}
-              {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+              {!isDesignFour && !isCustomTemplate && (
                 <div className="space-y-3">
                   <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Create Tags</label>
                   <div className="space-y-2">
@@ -1081,7 +1277,7 @@ const EditWebpages = ({ activityId }) => {
               )}
 
               {/* Posted By Checkboxes */}
-              {!isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+              {!isDesignFour && !isCustomTemplate && (
                 <div className="space-y-2 pt-2">
                   <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Posted By Role</label>
                   <div className="flex items-center gap-6">
@@ -1111,7 +1307,7 @@ const EditWebpages = ({ activityId }) => {
         </div>
 
         {/* Highlights Section */}
-        {!isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-slate-500" /> Highlights Data
@@ -1159,7 +1355,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Paragraph Section */}
-        {!isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <AlignLeft className="w-4 h-4 text-slate-500" /> Paragraph Sections
@@ -1533,7 +1729,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Table Data Section */}
-        {!isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <FileText className="w-4 h-4 text-slate-500" /> Table Rows Layout
@@ -1599,7 +1795,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Blockquote Settings Section */}
-        {!isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Quote className="w-4 h-4 text-slate-500" /> Blockquote Settings
@@ -1672,7 +1868,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Advertisement image section (Legacy Accordion Tag layout block) */}
-        {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isDesignThree && !isDesignFour && !isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Share2 className="w-4 h-4 text-slate-500" /> Sidebar Advertisement
@@ -1733,7 +1929,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Accordion Tag Section */}
-        {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isDesignThree && !isDesignFour && !isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Plus className="w-4 h-4 text-slate-500" /> Accordion Tags
@@ -1787,7 +1983,7 @@ const EditWebpages = ({ activityId }) => {
         )}
 
         {/* Side Thumb Blog Section */}
-        {!isDesignThree && !isDesignFour && !isDesignFive && !isDesignSix && !isDesignSeven && (
+        {!isDesignThree && !isDesignFour && !isCustomTemplate && (
           <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-6">
             <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-500" /> Side Thumb Blog
@@ -2155,7 +2351,7 @@ const EditWebpages = ({ activityId }) => {
                   className="w-full rounded-lg border border-slate-200 bg-[#FAFAFA] px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 focus:bg-white text-slate-800 font-semibold"
                 />
               </div>
-              <div className="space-y-1.5">
+              {/* <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Explore People Link</label>
                 <input
                   type="text"
@@ -2165,7 +2361,7 @@ const EditWebpages = ({ activityId }) => {
                   placeholder="/people-roster"
                   className="w-full rounded-lg border border-slate-200 bg-[#FAFAFA] px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 focus:bg-white text-slate-700"
                 />
-              </div>
+              </div> */}
             </div>
 
             {/* Team Cards loop */}
@@ -2253,6 +2449,38 @@ const EditWebpages = ({ activityId }) => {
                           className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 text-slate-700"
                         />
                       </div>
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Qualification</label>
+                        <textarea
+                          value={card.qualification || ""}
+                          onChange={(e) => {
+                            setForm((prev) => {
+                              const nextCards = [...(prev.teamCards || [])];
+                              nextCards[index].qualification = e.target.value;
+                              return { ...prev, teamCards: nextCards };
+                            });
+                          }}
+                          placeholder="Certified Hatha and Ashtanga Yoga instructor..."
+                          rows={3}
+                          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 text-slate-700 resize-y min-h-[80px]"
+                        />
+                      </div>
+                      <div className="md:col-span-2 space-y-1">
+                        <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Specialization</label>
+                        <textarea
+                          value={card.specialization || ""}
+                          onChange={(e) => {
+                            setForm((prev) => {
+                              const nextCards = [...(prev.teamCards || [])];
+                              nextCards[index].specialization = e.target.value;
+                              return { ...prev, teamCards: nextCards };
+                            });
+                          }}
+                          placeholder="Yoga instructor with 9 years of experience..."
+                          rows={3}
+                          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 text-slate-700 resize-y min-h-[80px]"
+                        />
+                      </div>
                       <div className="space-y-1">
                         <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Phone Number</label>
                         <input
@@ -2327,7 +2555,7 @@ const EditWebpages = ({ activityId }) => {
                 onClick={() => {
                   setForm((prev) => {
                     const nextCards = [...(prev.teamCards || [])];
-                    nextCards.push({ image: { url: '', key: '' }, name: '', designation: '', phone: '', facebook: '', instagram: '', youtube: '' });
+                    nextCards.push({ image: { url: '', key: '' }, name: '', designation: '', qualification: '', specialization: '', phone: '', facebook: '', instagram: '', youtube: '' });
                     return { ...prev, teamCards: nextCards };
                   });
                 }}
@@ -2674,6 +2902,273 @@ const EditWebpages = ({ activityId }) => {
                 className="inline-flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all mt-1"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Gallery Card
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isDesignEight && (
+          <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-8">
+            <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-slate-500" /> Design 8 Amenities Layout
+            </h3>
+
+            <BannerImageField
+              value={form.bannerImage}
+              uploading={uploadingBannerImage}
+              onChange={(e) => handleCloudinaryImageChange(e, 'bannerImage')}
+              onDelete={() => handleDeleteCloudinaryImage('bannerImage')}
+              inputId="design8-banner-image-input"
+            />
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Heading</label>
+              <input
+                type="text"
+                name="design8Heading"
+                value={form.design8Heading}
+                onChange={handleChange}
+                placeholder="Page heading..."
+                className="w-full rounded-lg border border-slate-200 bg-[#FAFAFA] px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 focus:bg-white text-slate-800 font-semibold"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</label>
+              <InlineRichTextEditor
+                value={form.design8Description}
+                onChange={(html) => setForm((prev) => ({ ...prev, design8Description: html }))}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-heading text-xl font-medium text-heading">Hotel amenities</h4>
+                <p className="mt-1 font-body text-sm text-muted">
+                  Select the amenities available for this Hotel.
+                </p>
+              </div>
+              {loadingHotelAmenities ? (
+                <div className="flex min-h-32 items-center justify-center gap-2 font-body text-sm text-muted">
+                  <Loader2 className="size-4 animate-spin text-primary" />
+                  Loading amenities…
+                </div>
+              ) : hotelAmenitiesList.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
+                  <p className="text-sm font-semibold text-slate-800">No amenities found</p>
+                  <p className="mt-1 text-sm text-slate-500">Add amenity records first, then assign them here.</p>
+                </div>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {hotelAmenitiesList.map((item, idx) => {
+                    const Icon = getHotelAmenityIcon(item.label);
+                    const selected = (form.design8HotelAmenities || []).includes(item.label);
+                    return (
+                      <label
+                        key={item.label}
+                        htmlFor={`design8-amenity-${idx}`}
+                        className={cn(
+                          "flex cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-colors hover:border-slate-400",
+                          selected && "border-slate-400 bg-slate-100"
+                        )}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="flex size-10 items-center justify-center rounded-full bg-white text-primary">
+                            <Icon className="size-5" />
+                          </span>
+                          <span className="font-body text-sm font-medium text-heading">
+                            {item.label}
+                          </span>
+                        </span>
+                        <Checkbox
+                          id={`design8-amenity-${idx}`}
+                          checked={selected}
+                          onCheckedChange={() => toggleStringListValue('design8HotelAmenities', item.label)}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+            <div className="space-y-4">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Room amenities</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {ROOM_AMENITY_CATEGORIES.map((cat) => {
+                  const Icon = getRoomAmenityCategoryIcon(cat.category);
+                  return (
+                    <div key={cat.category} className="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                      <div className="flex items-center gap-2 font-medium text-primary">
+                        <Icon className="w-5 h-5" /> {cat.category}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        {cat.items.map((item) => {
+                          const checked = (form.design8RoomAmenities || []).includes(item);
+                          return (
+                            <div key={item} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`design8-room-${item}`}
+                                checked={checked}
+                                onCheckedChange={() => toggleStringListValue('design8RoomAmenities', item)}
+                              />
+                              <label htmlFor={`design8-room-${item}`} className="text-sm cursor-pointer select-none text-slate-700">
+                                {item}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {isDesignNine && (
+          <div className="bg-white border border-slate-200/80 p-6 md:p-8 shadow-sm rounded-[20px] space-y-8">
+            <h3 className="text-md font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-slate-500" /> Design 9 Content Cards Layout
+            </h3>
+
+            <BannerImageField
+              value={form.bannerImage}
+              uploading={uploadingBannerImage}
+              onChange={(e) => handleCloudinaryImageChange(e, 'bannerImage')}
+              onDelete={() => handleDeleteCloudinaryImage('bannerImage')}
+              inputId="design9-banner-image-input"
+            />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Mini Heading</label>
+                <input
+                  type="text"
+                  name="design9MiniHeading"
+                  value={form.design9MiniHeading}
+                  onChange={handleChange}
+                  placeholder="e.g. Our Philosophy"
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFAFA] px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 focus:bg-white text-slate-800"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Big Heading</label>
+                <input
+                  type="text"
+                  name="design9MainHeading"
+                  value={form.design9MainHeading}
+                  onChange={handleChange}
+                  placeholder="Main section heading..."
+                  className="w-full rounded-lg border border-slate-200 bg-[#FAFAFA] px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 focus:bg-white text-slate-800 font-semibold"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</label>
+              <InlineRichTextEditor
+                value={form.design9Description}
+                onChange={(html) => setForm((prev) => ({ ...prev, design9Description: html }))}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Content Cards</label>
+              {(form.design9Cards || []).map((card, index) => (
+                <div key={index} className="border border-slate-200 rounded-xl p-4 bg-slate-50/20 relative space-y-4">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Card #{index + 1}</span>
+                    {(form.design9Cards || []).length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => {
+                            const nextCards = [...(prev.design9Cards || [])];
+                            nextCards.splice(index, 1);
+                            return { ...prev, design9Cards: nextCards };
+                          });
+                        }}
+                        className="inline-flex items-center justify-center p-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-100/50 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Card Heading</label>
+                    <input
+                      type="text"
+                      value={card.heading}
+                      onChange={(e) => {
+                        setForm((prev) => {
+                          const nextCards = [...(prev.design9Cards || [])];
+                          nextCards[index] = { ...nextCards[index], heading: e.target.value };
+                          return { ...prev, design9Cards: nextCards };
+                        });
+                      }}
+                      placeholder="Section heading..."
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/5 focus:border-slate-500 text-slate-800 font-semibold"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Card Description</label>
+                    <InlineRichTextEditor
+                      value={card.description}
+                      onChange={(html) => {
+                        setForm((prev) => {
+                          const nextCards = [...(prev.design9Cards || [])];
+                          nextCards[index] = { ...nextCards[index], description: html };
+                          return { ...prev, design9Cards: nextCards };
+                        });
+                      }}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Card Images</label>
+                    <div className="flex flex-wrap gap-2.5">
+                      {(card.images || []).map((img, imgIdx) => (
+                        <div key={img.key || imgIdx} className="relative w-20 h-20 border border-slate-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                          <img src={img.url} alt={`Card ${index + 1} image ${imgIdx + 1}`} className="object-cover w-full h-full" />
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteDesign9CardImage(index, imgIdx)}
+                            className="absolute top-1 right-1 bg-white/95 border border-slate-200 text-rose-600 rounded-md p-1 shadow-sm"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                      <label className="w-20 h-20 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center bg-white cursor-pointer hover:bg-slate-50 transition-colors relative">
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*"
+                          onChange={(e) => handleDesign9CardImagesChange(e, index)}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                        <span className="text-sm text-slate-400 font-bold">+</span>
+                        <span className="text-[8px] text-slate-500 font-semibold mt-0.5">Upload</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => {
+                  setForm((prev) => ({
+                    ...prev,
+                    design9Cards: [...(prev.design9Cards || []), createEmptyDesign9Card()],
+                  }));
+                }}
+                className="inline-flex items-center gap-1 bg-slate-900 hover:bg-slate-800 text-white px-3.5 py-2 rounded-lg text-xs font-semibold shadow-sm transition-all mt-1"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Content Card
               </button>
             </div>
           </div>

@@ -2,7 +2,7 @@ import connectDB from "@/lib/connectDB";
 import Webpage from "@/models/Admin/Webpage";
 import { NextResponse } from "next/server";
 
-const ALLOWED_TEMPLATE_TYPES = new Set(["design1", "design2", "design3", "design4", "design5", "design6", "design7"]);
+const ALLOWED_TEMPLATE_TYPES = new Set(["design1", "design2", "design3", "design4", "design5", "design6", "design7", "design8", "design9"]);
 
 const sanitizeTemplateType = (templateType) => {
   if (ALLOWED_TEMPLATE_TYPES.has(templateType)) return templateType;
@@ -135,6 +135,13 @@ export async function DELETE(request) {
     if (Array.isArray(webpage.teamCards)) {
       webpage.teamCards.forEach(card => {
         addKey(card.image);
+      });
+    }
+    if (Array.isArray(webpage.design9Cards)) {
+      webpage.design9Cards.forEach(card => {
+        if (Array.isArray(card.images)) {
+          card.images.forEach(addKey);
+        }
       });
     }
 

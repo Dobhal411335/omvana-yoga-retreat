@@ -17,12 +17,13 @@ import { Color } from '@tiptap/extension-color';
 import ListItem from '@tiptap/extension-list-item';
 import { Extension } from '@tiptap/core';
 import {
-  Bed, Wind, Briefcase, Bath, Wifi, Tv, Coffee,
   Trash2, Plus, UploadCloud,
   Bold, Italic, Underline as UnderlineIcon, PilcrowSquare,
   Heading1, Heading2, Heading3, List, ListOrdered, Quote,
   Undo, Redo, AlignLeft, AlignCenter, AlignRight
 } from 'lucide-react';
+import { ROOM_AMENITY_CATEGORIES } from "@/lib/roomAmenityCategories";
+import { getRoomAmenityCategoryIcon } from "@/lib/roomAmenityIcons";
 
 const FontSize = Extension.create({
   name: 'fontSize',
@@ -39,14 +40,10 @@ const FontSize = Extension.create({
   },
 });
 
-const AMENITIES = [
-  { category: "Bedding", icon: Bed, items: ["Plush mattresses", "clean linens", "extra pillows", "blackout curtains"] },
-  { category: "Climate Control", icon: Wind, items: ["Air conditioning", "Room Heating"] },
-  { category: "Furniture & Setup", icon: Briefcase, items: ["Work desk with a chair", "luggage rack", "Wardrobe", "Full-length mirror"] },
-  { category: "Bathroom", icon: Bath, items: ["Shampoo", "Conditioner", "Body wash/soap", "Dental kit", "Shaving kit", "Bath Towels", "Hand towels", "Bath mats", "Hairdryer", "Bathrobes", "Bathroom Slippers"] },
-  { category: "Electronics & Comfort", icon: Tv, items: ["Free high-speed Wi-Fi", "Smart TV", "Bedside power outlets", "USB charging ports", "Tea/coffee maker", "Bottled water", "Mini-fridge or minibar", "Electronic safe deposit box", "Iron and ironing board"] },
-  { category: "Other Features", icon: Coffee, items: ["Window", "Balcony", "Sofa / Chair / Table", "News Paper"] }
-];
+const AMENITIES = ROOM_AMENITY_CATEGORIES.map((cat) => ({
+  ...cat,
+  icon: getRoomAmenityCategoryIcon(cat.category),
+}));
 
 const RoomFormEntry = ({ room, index, handleChange, handleRemoveRoom, toggleAmenity, showRemoveButton, roomData }) => {
   const editor = useEditor({

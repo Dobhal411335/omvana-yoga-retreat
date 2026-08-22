@@ -9,7 +9,8 @@ import {
   Phone,
   Quote,
   Share2,
-  AlertTriangle 
+  AlertTriangle,
+  Check,
 } from "lucide-react";
 import {
   Carousel,
@@ -19,6 +20,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { ROOM_AMENITY_CATEGORIES } from "@/lib/roomAmenityCategories";
+import { getHotelAmenityIcon } from "@/lib/hotelAmenityIcons";
+import { getRoomAmenityCategoryIcon } from "@/lib/roomAmenityIcons";
 function Facebook({ className }) {
   return (
     <svg
@@ -104,9 +110,81 @@ const HtmlBlock = ({ html, className = "" }) => {
   if (!isFilledText(html)) return null;
   return (
     <div
-      className={`prose prose-sm max-w-none leading-6 text-lg ${className}`}
+      className={`prose custom-desc-list max-w-none leading-6 ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
+  );
+};
+
+const ImageDotsCarousel = ({ images = [], alt = "" }) => {
+  const [api, setApi] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const slides = images.filter((img) => img?.url);
+
+  useEffect(() => {
+    if (!api) return undefined;
+    const onSelect = () => setActiveIndex(api.selectedScrollSnap());
+    onSelect();
+    api.on("select", onSelect);
+    api.on("reInit", onSelect);
+    return () => {
+      api.off("select", onSelect);
+      api.off("reInit", onSelect);
+    };
+  }, [api]);
+
+  if (slides.length === 0) return null;
+
+  if (slides.length === 1) {
+    return (
+      <div className="overflow-hidden bg-surface">
+        <img
+          src={slides[0].url}
+          alt={alt}
+          className="h-[240px] w-full object-cover md:h-[340px]"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <Carousel
+        className="w-full"
+        opts={{ loop: true }}
+        setApi={setApi}
+      >
+        <div className="relative overflow-hidden bg-surface">
+          <CarouselContent className="-ml-0">
+            {slides.map((img, idx) => (
+              <CarouselItem key={img.key || `${img.url}-${idx}`} className="pl-0">
+                <img
+                  src={img.url}
+                  alt={`${alt} ${idx + 1}`}
+                  className="h-[240px] w-full object-cover md:h-[340px]"
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-3 z-10 size-9 border-0 bg-card/90 text-heading shadow-sm hover:bg-card disabled:hidden" />
+          <CarouselNext className="right-3 z-10 size-9 border-0 bg-card/90 text-heading shadow-sm hover:bg-card disabled:hidden" />
+        </div>
+      </Carousel>
+      <div className="mt-3 flex items-center justify-center gap-2">
+        {slides.map((_, idx) => (
+          <button
+            key={idx}
+            type="button"
+            aria-label={`Show image ${idx + 1}`}
+            onClick={() => api?.scrollTo(idx)}
+            className={cn(
+              "size-2 rounded-full transition-colors",
+              idx === activeIndex ? "bg-heading" : "bg-border"
+            )}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
@@ -298,6 +376,8 @@ const WebPage = ({ data }) => {
   const isDesignFive = data.templateType === "design5";
   const isDesignSix = data.templateType === "design6";
   const isDesignSeven = data.templateType === "design7";
+  const isDesignEight = data.templateType === "design8";
+  const isDesignNine = data.templateType === "design9";
 
 
   if (isDesignFour) {
@@ -736,7 +816,7 @@ const WebPage = ({ data }) => {
       <div className="min-h-screen bg-[#f9f9f9] font-geist text-gray-900">
         {/* Top Banner */}
         <div
-          className="relative h-[250px] md:h-[400px] w-full bg-cover bg-center flex items-end pb-10 pl-6 md:pl-20"
+          className="relative h-[250px] md:h-[450px] w-full bg-center bg-no-repeat flex items-end pb-10 pl-6 md:pl-20"
           style={{ backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ''})` }}
         >
           <div className="absolute inset-0 bg-black/5"></div>
@@ -774,7 +854,7 @@ const WebPage = ({ data }) => {
             )}
 
             {isFilledText(data.design6SubHeading) && (
-              <p className="text-gray-600 text-sm md:text-lg leading-relaxed mb-8 max-w-3xl font-serif">
+              <p className="text-gray-600 text-sm md:text-lg leading-relaxed mb-8 w-full text-justify font-serif">
                 {data.design6SubHeading}
               </p>
             )}
@@ -795,109 +875,124 @@ const WebPage = ({ data }) => {
                 {data.design6MidHeading}
               </h2>
             )}
-            {isFilledText(data.design6MidLink) && (
-              <a href={data.design6MidLink} className="bg-[#3b438c] text-white px-3 py-2 text-sm font-semibold hover:bg-opacity-90 flex items-center gap-2">
-                Explore People
-                <svg className="w-4 h-4 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+          </div>
+
+          {/* Team members */}
+         {/* Team members */}
+<div className="flex flex-col gap-10">
+  {(data.teamCards || []).map((card, idx) => (
+    <div
+      key={idx}
+      className={`mx-auto flex w-full max-w-5xl flex-col gap-5 md:flex-row md:gap-6 ${
+        idx % 2 === 1 ? "md:flex-row-reverse" : ""
+      }`}
+    >
+      {/* Image */}
+      <div className="overflow-hidden rounded-2xl bg-gray-100 md:w-[42%]">
+        {card.image?.url ? (
+          <Image
+            src={card.image.url}
+            quality={90}
+            width={500}
+            height={400}
+            alt={card.name || "Team member"}
+            className="h-[320px] w-full object-cover md:h-[360px]"
+          />
+        ) : (
+          <div className="flex h-[320px] items-center justify-center text-gray-400">
+            No Image
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex flex-1 flex-col md:w-[58%]">
+        <div className="flex-1 rounded-2xl bg-gray-100 p-5 md:p-6">
+          {isFilledText(card.name) && (
+            <h3 className="text-xl font-bold text-gray-900 md:text-2xl">
+              {card.name}
+            </h3>
+          )}
+
+          {isFilledText(card.designation) && (
+            <p className="mt-1 text-sm font-medium text-gray-700">
+              {card.designation}
+            </p>
+          )}
+
+          {isFilledText(card.qualification) && (
+            <p className="mt-4 text-sm leading-relaxed text-gray-700">
+              <span className="font-bold text-gray-900">
+                Qualification:{" "}
+              </span>
+              {card.qualification}
+            </p>
+          )}
+
+          {isFilledText(card.specialization) && (
+            <p className="mt-3 text-sm leading-relaxed text-gray-700">
+              <span className="font-bold text-gray-900">
+                Specialization:{" "}
+              </span>
+              {card.specialization}
+            </p>
+          )}
+        </div>
+
+        {/* Bottom info */}
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Phone className="h-4 w-4 text-gray-500" />
+
+            {isFilledText(card.phone) && (
+              <a
+                href={`tel:${card.phone.replace(/[^0-9+]/g, "")}`}
+                className="text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                {card.phone}
               </a>
             )}
           </div>
 
-          {/* Team Cards Grid */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {data.teamCards.map((card, idx) => (
-              <div
-                key={idx}
-                className="group overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+          <div className="flex items-center gap-1">
+            {isFilledText(card.facebook) && (
+              <a
+                href={card.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
               >
-                {/* Image */}
-                <div className="overflow-hidden bg-gray-100 aspect-[4/5]">
-                  {card.image?.url ? (
-                    <img
-                      src={card.image.url}
-                      alt={card.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center text-gray-400">
-                      No Image
-                    </div>
-                  )}
-                </div>
+                <Facebook className="h-4 w-4" />
+              </a>
+            )}
 
-                {/* Content */}
-                <div className="space-y-2 p-5">
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {card.name}
-                  </h3>
+            {isFilledText(card.instagram) && (
+              <a
+                href={card.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+            )}
 
-                  {isFilledText(card.designation) && (
-                    <p className="text-sm font-medium text-blue-600">
-                      {card.designation}
-                    </p>
-                  )}
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between border-t border-gray-100 px-5 py-4">
-
-                  {/* Phone */}
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-gray-500" />
-
-                    {isFilledText(card.phone) && (
-                      <a
-                        href={`tel:${card.phone.replace(/[^0-9+]/g, "")}`}
-                        className="text-sm font-medium text-gray-700 hover:text-blue-600"
-                      >
-                        {card.phone}
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Social */}
-                  <div className="flex items-center gap-2">
-
-                    {isFilledText(card.facebook) && (
-                      <a
-                        href={card.facebook}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-full p-2 text-gray-500 transition hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        <Facebook className="h-4 w-4" />
-                      </a>
-                    )}
-
-                    {isFilledText(card.instagram) && (
-                      <a
-                        href={card.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-full p-2 text-gray-500 transition hover:bg-pink-50 hover:text-pink-600"
-                      >
-                        <Instagram className="h-4 w-4" />
-                      </a>
-                    )}
-
-                    {isFilledText(card.youtube) && (
-                      <a
-                        href={card.youtube}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-full p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600"
-                      >
-                        <Youtube className="h-4 w-4" />
-                      </a>
-                    )}
-                  </div>
-
-                </div>
-              </div>
-            ))}
+            {isFilledText(card.youtube) && (
+              <a
+                href={card.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+              >
+                <Youtube className="h-4 w-4" />
+              </a>
+            )}
           </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
 
         </div>
 
@@ -990,6 +1085,163 @@ const WebPage = ({ data }) => {
         </div>
 
         {/* <PopularDestinations /> */}
+      </div>
+    );
+  }
+
+  if (isDesignEight) {
+    const hotelAmenities = cleanTextArray(data.design8HotelAmenities);
+    const selectedRoomAmenities = new Set(cleanTextArray(data.design8RoomAmenities));
+    const roomAmenityGroups = ROOM_AMENITY_CATEGORIES.map((cat) => ({
+      ...cat,
+      items: cat.items.filter((item) => selectedRoomAmenities.has(item)),
+    })).filter((cat) => cat.items.length > 0);
+
+    return (
+      <div className="min-h-screen bg-background font-body text-heading">
+        {data.bannerImage?.url && (
+          <div
+            className="relative h-[100px] w-full bg-cover bg-center md:h-[400px]"
+            style={{ backgroundImage: `url(${data.bannerImage.url})` }}
+          />
+        )}
+
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+          {isFilledText(data.design8Heading) && (
+            <h1 className="font-heading text-2xl leading-tight text-heading md:text-5xl">
+              {data.design8Heading}
+            </h1>
+          )}
+
+          {isFilledText(data.design8Description) && (
+            <div className="mt-8">
+              <HtmlBlock
+                html={data.design8Description}
+                className="font-body leading-8 text-justify"
+              />
+            </div>
+          )}
+
+          {hotelAmenities.length > 0 && (
+            <div className="mt-14 grid gap-3 sm:grid-cols-2">
+              {hotelAmenities.map((label) => {
+                const Icon = getHotelAmenityIcon(label);
+                return (
+                  <div
+                    key={label}
+                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-4 py-3"
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-card text-primary">
+                        <Icon className="size-5" />
+                      </span>
+                      <span className="font-body text-sm font-medium text-heading">{label}</span>
+                    </span>
+                    <span className="size-4 rounded-full border border-border" />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+
+          {roomAmenityGroups.length > 0 && (
+            <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {roomAmenityGroups.map((cat) => {
+                const Icon = getRoomAmenityCategoryIcon(cat.category);
+                return (
+                  <div key={cat.category} className="rounded-card border border-border bg-card p-5">
+                    <div className="mb-4 flex items-center gap-2 font-heading text-lg text-primary">
+                      <Icon className="size-5" />
+                      {cat.category}
+                    </div>
+                    <ul className="space-y-2">
+                      {cat.items.map((item) => (
+                        <li key={item} className="flex items-start gap-2 font-body text-sm text-heading">
+                          <Check className="mt-0.5 size-4 shrink-0 text-primary" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (isDesignNine) {
+    const contentCards = (data.design9Cards || []).filter(
+      (card) =>
+        isFilledText(card?.heading) ||
+        isFilledText(card?.description) ||
+        (Array.isArray(card?.images) && card.images.some((img) => img?.url))
+    );
+
+    return (
+      <div className="min-h-screen bg-background font-body text-heading">
+        {data.bannerImage?.url && (
+          <div
+            className="relative h-[100px] w-full bg-cover bg-center md:h-[400px]"
+            style={{ backgroundImage: `url(${data.bannerImage.url})` }}
+          />
+        )}
+
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          {(isFilledText(data.design9MiniHeading) ||
+            isFilledText(data.design9MainHeading) ||
+            isFilledText(data.design9Description)) && (
+            <section className="grid gap-2 lg:grid-cols-2 lg:items-start lg:gap-16">
+              <div>
+                {isFilledText(data.design9MiniHeading) && (
+                  <p className="font-ui text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                    {data.design9MiniHeading}
+                  </p>
+                )}
+                {isFilledText(data.design9MainHeading) && (
+                  <h1 className="mt-3 font-heading text-4xl leading-tight text-heading md:text-5xl">
+                    {data.design9MainHeading}
+                  </h1>
+                )}
+              </div>
+              {isFilledText(data.design9Description) && (
+                <HtmlBlock
+                  html={data.design9Description}
+                  className="font-body text-muted [&_p]:text-base [&_p]:leading-8"
+                />
+              )}
+            </section>
+          )}
+
+          {contentCards.length > 0 && (
+            <div className="mt-20 space-y-20">
+              {contentCards.map((card, idx) => {
+                const reverse = idx % 2 === 1;
+                return (
+                  <section key={`${card.heading}-${idx}`} className="grid items-center gap-5 lg:grid-cols-2 lg:gap-16">
+                    <div className={reverse ? "lg:order-2" : undefined}>
+                      {isFilledText(card.heading) && (
+                        <h2 className="font-heading text-3xl text-heading">{card.heading}</h2>
+                      )}
+                      {isFilledText(card.description) && (
+                        <HtmlBlock
+                          html={card.description}
+                          className="mt-4 font-body text-muted [&_p]:text-base [&_p]:leading-8"
+                        />
+                      )}
+                    </div>
+                    <div className={reverse ? "lg:order-1" : undefined}>
+                      <ImageDotsCarousel images={card.images} alt={card.heading || data.title || "Section image"} />
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     );
   }

@@ -51,6 +51,8 @@ const TeamCardSchema = new Schema(
     image: { type: ImageSchema, default: () => ({}) },
     name: { type: String, default: "" },
     designation: { type: String, default: "" },
+    qualification: { type: String, default: "" },
+    specialization: { type: String, default: "" },
     phone: { type: String, default: "" },
     facebook: { type: String, default: "" },
     instagram: { type: String, default: "" },
@@ -112,6 +114,15 @@ const AdvertisementSchema = new Schema(
   { _id: false }
 );
 
+const Design9CardSchema = new Schema(
+  {
+    heading: { type: String, default: "" },
+    description: { type: String, default: "" },
+    images: { type: [ImageSchema], default: [] },
+  },
+  { _id: false }
+);
+
 const WebpageSchema = new Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -121,7 +132,7 @@ const WebpageSchema = new Schema(
     keywords: { type: [String], default: [] },
     templateType: {
       type: String,
-      enum: ["design1", "design2", "design3", "design4", "design5", "design6", "design7"],
+      enum: ["design1", "design2", "design3", "design4", "design5", "design6", "design7", "design8", "design9"],
       default: "design1",
     },
     firstTitle: { type: String, default: "" },
@@ -174,6 +185,15 @@ const WebpageSchema = new Schema(
     design7Chip: { type: String, default: "" },
     design7ExploreLink: { type: String, default: "" },
     design7MainHeading: { type: String, default: "" },
+    design8Heading: { type: String, default: "" },
+    design8Description: { type: String, default: "" },
+    design8HotelAmenities: { type: [String], default: [] },
+    design8RoomDescription: { type: String, default: "" },
+    design8RoomAmenities: { type: [String], default: [] },
+    design9MiniHeading: { type: String, default: "" },
+    design9MainHeading: { type: String, default: "" },
+    design9Description: { type: String, default: "" },
+    design9Cards: { type: [Design9CardSchema], default: [] },
   },
   { timestamps: true }
 );

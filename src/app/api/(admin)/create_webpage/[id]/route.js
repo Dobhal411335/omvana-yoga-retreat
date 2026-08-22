@@ -2,7 +2,7 @@ import connectDB from "@/lib/connectDB";
 import Webpage from "@/models/Admin/Webpage";
 import { NextResponse } from "next/server";
 
-const ALLOWED_TEMPLATE_TYPES = new Set(["design1", "design2", "design3", "design4", "design5", "design6", "design7"]);
+const ALLOWED_TEMPLATE_TYPES = new Set(["design1", "design2", "design3", "design4", "design5", "design6", "design7", "design8", "design9"]);
 
 const sanitizeTemplateType = (templateType) => {
   if (ALLOWED_TEMPLATE_TYPES.has(templateType)) return templateType;
@@ -32,6 +32,43 @@ const generateUniqueGallerySlug = async (sourceName) => {
     slug = `${baseSlug}-${suffix}`;
     suffix += 1;
   }
+};
+
+const sanitizeTeamCards = (cards) => {
+  if (!Array.isArray(cards)) return [];
+  return cards.map((card) => ({
+    image: {
+      url: card?.image?.url || "",
+      key: card?.image?.key || "",
+    },
+    name: String(card?.name || "").trim(),
+    designation: String(card?.designation || "").trim(),
+    qualification: String(card?.qualification || "").trim(),
+    specialization: String(card?.specialization || "").trim(),
+    phone: String(card?.phone || "").trim(),
+    facebook: String(card?.facebook || "").trim(),
+    instagram: String(card?.instagram || "").trim(),
+    youtube: String(card?.youtube || "").trim(),
+  }));
+};
+
+const sanitizeStringList = (items) => {
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => String(item || "").trim()).filter(Boolean);
+};
+
+const sanitizeDesign9Cards = (cards) => {
+  if (!Array.isArray(cards)) return [];
+  return cards.map((card) => ({
+    heading: String(card?.heading || "").trim(),
+    description: String(card?.description || ""),
+    images: Array.isArray(card?.images)
+      ? card.images.map((img) => ({
+          url: img?.url || "",
+          key: img?.key || "",
+        }))
+      : [],
+  }));
 };
 
 const ALLOWED_UPDATE_FIELDS = new Set([
@@ -86,6 +123,15 @@ const ALLOWED_UPDATE_FIELDS = new Set([
   "design7Chip",
   "design7ExploreLink",
   "design7MainHeading",
+  "design8Heading",
+  "design8Description",
+  "design8HotelAmenities",
+  "design8RoomDescription",
+  "design8RoomAmenities",
+  "design9MiniHeading",
+  "design9MainHeading",
+  "design9Description",
+  "design9Cards",
 ]);
 
 export async function GET(_request, { params }) {
@@ -158,6 +204,22 @@ export async function PATCH(request, { params }) {
           card.gallerySlug = await generateUniqueGallerySlug(card.title);
         }
       }
+    }
+
+    if (Array.isArray(body.teamCards)) {
+      update.teamCards = sanitizeTeamCards(body.teamCards);
+    }
+
+    if (Array.isArray(body.design8HotelAmenities)) {
+      update.design8HotelAmenities = sanitizeStringList(body.design8HotelAmenities);
+    }
+
+    if (Array.isArray(body.design8RoomAmenities)) {
+      update.design8RoomAmenities = sanitizeStringList(body.design8RoomAmenities);
+    }
+
+    if (Array.isArray(body.design9Cards)) {
+      update.design9Cards = sanitizeDesign9Cards(body.design9Cards);
     }
 
     const updated = await Webpage.findByIdAndUpdate(id, update, {

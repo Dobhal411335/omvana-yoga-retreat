@@ -1,19 +1,121 @@
 "use client";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  MapPin, Calendar, Clock, Tag, Star, Check, X, AlertTriangle,
-  Calculator, MessageSquare, ShoppingCart, PhoneCall, MessageCircle,
-  Share2, Copy, ChevronRight, ChevronLeft, Hotel, Bus, Utensils, Camera, Users,
-  Ticket, ArrowRight, Heart
+  MapPin,
+  Calendar,
+  Clock,
+  Tag,
+  Star,
+  Check,
+  X,
+  AlertTriangle,
+  Calculator,
+  MessageSquare,
+  ShoppingCart,
+  PhoneCall,
+  MessageCircle,
+  Share2,
+  Copy,
+  ChevronRight,
+  ChevronLeft,
+  Hotel,
+  Bus,
+  Utensils,
+  Camera,
+  Users,
+  Ticket,
+  ArrowRight,
+  Heart,
+  ChevronDown,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import ReviewForm from "@/components/Package/review-form.jsx";
 import PackageMap from "@/components/Package/package-map.jsx";
 import PackageCarouselWrapper from "@/components/Package/PackageCarouselWrapper.jsx";
 import PackageEnquiryModal from "@/components/Package/PackageEnquiryModal.jsx";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+const accordionEase = [0.4, 0, 0.2, 1];
+
+function PackageSectionHeader({ eyebrow, title, aside }) {
+  return (
+    <div className="mb-4 flex items-end justify-between gap-4 border-b border-border pb-3">
+      <div>
+        {eyebrow ? (
+          <p className="font-ui text-xs uppercase tracking-[0.25em] text-primary">
+            {eyebrow}
+          </p>
+        ) : null}
+        <h2 className="mt-2 font-heading text-2xl font-medium text-heading md:text-3xl">
+          {title}
+        </h2>
+      </div>
+      {aside}
+    </div>
+  );
+}
+
+function PackageAccordion({ eyebrow, title, open, onToggle, children }) {
+  return (
+    <div className="overflow-hidden rounded-card border border-border bg-surface">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className={cn(
+          "flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors duration-(--duration-fast) ease-(--ease-smooth)",
+          open ? "bg-primary" : "bg-surface hover:bg-primary/10",
+        )}
+      >
+        <span className="flex min-w-0 flex-col">
+          {eyebrow ? (
+            <span
+              className={cn(
+                "font-ui text-[11px] uppercase tracking-[0.22em]",
+                open ? "text-primary-foreground/80" : "text-primary",
+              )}
+            >
+              {eyebrow}
+            </span>
+          ) : null}
+          <span
+            className={cn(
+              "font-heading text-lg font-medium md:text-xl",
+              open ? "text-primary-foreground" : "text-heading",
+            )}
+          >
+            {title}
+          </span>
+        </span>
+        <ChevronDown
+          className={cn(
+            "size-5 shrink-0 transition-transform duration-(--duration-fast) ease-(--ease-smooth)",
+            open ? "rotate-180 text-primary-foreground" : "text-primary",
+          )}
+          aria-hidden="true"
+        />
+      </button>
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.8, ease: accordionEase }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-border bg-background px-5 py-5">
+              {children}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+}
 export default function PackageDetailClient({
   packageDetails,
   reviews,
@@ -23,18 +125,21 @@ export default function PackageDetailClient({
   formatNumericStr,
 }) {
   // console.log(packageDetails)
-  const [activeTab, setActiveTab] = useState("overview");
-  const [activeDayIndex, setActiveDayIndex] = useState(0);
+  const [openDayIndex, setOpenDayIndex] = useState(0);
+  const [openSections, setOpenSections] = useState({});
   const [copied, setCopied] = useState(false);
   const [couponCode, setCouponCode] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [enquiryOpen, setEnquiryOpen] = useState(false);
-  const dayRefs = useRef([]);
-  const sidebarRef = useRef(null);
 
-  const formatNumber = (number) => new Intl.NumberFormat("en-IN").format(number);
+  const toggleSection = (id) => {
+    setOpenSections((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const formatNumber = (number) =>
+    new Intl.NumberFormat("en-IN").format(number);
   const formatUsd = (number) => new Intl.NumberFormat("en-US").format(number);
   const hasUsdPrice = (amount) => Number(amount) > 0;
 
@@ -66,7 +171,9 @@ export default function PackageDetailClient({
       ? `Category: ${packageDetails.basicDetails.tourType}`
       : null,
     priceLabel ? `Price: ${priceLabel}` : null,
-    packageDetails?.slug ? `Page:${process.env.NEXT_PUBLIC_SITE_URL}/package/${packageDetails.slug}` : null,
+    packageDetails?.slug
+      ? `Page:${process.env.NEXT_PUBLIC_SITE_URL}/package/${packageDetails.slug}`
+      : null,
     "",
     "Could you please share availability and more details?",
     "",
@@ -75,44 +182,10 @@ export default function PackageDetailClient({
     .filter((line) => line !== null)
     .join("\n");
 
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "dayplan", label: "Day Plan" },
-    { id: "include", label: "Include/Exclude" },
-    { id: "additional", label: "Additional Information" },
-    { id: "policy", label: "Policy Content" },
-    { id: "hotels", label: "Hotels" },
-    { id: "summary", label: "Summary" },
-    { id: "reviews", label: "Reviews" },
-  ];
-
-  const dayPlans = packageDetails.info?.filter(
-    (info) => info.typeOfSelection === "Day Plan"
-  ) || [];
-
-  // Scroll-based day tracking
-  useEffect(() => {
-    if (activeTab !== "dayplan" || dayPlans.length === 0) return;
-
-    const handleScroll = () => {
-      const scrollY = window.scrollY + 200;
-      let currentIndex = 0;
-      dayRefs.current.forEach((ref, index) => {
-        if (ref && ref.offsetTop <= scrollY) {
-          currentIndex = index;
-        }
-      });
-      setActiveDayIndex(currentIndex);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeTab, dayPlans.length]);
-
-  const scrollToDay = (index) => {
-    setActiveDayIndex(index);
-    dayRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const dayPlans =
+    packageDetails.info?.filter(
+      (info) => info.typeOfSelection === "Day Plan",
+    ) || [];
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -121,7 +194,7 @@ export default function PackageDetailClient({
           title: packageDetails.packageName,
           url: window.location.href,
         });
-      } catch { }
+      } catch {}
     } else {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
@@ -147,8 +220,12 @@ export default function PackageDetailClient({
     document.body.style.overflow = "";
   };
 
-  const nextImage = () => setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
-  const prevImage = () => setGalleryIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  const nextImage = () =>
+    setGalleryIndex((prev) => (prev + 1) % galleryImages.length);
+  const prevImage = () =>
+    setGalleryIndex(
+      (prev) => (prev - 1 + galleryImages.length) % galleryImages.length,
+    );
 
   // Gallery images from packageDetails
   const galleryImages = packageDetails?.gallery || [];
@@ -170,18 +247,32 @@ export default function PackageDetailClient({
     }
   };
 
-
   // Itinerary summary counts
   const totalDays = dayPlans.length;
   // Inclusions/Exclusions
-  const inclusions = packageDetails.info?.filter(i => i.typeOfSelection === "Inclusions") || [];
-  const exclusions = packageDetails.info?.filter(i => i.typeOfSelection === "Exclusions") || [];
-  const faqs = packageDetails.info?.filter(i => i.typeOfSelection === "Frequently Asked Questions") || [];
-  const importantInfo = packageDetails.info?.filter(i => i.typeOfSelection === "Important Information") || [];
-  const others = packageDetails.info?.filter(i => i.typeOfSelection === "Other") || [];
-  const policies = packageDetails.info?.filter(i => i.typeOfSelection === "Policy Content") || [];
+  const inclusions =
+    packageDetails.info?.filter((i) => i.typeOfSelection === "Inclusions") ||
+    [];
+  const exclusions =
+    packageDetails.info?.filter((i) => i.typeOfSelection === "Exclusions") ||
+    [];
+  const faqs =
+    packageDetails.info?.filter(
+      (i) => i.typeOfSelection === "Frequently Asked Questions",
+    ) || [];
+  const importantInfo =
+    packageDetails.info?.filter(
+      (i) => i.typeOfSelection === "Important Information",
+    ) || [];
+  const others =
+    packageDetails.info?.filter((i) => i.typeOfSelection === "Other") || [];
+  const policies =
+    packageDetails.info?.filter(
+      (i) => i.typeOfSelection === "Policy Content",
+    ) || [];
   const hotels = packageDetails.hotels || [];
-  const summary = packageDetails.info?.filter(i => i.typeOfSelection === "Summary") || [];
+  const summary =
+    packageDetails.info?.filter((i) => i.typeOfSelection === "Summary") || [];
   const validReviews = Array.isArray(reviews)
     ? reviews.filter((r) => r.approved === true || r.status === "approved")
     : [];
@@ -194,9 +285,11 @@ export default function PackageDetailClient({
   const basicTableData = Array.isArray(packageDetails.basicDetails?.tableData)
     ? packageDetails.basicDetails.tableData
     : [];
-  const includePackageData = Array.isArray(packageDetails.includePackage) && packageDetails.includePackage.length > 0
-    ? packageDetails.includePackage[0]
-    : null;
+  const includePackageData =
+    Array.isArray(packageDetails.includePackage) &&
+    packageDetails.includePackage.length > 0
+      ? packageDetails.includePackage[0]
+      : null;
   const includedDesc = includePackageData?.selectionDesc || "";
   const includedHighlights = includePackageData?.selectionHighlight || "";
   const includedTables = includePackageData?.selectionTable || "";
@@ -233,7 +326,9 @@ export default function PackageDetailClient({
                     className="flex items-center gap-1.5 rounded-button border border-border bg-surface px-3 py-2"
                   >
                     <span className="font-ui text-sm text-black">•</span>
-                    <span className="font-ui text-sm font-medium text-heading">{stop}</span>
+                    <span className="font-ui text-sm font-medium text-heading">
+                      {stop}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -242,57 +337,9 @@ export default function PackageDetailClient({
         </div>
       </div>
 
-      {/* ========== GALLERY SECTION ========== */}
-      {galleryImages.length > 0 && (
-        <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-          <div className="grid h-75 grid-cols-2 gap-3 overflow-hidden md:h-95 md:grid-cols-4">
-            {/* Main large image */}
-            <div
-              onClick={() => openGallery(0)}
-              className="group relative col-span-2 row-span-2 cursor-pointer overflow-hidden rounded-image"
-            >
-              <Image
-                src={galleryImages[0]?.url || packageDetails.basicDetails?.thumbnail?.url || ""}
-                alt="Gallery main"
-                fill
-                loading="lazy"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-button bg-footer/80 px-4 py-2 font-ui text-xs font-semibold text-white backdrop-blur-sm">
-                <Camera className="h-3.5 w-3.5" />
-                View gallery
-              </div>
-            </div>
-            {/* Secondary images */}
-            {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                onClick={() => galleryImages[i] && openGallery(i)}
-                className="group relative cursor-pointer overflow-hidden rounded-image"
-              >
-                {galleryImages[i] ? (
-                  <Image
-                    src={galleryImages[i]?.url}
-                    alt={`Gallery ${i}`}
-                    fill
-                    loading="lazy"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-surface">
-                    <Camera className="h-6 w-6 text-muted" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* ========== MAIN CONTENT: Left (75%) + Right Sidebar (25%) ========== */}
       <div className="mx-auto w-full max-w-7xl px-4 pb-16 md:px-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
-
           {/* ===== LEFT CONTENT (75%) ===== */}
           <div className="w-full lg:w-[72%]">
             {/* ========== SUMMARY BANNER ========== */}
@@ -306,59 +353,35 @@ export default function PackageDetailClient({
                 </div>
               )}
             </div> */}
-            {/* Tabs Navigation */}
-            <div className="sticky top-0 z-30 mb-8 border-b border-border bg-background/95 backdrop-blur-sm">
-              <div className="no-scrollbar flex gap-0 overflow-x-auto">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`whitespace-nowrap border-b-2 pr-4 pl-3 py-3.5 font-ui text-sm font-semibold transition-colors ${activeTab === tab.id
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted hover:border-border hover:text-heading"
-                      }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* ---- OVERVIEW TAB ---- */}
-            {activeTab === "overview" && (
-              <div className="space-y-10">
+            {/* ---- OVERVIEW ---- */}
+            <div className="space-y-10">
                 {/* Activities & Inclusions Highlight */}
-                <div className="rounded-[var(--radius-card)] border border-primary/20 bg-primary/8 p-5 md:p-6">
-                  <h3 className="mb-2 font-heading text-xl font-medium text-heading md:text-2xl">
-                    Activities & inclusions
-                  </h3>
-                  <p className="font-body text-sm text-muted">
-                    A calm overview of what this retreat package includes for you.
-                  </p>
-
-                  {inclusions.length > 0 && (
-                    <div className="mt-4">
-                      <button
-                        onClick={() => setActiveTab("include")}
-                        className="font-ui text-sm font-semibold text-primary underline underline-offset-4 hover:text-primary-hover"
-                      >
-                        View include / exclude details
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {(includePackageData || inclusions.length > 0) && (
+                  <div className="rounded-[var(--radius-card)] border border-primary/20 bg-primary/8 p-5 md:p-6">
+                    <h3 className="mb-2 font-heading text-xl font-medium text-heading md:text-2xl">
+                      Activities & inclusions
+                    </h3>
+                    <p className="font-body text-sm text-muted">
+                      A calm overview of what this retreat package includes for
+                      you.
+                    </p>
+                  </div>
+                )}
 
                 {/* Included in this package */}
                 {includePackageData && (
                   <div>
-                    <h4 className="mb-4 font-heading text-2xl font-medium text-heading">
-                      Included in this package
-                    </h4>
+                    <PackageSectionHeader
+                      eyebrow="Package"
+                      title="Included in this package"
+                    />
                     <div className="rounded-[var(--radius-card)] border border-border bg-white p-5 md:p-6">
                       {/* Description */}
                       {includedDesc && (
-                        <div className="prose custom-desc-list max-w-none leading-relaxed text-heading">
-                          <div dangerouslySetInnerHTML={{ __html: includedDesc }} />
+                        <div className="prose custom-desc-list max-w-none leading-relaxed text-black [&_p]:text-black [&_li]:text-black [&_span]:text-black">
+                          <div
+                            dangerouslySetInnerHTML={{ __html: includedDesc }}
+                          />
                         </div>
                       )}
 
@@ -368,11 +391,18 @@ export default function PackageDetailClient({
                           <ul className="list-disc space-y-2 pl-5">
                             {includedHighlights.map((hl, hIdx) => (
                               <li key={hIdx}>
-                                <p className="font-heading text-lg font-medium text-heading">{hl.highlightName}</p>
+                                <p className="font-heading text-lg font-medium text-heading">
+                                  {hl.highlightName}
+                                </p>
                                 {hl.highlightDesc?.length > 0 && (
                                   <ul className="mt-1 list-disc space-y-1 pl-5">
                                     {hl.highlightDesc.map((desc, dIdx) => (
-                                      <li key={dIdx} className="font-body text-sm text-muted">{desc}</li>
+                                      <li
+                                        key={dIdx}
+                                        className="font-body text-sm text-muted"
+                                      >
+                                        {desc}
+                                      </li>
                                     ))}
                                   </ul>
                                 )}
@@ -386,19 +416,30 @@ export default function PackageDetailClient({
                         <div className="mt-4 pt-4">
                           {includedTables.map((tbl, tIdx) => (
                             <div key={tIdx} className="mb-4">
-                              <h5 className="mb-2 font-ui text-sm font-semibold text-heading">{tbl.tableName}</h5>
+                              <h5 className="mb-2 font-ui text-sm font-semibold text-heading">
+                                {tbl.tableName}
+                              </h5>
                               <table className="w-full border-collapse text-sm">
                                 <tbody>
                                   {Array.from(
-                                    { length: Math.ceil((tbl.tableDesc?.length || 0) / 2) },
+                                    {
+                                      length: Math.ceil(
+                                        (tbl.tableDesc?.length || 0) / 2,
+                                      ),
+                                    },
                                     (_, rowIdx) => {
                                       const col1 = tbl.tableDesc[rowIdx * 2];
-                                      const col2 = tbl.tableDesc[rowIdx * 2 + 1];
+                                      const col2 =
+                                        tbl.tableDesc[rowIdx * 2 + 1];
 
                                       return (
                                         <tr
                                           key={rowIdx}
-                                          className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border/40" : "bg-white hover:bg-surface"}
+                                          className={
+                                            rowIdx % 2 === 0
+                                              ? "bg-surface hover:bg-border/40"
+                                              : "bg-white hover:bg-surface"
+                                          }
                                         >
                                           {/* Left */}
                                           <td className="w-[32%] border-b border-r border-border px-6 py-4 font-semibold text-heading">
@@ -411,7 +452,7 @@ export default function PackageDetailClient({
                                           </td>
                                         </tr>
                                       );
-                                    }
+                                    },
                                   )}
                                 </tbody>
                               </table>
@@ -424,11 +465,17 @@ export default function PackageDetailClient({
                 )}
                 {/* Description */}
                 {packageDetails.basicDetails?.fullDesc && (
-                  <div className="prose custom-desc-list max-w-none leading-relaxed text-heading">
-                    <div dangerouslySetInnerHTML={{ __html: packageDetails.basicDetails.fullDesc }} />
+                  <div>
+                    <PackageSectionHeader eyebrow="Retreat" title="Overview" />
+                    <div className="prose custom-desc-list max-w-none leading-relaxed text-heading">
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: packageDetails.basicDetails.fullDesc,
+                      }}
+                    />
+                    </div>
                   </div>
                 )}
-                {/* Highlights */}
                 {basicHighlights.length > 0 && (
                   <div className="mt-4 border-t border-border/60 pt-4">
                     <ul className="list-disc space-y-2 pl-5">
@@ -441,7 +488,10 @@ export default function PackageDetailClient({
                           {hl.highlightDesc?.length > 0 && (
                             <ul className="mt-1 list-disc space-y-1 pl-5">
                               {hl.highlightDesc.map((desc, dIdx) => (
-                                <li key={dIdx} className="font-body text-sm text-muted">
+                                <li
+                                  key={dIdx}
+                                  className="font-body text-sm text-muted"
+                                >
                                   {desc}
                                 </li>
                               ))}
@@ -458,19 +508,39 @@ export default function PackageDetailClient({
                   <div className="mt-4 border-t border-border/60 pt-4">
                     {basicTableData.map((tbl, tIdx) => (
                       <div key={tIdx} className="mb-4">
-                        <h5 className="mb-2 font-ui text-sm font-semibold text-heading">{tbl.tableName}</h5>
+                        <h5 className="mb-2 font-ui text-sm font-semibold text-heading">
+                          {tbl.tableName}
+                        </h5>
                         <table className="w-full overflow-hidden rounded-[var(--radius-input)] border border-border text-sm">
                           <tbody>
-                            {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                              const col1 = tbl.tableDesc[rowIdx * 2];
-                              const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                              return (
-                                <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface" : "bg-white"}>
-                                  <td className="border border-border px-3 py-2 font-medium text-heading">{col1 || ""}</td>
-                                  <td className="border border-border px-3 py-2 font-medium text-muted">{col2 || ""}</td>
-                                </tr>
-                              );
-                            })}
+                            {Array.from(
+                              {
+                                length: Math.ceil(
+                                  (tbl.tableDesc?.length || 0) / 2,
+                                ),
+                              },
+                              (_, rowIdx) => {
+                                const col1 = tbl.tableDesc[rowIdx * 2];
+                                const col2 = tbl.tableDesc[rowIdx * 2 + 1];
+                                return (
+                                  <tr
+                                    key={rowIdx}
+                                    className={
+                                      rowIdx % 2 === 0
+                                        ? "bg-surface"
+                                        : "bg-white"
+                                    }
+                                  >
+                                    <td className="border border-border px-3 py-2 font-medium text-heading">
+                                      {col1 || ""}
+                                    </td>
+                                    <td className="border border-border px-3 py-2 font-medium text-muted">
+                                      {col2 || ""}
+                                    </td>
+                                  </tr>
+                                );
+                              },
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -478,30 +548,45 @@ export default function PackageDetailClient({
                   </div>
                 )}
 
-
                 {/* Map */}
-                {packageDetails.info?.filter(i => i.typeOfSelection === "Location Map")[0]?.selectionDesc && (
+                {packageDetails.info?.filter(
+                  (i) => i.typeOfSelection === "Location Map",
+                )[0]?.selectionDesc && (
                   <div>
-                    <h3 className="mb-4 font-heading text-2xl font-medium text-heading">Map location</h3>
+                    <PackageSectionHeader eyebrow="Place" title="Map location" />
                     <PackageMap
-                      location={packageDetails.info.filter(i => i.typeOfSelection === "Location Map")[0].selectionDesc}
+                      location={
+                        packageDetails.info.filter(
+                          (i) => i.typeOfSelection === "Location Map",
+                        )[0].selectionDesc
+                      }
                     />
                   </div>
                 )}
 
                 {faqs.length > 0 && (
                   <div>
-                    <h3 className="mb-4 font-heading text-2xl font-medium text-heading">Frequently asked questions</h3>
+                    <PackageSectionHeader
+                      eyebrow="Guidance"
+                      title="Frequently asked questions"
+                    />
                     <div className="space-y-3">
                       {faqs.map((faq, i) => (
-                        <details key={i} className="group overflow-hidden rounded-[var(--radius-card)] border border-border bg-white">
-                          <summary className="flex cursor-pointer items-center justify-between bg-surface px-5 py-3.5 font-ui text-sm font-semibold text-heading hover:bg-border/40">
+                        <details
+                          key={i}
+                          className="group overflow-hidden rounded-card border border-border bg-surface"
+                        >
+                          <summary className="flex cursor-pointer items-center justify-between bg-surface px-5 py-3.5 font-ui text-sm font-semibold text-heading transition-colors hover:bg-primary/10 group-open:bg-primary group-open:text-primary-foreground">
                             {faq.selectionTitle}
-                            <ChevronRight className="h-4 w-4 text-muted transition-transform group-open:rotate-90" />
+                            <ChevronRight className="h-4 w-4 text-primary transition-transform group-open:rotate-90 group-open:text-primary-foreground" />
                           </summary>
                           <div className="prose prose-sm custom-desc-list max-w-none px-5 py-4 text-sm text-muted">
                             {faq.selectionDesc ? (
-                              <div dangerouslySetInnerHTML={{ __html: faq.selectionDesc }} />
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: faq.selectionDesc,
+                                }}
+                              />
                             ) : (
                               <p>No description available</p>
                             )}
@@ -515,11 +600,16 @@ export default function PackageDetailClient({
                                       </p>
                                       {hl.highlightDesc?.length > 0 && (
                                         <ul className="mt-1 list-disc space-y-1 pl-5">
-                                          {hl.highlightDesc.map((desc, dIdx) => (
-                                            <li key={dIdx} className="font-body text-sm text-muted">
-                                              {desc}
-                                            </li>
-                                          ))}
+                                          {hl.highlightDesc.map(
+                                            (desc, dIdx) => (
+                                              <li
+                                                key={dIdx}
+                                                className="font-body text-sm text-muted"
+                                              >
+                                                {desc}
+                                              </li>
+                                            ),
+                                          )}
                                         </ul>
                                       )}
                                     </li>
@@ -532,19 +622,41 @@ export default function PackageDetailClient({
                               <div className="mt-4 pt-4">
                                 {faq.selectionTable?.map((tbl, tIdx) => (
                                   <div key={tIdx} className="not-prose mb-4">
-                                    <h5 className="mb-2 font-ui text-sm font-semibold text-heading">{tbl.tableName}</h5>
+                                    <h5 className="mb-2 font-ui text-sm font-semibold text-heading">
+                                      {tbl.tableName}
+                                    </h5>
                                     <table className="w-full overflow-hidden rounded-[var(--radius-input)] border border-border border-collapse text-sm">
                                       <tbody>
-                                        {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                          const col1 = tbl.tableDesc[rowIdx * 2];
-                                          const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                          return (
-                                            <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface hover:bg-surface" : "bg-white hover:bg-surface"}>
-                                              <td className="w-[32%] border-b border-r border-border !px-2 !py-4 text-sm font-semibold text-wrap text-heading md:!px-6">{col1 || ""}</td>
-                                              <td className="w-[68%] border-b border-border !px-2 !py-4 text-sm font-medium text-wrap text-muted md:!px-6">{col2 || ""}</td>
-                                            </tr>
-                                          );
-                                        })}
+                                        {Array.from(
+                                          {
+                                            length: Math.ceil(
+                                              (tbl.tableDesc?.length || 0) / 2,
+                                            ),
+                                          },
+                                          (_, rowIdx) => {
+                                            const col1 =
+                                              tbl.tableDesc[rowIdx * 2];
+                                            const col2 =
+                                              tbl.tableDesc[rowIdx * 2 + 1];
+                                            return (
+                                              <tr
+                                                key={rowIdx}
+                                                className={
+                                                  rowIdx % 2 === 0
+                                                    ? "bg-surface hover:bg-surface"
+                                                    : "bg-white hover:bg-surface"
+                                                }
+                                              >
+                                                <td className="w-[32%] border-b border-r border-border !px-2 !py-4 text-sm font-semibold text-wrap text-heading md:!px-6">
+                                                  {col1 || ""}
+                                                </td>
+                                                <td className="w-[68%] border-b border-border !px-2 !py-4 text-sm font-medium text-wrap text-muted md:!px-6">
+                                                  {col2 || ""}
+                                                </td>
+                                              </tr>
+                                            );
+                                          },
+                                        )}
                                       </tbody>
                                     </table>
                                   </div>
@@ -558,175 +670,134 @@ export default function PackageDetailClient({
                   </div>
                 )}
               </div>
-            )}
 
-            {/* ---- DAY PLAN TAB ---- */}
-            {activeTab === "dayplan" && (() => {
-              // Calculate dates for the timeline starting from a near future Saturday
-              const startDate = new Date();
-              // Find next Saturday
-              const dayOfWeek = startDate.getDay();
-              const daysUntilSat = (6 - dayOfWeek + 7) % 7 || 7;
-              startDate.setDate(startDate.getDate() + daysUntilSat);
-
-              const getDayDate = (index) => {
-                const d = new Date(startDate);
-                d.setDate(d.getDate() + index);
-                return d;
-              };
-
-              const formatDate = (date) => {
-                const day = date.getDate();
-                const month = date.toLocaleString("en-IN", { month: "short" });
-                const weekday = date.toLocaleString("en-IN", { weekday: "short" });
-                return `${day} ${month}, ${weekday}`;
-              };
-
-              return (
-                <div className="flex gap-6">
-                  {/* Day plan sidebar - vertical timeline with dates */}
-
-                  <div className="hidden md:block w-48 shrink-0" ref={sidebarRef}>
-                    <div className="sticky top-16">
-                      {/* Title */}
-                      <h3 className="mb-5 font-heading text-xl font-medium text-heading">Day plan</h3>
-
-                      {/* Timeline */}
-                      <div className="relative">
-                        {/* Vertical line */}
-                        <div className="absolute left-[7px] top-2 bottom-2 w-[2px] bg-border" />
-
-                        {dayPlans.map((day, index) => {
-                          const date = getDayDate(index);
-                          const isActive = activeDayIndex === index;
-                          return (
-                            <button
-                              key={day._id || index}
-                              onClick={() => scrollToDay(index)}
-                              className="relative flex items-center gap-3 w-full text-left py-2.5 group"
-                            >
-                              {/* Dot */}
-                              <div className={`relative z-10 w-4 h-4 rounded-full border-2 shrink-0 transition-all ${isActive
-                                ? "bg-primary border-primary scale-110"
-                                : "bg-white border-border group-hover:border-primary/50"
-                                }`} />
-                              {/* Date text */}
-                              <span className={`text-sm transition-all ${isActive
-                                ? "font-bold text-heading"
-                                : "text-muted group-hover:text-heading"
-                                }`}>
-                                {formatDate(date)}
-                              </span>
-                            </button>
-                          );
-                        })}
-
-                        {/* Day End */}
-                        <div className="relative flex items-center gap-3 py-2.5">
-                          <div className="relative z-10 w-4 h-4 rounded-full border-2 bg-white border-border shrink-0" />
-                          <span className="text-sm text-muted">Day End</span>
-                        </div>
-                      </div>
-                    </div>
+            <div className="mt-10 space-y-4">
+            {dayPlans.length > 0 ? (
+              <div>
+                <div className="mb-4 flex items-end justify-between gap-3 border-b border-border pb-3">
+                  <div>
+                    <p className="font-ui text-xs uppercase tracking-[0.25em] text-primary">
+                      Itinerary
+                    </p>
+                    <h2 className="mt-2 font-heading text-2xl font-medium text-heading md:text-3xl">
+                      Day plan
+                    </h2>
                   </div>
-
-                  {/* Day plan content */}
-                  <div className="flex-1 space-y-6">
-                    {/* Summary bar */}
-                    <div className="flex items-center justify-end mx-2 gap-5 text-xs text-muted pb-4 border-b border-border flex-wrap">
-                      <span className="bg-surface px-2.5 py-1 rounded font-semibold text-heading text-sm">{totalDays} DAY PLAN</span>
-                    </div>
-
-                    {dayPlans.map((day, index) => (
-                      <div
+                  <span className="rounded-button bg-primary/10 px-3 py-1 font-ui text-xs font-semibold text-primary">
+                    {totalDays} DAY PLAN
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {dayPlans.map((day, index) => {
+                    const isOpen = openDayIndex === index;
+                    return (
+                      <PackageAccordion
                         key={day._id || index}
-                        ref={(el) => (dayRefs.current[index] = el)}
-                        className="border border-border/60 p-5 shadow-sm"
+                        eyebrow={`Day ${index + 1}`}
+                        title={day.selectionTitle || `Day ${index + 1}`}
+                        open={isOpen}
+                        onToggle={() =>
+                          setOpenDayIndex((current) =>
+                            current === index ? null : index,
+                          )
+                        }
                       >
-                        <div className="flex items-center gap-3 mb-4">
-                          <span className="bg-primary text-white text-xs font-bold whitespace-nowrap px-3 py-2 rounded">
-                            Day {index + 1}
-                          </span>
-                          <h4 className="text-base font-bold text-heading">
-                            {day.selectionTitle}
-                          </h4>
-                        </div>
-
-                        {/* Day details chips */}
-                        {/* <div className="flex flex-wrap items-center gap-3 text-xs text-muted mb-4">
-                          <span className="uppercase tracking-wide font-medium">INCLUDED:</span>
-                          <span className="flex items-center gap-1"><Hotel className="h-3.5 w-3.5" /> 1 Hotel</span>
-                          <span className="flex items-center gap-1"><Bus className="h-3.5 w-3.5" /> 1 Transfer</span>
-                          <span className="flex items-center gap-1"><Camera className="h-3.5 w-3.5" /> 1 Activity</span>
-                          <span className="flex items-center gap-1"><Utensils className="h-3.5 w-3.5" /> 1 Meal</span>
-                        </div> */}
-
-                        {day.selectionDesc && (
-                          <div className="prose prose-sm max-w-none text-muted leading-relaxed custom-desc-list">
-                            <div dangerouslySetInnerHTML={{ __html: day.selectionDesc }} />
+                        {day.selectionDesc ? (
+                          <div className="prose prose-sm custom-desc-list max-w-none leading-relaxed text-black [&_p]:text-black">
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: day.selectionDesc,
+                              }}
+                            />
                           </div>
-                        )}
-                        {/* Highlights */}
-                        {day.selectionHighlight?.length > 0 && (
-                          <div className="mt-4 pt-4 border-t border-border/60">
-                            {/* <h5 className="text-md font-semibold text-heading mb-3">
-                              Itinerary Highlights
-                            </h5> */}
-
-                            <ul className="list-disc pl-5 space-y-2">
+                        ) : null}
+                        {day.selectionHighlight?.length > 0 ? (
+                          <div className="mt-4 border-t border-border/60 pt-4">
+                            <ul className="list-disc space-y-2 pl-5">
                               {day.selectionHighlight.map((hl, hIdx) => (
                                 <li key={hIdx}>
                                   <p className="text-sm font-semibold text-heading">
                                     {hl.highlightName}
                                   </p>
-
-                                  {hl.highlightDesc?.length > 0 && (
-                                    <ul className="list-disc pl-5 mt-1 space-y-1">
+                                  {hl.highlightDesc?.length > 0 ? (
+                                    <ul className="mt-1 list-disc space-y-1 pl-5">
                                       {hl.highlightDesc.map((desc, dIdx) => (
-                                        <li key={dIdx} className="text-sm text-muted">
+                                        <li
+                                          key={dIdx}
+                                          className="text-sm text-muted"
+                                        >
                                           {desc}
                                         </li>
                                       ))}
                                     </ul>
-                                  )}
+                                  ) : null}
                                 </li>
                               ))}
                             </ul>
                           </div>
-                        )}
-
-                        {/* Table */}
-                        {day.selectionTable?.length > 0 && (
-                          <div className="mt-4 pt-4 border-t border-border/60">
+                        ) : null}
+                        {day.selectionTable?.length > 0 ? (
+                          <div className="mt-4 border-t border-border/60 pt-4">
                             {day.selectionTable.map((tbl, tIdx) => (
                               <div key={tIdx} className="mb-4">
-                                <h5 className="text-md font-semibold text-heading mb-2">{tbl.tableName}</h5>
-                                <table className="w-full text-sm border border-border rounded-lg overflow-hidden">
+                                <h5 className="mb-2 text-md font-semibold text-heading">
+                                  {tbl.tableName}
+                                </h5>
+                                <table className="w-full overflow-hidden rounded-lg border border-border text-sm">
                                   <tbody>
-                                    {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                      const col1 = tbl.tableDesc[rowIdx * 2];
-                                      const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                      return (
-                                        <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface" : "bg-white"}>
-                                          <td className="border border-border px-3 py-2 text-heading font-medium">{col1 || ""}</td>
-                                          <td className="border border-border font-medium px-3 py-2 text-muted">{col2 || ""}</td>
-                                        </tr>
-                                      );
-                                    })}
+                                    {Array.from(
+                                      {
+                                        length: Math.ceil(
+                                          (tbl.tableDesc?.length || 0) / 2,
+                                        ),
+                                      },
+                                      (_, rowIdx) => {
+                                        const col1 = tbl.tableDesc[rowIdx * 2];
+                                        const col2 =
+                                          tbl.tableDesc[rowIdx * 2 + 1];
+                                        return (
+                                          <tr
+                                            key={rowIdx}
+                                            className={
+                                              rowIdx % 2 === 0
+                                                ? "bg-surface"
+                                                : "bg-white"
+                                            }
+                                          >
+                                            <td className="border border-border px-3 py-2 font-medium text-heading">
+                                              {col1 || ""}
+                                            </td>
+                                            <td className="border border-border px-3 py-2 font-medium text-muted">
+                                              {col2 || ""}
+                                            </td>
+                                          </tr>
+                                        );
+                                      },
+                                    )}
                                   </tbody>
                                 </table>
                               </div>
                             ))}
                           </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                        ) : null}
+                      </PackageAccordion>
+                    );
+                  })}
                 </div>
-              );
-            })()}
+              </div>
+            ) : null}
             {/* ---- INCLUDE/EXCLUDE TAB ---- */}
-            {activeTab === "include" && (
+            {(inclusions.length > 0 || exclusions.length > 0) && (
+              <section>
+                <PackageSectionHeader
+                  eyebrow="Package"
+                  title="Include / Exclude"
+                />
+              <PackageAccordion
+                title="Inclusions and exclusions"
+                open={Boolean(openSections.include)}
+                onToggle={() => toggleSection("include")}
+              >
               <div className="space-y-8">
                 {inclusions.length > 0 && (
                   <div>
@@ -735,9 +806,16 @@ export default function PackageDetailClient({
                     </h3>
                     <div className="space-y-3">
                       {inclusions.map((item, i) => (
-                        <div key={i} className="bg-success/8 border border-success/20 rounded-lg p-4 prose prose-sm max-w-none custom-desc-list">
+                        <div
+                          key={i}
+                          className="bg-success/8 border border-success/20 rounded-lg p-4 prose prose-sm max-w-none custom-desc-list"
+                        >
                           {item.selectionDesc ? (
-                            <div dangerouslySetInnerHTML={{ __html: item.selectionDesc }} />
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.selectionDesc,
+                              }}
+                            />
                           ) : (
                             <p>No description available</p>
                           )}
@@ -753,7 +831,10 @@ export default function PackageDetailClient({
                                     {hl.highlightDesc?.length > 0 && (
                                       <ul className="list-disc pl-5 mt-1 space-y-1">
                                         {hl.highlightDesc.map((desc, dIdx) => (
-                                          <li key={dIdx} className="text-md text-heading">
+                                          <li
+                                            key={dIdx}
+                                            className="text-md text-heading"
+                                          >
                                             {desc}
                                           </li>
                                         ))}
@@ -768,19 +849,41 @@ export default function PackageDetailClient({
                             <div className="mt-4 pt-4">
                               {item.selectionTable?.map((tbl, tIdx) => (
                                 <div key={tIdx} className="mb-4 not-prose">
-                                  <h5 className="text-md font-bold text-heading mb-2">{tbl.tableName}</h5>
+                                  <h5 className="text-md font-bold text-heading mb-2">
+                                    {tbl.tableName}
+                                  </h5>
                                   <table className="w-full text-sm border-collapse border border-border rounded overflow-hidden">
                                     <tbody>
-                                      {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                        const col1 = tbl.tableDesc[rowIdx * 2];
-                                        const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                        return (
-                                          <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface hover:bg-surface" : "bg-white hover:bg-surface"}>
-                                            <td className="w-[32%] md:!px-6 !px-4 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15">{col1 || ""}</td>
-                                            <td className="w-[68%] md:!px-6 !px-4 !py-4 text-heading text-wrap font-medium border-b border-heading/15">{col2 || ""}</td>
-                                          </tr>
-                                        );
-                                      })}
+                                      {Array.from(
+                                        {
+                                          length: Math.ceil(
+                                            (tbl.tableDesc?.length || 0) / 2,
+                                          ),
+                                        },
+                                        (_, rowIdx) => {
+                                          const col1 =
+                                            tbl.tableDesc[rowIdx * 2];
+                                          const col2 =
+                                            tbl.tableDesc[rowIdx * 2 + 1];
+                                          return (
+                                            <tr
+                                              key={rowIdx}
+                                              className={
+                                                rowIdx % 2 === 0
+                                                  ? "bg-surface hover:bg-surface"
+                                                  : "bg-white hover:bg-surface"
+                                              }
+                                            >
+                                              <td className="w-[32%] md:!px-6 !px-4 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15">
+                                                {col1 || ""}
+                                              </td>
+                                              <td className="w-[68%] md:!px-6 !px-4 !py-4 text-heading text-wrap font-medium border-b border-heading/15">
+                                                {col2 || ""}
+                                              </td>
+                                            </tr>
+                                          );
+                                        },
+                                      )}
                                     </tbody>
                                   </table>
                                 </div>
@@ -799,9 +902,16 @@ export default function PackageDetailClient({
                     </h3>
                     <div className="space-y-3">
                       {exclusions.map((item, i) => (
-                        <div key={i} className="bg-error/8 border border-error/20 rounded-lg p-4 prose prose-sm max-w-none custom-desc-list">
+                        <div
+                          key={i}
+                          className="bg-error/8 border border-error/20 rounded-lg p-4 prose prose-sm max-w-none custom-desc-list"
+                        >
                           {item.selectionDesc ? (
-                            <div dangerouslySetInnerHTML={{ __html: item.selectionDesc }} />
+                            <div
+                              dangerouslySetInnerHTML={{
+                                __html: item.selectionDesc,
+                              }}
+                            />
                           ) : (
                             <p>No description available</p>
                           )}
@@ -817,7 +927,10 @@ export default function PackageDetailClient({
                                     {hl.highlightDesc?.length > 0 && (
                                       <ul className="list-disc pl-5 mt-1 space-y-1">
                                         {hl.highlightDesc.map((desc, dIdx) => (
-                                          <li key={dIdx} className="text-md text-heading">
+                                          <li
+                                            key={dIdx}
+                                            className="text-md text-heading"
+                                          >
                                             {desc}
                                           </li>
                                         ))}
@@ -833,19 +946,41 @@ export default function PackageDetailClient({
                             <div className="mt-4 pt-4">
                               {item.selectionTable?.map((tbl, tIdx) => (
                                 <div key={tIdx} className="mb-4 not-prose">
-                                  <h5 className="text-md font-bold text-heading mb-2">{tbl.tableName}</h5>
+                                  <h5 className="text-md font-bold text-heading mb-2">
+                                    {tbl.tableName}
+                                  </h5>
                                   <table className="w-full text-sm border-collapse border border-border rounded overflow-hidden">
                                     <tbody>
-                                      {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                        const col1 = tbl.tableDesc[rowIdx * 2];
-                                        const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                        return (
-                                          <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border" : "bg-white hover:bg-border"}>
-                                            <td className="w-[32%] !px-6 !py-4 text-heading font-semibold border-b border-r border-heading/15">{col1 || ""}</td>
-                                            <td className="w-[68%] !px-6 !py-4 text-heading font-medium border-b border-heading/15">{col2 || ""}</td>
-                                          </tr>
-                                        );
-                                      })}
+                                      {Array.from(
+                                        {
+                                          length: Math.ceil(
+                                            (tbl.tableDesc?.length || 0) / 2,
+                                          ),
+                                        },
+                                        (_, rowIdx) => {
+                                          const col1 =
+                                            tbl.tableDesc[rowIdx * 2];
+                                          const col2 =
+                                            tbl.tableDesc[rowIdx * 2 + 1];
+                                          return (
+                                            <tr
+                                              key={rowIdx}
+                                              className={
+                                                rowIdx % 2 === 0
+                                                  ? "bg-surface hover:bg-border"
+                                                  : "bg-white hover:bg-border"
+                                              }
+                                            >
+                                              <td className="w-[32%] !px-6 !py-4 text-heading font-semibold border-b border-r border-heading/15">
+                                                {col1 || ""}
+                                              </td>
+                                              <td className="w-[68%] !px-6 !py-4 text-heading font-medium border-b border-heading/15">
+                                                {col2 || ""}
+                                              </td>
+                                            </tr>
+                                          );
+                                        },
+                                      )}
                                     </tbody>
                                   </table>
                                 </div>
@@ -858,25 +993,45 @@ export default function PackageDetailClient({
                   </div>
                 )}
               </div>
+              </PackageAccordion>
+              </section>
             )}
 
-            {/* ---- ADDITIONAL INFO TAB ---- */}
-            {activeTab === "additional" && (
+            {/* ---- ADDITIONAL INFO ---- */}
+            {(importantInfo.length > 0 || others.length > 0) && (
+              <section>
+                <PackageSectionHeader
+                  eyebrow="Details"
+                  title="Additional Information"
+                />
+              <PackageAccordion
+                title="Important notes and other details"
+                open={Boolean(openSections.additional)}
+                onToggle={() => toggleSection("additional")}
+              >
               <div className="space-y-6">
-
                 {importantInfo.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-bold mb-4">⚠️ Important Information</h3>
+                    <h3 className="text-xl font-bold mb-4">
+                      ⚠️ Important Information
+                    </h3>
                     <div className="space-y-3">
                       {importantInfo.map((info, i) => (
-                        <details key={i} className="group border border-warning/30 rounded-lg overflow-hidden">
+                        <details
+                          key={i}
+                          className="group border border-warning/30 rounded-lg overflow-hidden"
+                        >
                           <summary className="cursor-pointer px-5 py-3.5 text-sm font-semibold text-heading bg-warning/10 hover:bg-warning/20 flex items-center justify-between">
                             {info.selectionTitle}
                             <ChevronRight className="h-4 w-4 text-muted group-open:rotate-90 transition-transform" />
                           </summary>
                           <div className="px-5 py-4 text-sm text-muted prose prose-sm max-w-none custom-desc-list">
                             {info.selectionDesc ? (
-                              <div dangerouslySetInnerHTML={{ __html: info.selectionDesc }} />
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: info.selectionDesc,
+                                }}
+                              />
                             ) : (
                               <p>No description available</p>
                             )}
@@ -891,11 +1046,16 @@ export default function PackageDetailClient({
                                       </p>
                                       {hl.highlightDesc?.length > 0 && (
                                         <ul className="list-disc pl-5 mt-1 space-y-1">
-                                          {hl.highlightDesc.map((desc, dIdx) => (
-                                            <li key={dIdx} className="text-md text-heading">
-                                              {desc}
-                                            </li>
-                                          ))}
+                                          {hl.highlightDesc.map(
+                                            (desc, dIdx) => (
+                                              <li
+                                                key={dIdx}
+                                                className="text-md text-heading"
+                                              >
+                                                {desc}
+                                              </li>
+                                            ),
+                                          )}
                                         </ul>
                                       )}
                                     </li>
@@ -908,19 +1068,41 @@ export default function PackageDetailClient({
                               <div className="mt-4 pt-4">
                                 {info.selectionTable?.map((tbl, tIdx) => (
                                   <div key={tIdx} className="mb-4 not-prose">
-                                    <h5 className="text-md font-bold text-heading mb-2">{tbl.tableName}</h5>
+                                    <h5 className="text-md font-bold text-heading mb-2">
+                                      {tbl.tableName}
+                                    </h5>
                                     <table className="w-full text-sm border-collapse border border-border rounded overflow-hidden">
                                       <tbody>
-                                        {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                          const col1 = tbl.tableDesc[rowIdx * 2];
-                                          const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                          return (
-                                            <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border" : "bg-white hover:bg-border"}>
-                                              <td className="w-[32%] md:!px-6 !px-1 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15 text-xs md:text-sm">{col1 || ""}</td>
-                                              <td className="w-[68%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-medium border-b border-heading/15 text-sm md:text-sm">{col2 || ""}</td>
-                                            </tr>
-                                          );
-                                        })}
+                                        {Array.from(
+                                          {
+                                            length: Math.ceil(
+                                              (tbl.tableDesc?.length || 0) / 2,
+                                            ),
+                                          },
+                                          (_, rowIdx) => {
+                                            const col1 =
+                                              tbl.tableDesc[rowIdx * 2];
+                                            const col2 =
+                                              tbl.tableDesc[rowIdx * 2 + 1];
+                                            return (
+                                              <tr
+                                                key={rowIdx}
+                                                className={
+                                                  rowIdx % 2 === 0
+                                                    ? "bg-surface hover:bg-border"
+                                                    : "bg-white hover:bg-border"
+                                                }
+                                              >
+                                                <td className="w-[32%] md:!px-6 !px-1 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15 text-xs md:text-sm">
+                                                  {col1 || ""}
+                                                </td>
+                                                <td className="w-[68%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-medium border-b border-heading/15 text-sm md:text-sm">
+                                                  {col2 || ""}
+                                                </td>
+                                              </tr>
+                                            );
+                                          },
+                                        )}
                                       </tbody>
                                     </table>
                                   </div>
@@ -935,17 +1117,26 @@ export default function PackageDetailClient({
                 )}
                 {others.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-bold mb-4">📋 Other Information</h3>
+                    <h3 className="text-xl font-bold mb-4">
+                      📋 Other Information
+                    </h3>
                     <div className="space-y-3">
                       {others.map((info, i) => (
-                        <details key={i} className="group border border-border rounded-lg overflow-hidden">
+                        <details
+                          key={i}
+                          className="group border border-border rounded-lg overflow-hidden"
+                        >
                           <summary className="cursor-pointer px-5 py-3.5 text-sm font-semibold text-heading bg-surface hover:bg-surface flex items-center justify-between">
                             {info.selectionTitle}
                             <ChevronRight className="h-4 w-4 text-muted group-open:rotate-90 transition-transform" />
                           </summary>
                           <div className="px-5 py-4 text-sm text-muted prose prose-sm max-w-none custom-desc-list">
                             {info.selectionDesc ? (
-                              <div dangerouslySetInnerHTML={{ __html: info.selectionDesc }} />
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: info.selectionDesc,
+                                }}
+                              />
                             ) : (
                               <p>No description available</p>
                             )}
@@ -960,11 +1151,16 @@ export default function PackageDetailClient({
                                       </p>
                                       {hl.highlightDesc?.length > 0 && (
                                         <ul className="list-disc pl-5 mt-1 space-y-1">
-                                          {hl.highlightDesc.map((desc, dIdx) => (
-                                            <li key={dIdx} className="text-md text-heading">
-                                              {desc}
-                                            </li>
-                                          ))}
+                                          {hl.highlightDesc.map(
+                                            (desc, dIdx) => (
+                                              <li
+                                                key={dIdx}
+                                                className="text-md text-heading"
+                                              >
+                                                {desc}
+                                              </li>
+                                            ),
+                                          )}
                                         </ul>
                                       )}
                                     </li>
@@ -977,19 +1173,41 @@ export default function PackageDetailClient({
                               <div className="mt-4 pt-4">
                                 {info.selectionTable?.map((tbl, tIdx) => (
                                   <div key={tIdx} className="mb-4 not-prose">
-                                    <h5 className="text-md font-bold text-heading mb-2">{tbl.tableName}</h5>
+                                    <h5 className="text-md font-bold text-heading mb-2">
+                                      {tbl.tableName}
+                                    </h5>
                                     <table className="w-full text-sm border-collapse border border-border rounded overflow-hidden">
                                       <tbody>
-                                        {Array.from({ length: Math.ceil((tbl.tableDesc?.length || 0) / 2) }, (_, rowIdx) => {
-                                          const col1 = tbl.tableDesc[rowIdx * 2];
-                                          const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-                                          return (
-                                            <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-surface hover:bg-border" : "bg-white hover:bg-border"}>
-                                              <td className="w-[32%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15 text-sm">{col1 || ""}</td>
-                                              <td className="w-[68%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-medium border-b border-heading/15 text-sm">{col2 || ""}</td>
-                                            </tr>
-                                          );
-                                        })}
+                                        {Array.from(
+                                          {
+                                            length: Math.ceil(
+                                              (tbl.tableDesc?.length || 0) / 2,
+                                            ),
+                                          },
+                                          (_, rowIdx) => {
+                                            const col1 =
+                                              tbl.tableDesc[rowIdx * 2];
+                                            const col2 =
+                                              tbl.tableDesc[rowIdx * 2 + 1];
+                                            return (
+                                              <tr
+                                                key={rowIdx}
+                                                className={
+                                                  rowIdx % 2 === 0
+                                                    ? "bg-surface hover:bg-border"
+                                                    : "bg-white hover:bg-border"
+                                                }
+                                              >
+                                                <td className="w-[32%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-semibold border-b border-r border-heading/15 text-sm">
+                                                  {col1 || ""}
+                                                </td>
+                                                <td className="w-[68%] md:!px-6 !px-2 !py-4 text-heading text-wrap font-medium border-b border-heading/15 text-sm">
+                                                  {col2 || ""}
+                                                </td>
+                                              </tr>
+                                            );
+                                          },
+                                        )}
                                       </tbody>
                                     </table>
                                   </div>
@@ -1003,111 +1221,152 @@ export default function PackageDetailClient({
                   </div>
                 )}
               </div>
+              </PackageAccordion>
+              </section>
             )}
 
-            {/* ---- POLICY TAB ---- */}
-            {activeTab === "policy" && (
+            {/* ---- POLICY ---- */}
+            {policies.length > 0 && (
+              <section>
+                <PackageSectionHeader eyebrow="Stay" title="Policy Content" />
+              <PackageAccordion
+                title="Booking and stay policies"
+                open={Boolean(openSections.policy)}
+                onToggle={() => toggleSection("policy")}
+              >
               <div className="space-y-6">
-                {policies.length > 0 ? policies.map((policy, i) => (
-                  <div key={i} className="border border-border rounded-lg p-5">
-                    <h4 className="font-bold text-lg mb-3">{policy.selectionTitle}</h4>
-                    <div className="prose prose-sm max-w-none text-muted custom-desc-list">
-                      {policy.selectionDesc.split("\n").map((line, li) => (
-                        line ? (
-                          <p key={li} className="whitespace-pre-line">
-                            <span dangerouslySetInnerHTML={{ __html: line }} />
-                          </p>
-                        ) : <br key={li} />
-                      ))}
-                    </div>
-                    {/* Highlights */}
-                    {policy.selectionHighlight?.length > 0 && (
-                      <div className="mt-4 pt-4">
-                        <ul className="list-disc pl-5 space-y-2">
-                          {policy.selectionHighlight.map((hl, hIdx) => (
-                            <li key={hIdx}>
-                              <p className="text-md font-semibold text-heading">
-                                {hl.highlightName}
-                              </p>
-
-                              {hl.highlightDesc?.length > 0 && (
-                                <ul className="list-disc pl-5 mt-1 space-y-1">
-                                  {hl.highlightDesc.map((desc, dIdx) => (
-                                    <li key={dIdx} className="text-md text-muted">
-                                      {desc}
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
+                {policies.map((policy, i) => (
+                    <div
+                      key={i}
+                      className="border border-border rounded-lg p-5"
+                    >
+                      <h4 className="font-bold text-lg mb-3">
+                        {policy.selectionTitle}
+                      </h4>
+                      <div className="prose prose-sm max-w-none text-muted custom-desc-list">
+                        {policy.selectionDesc.split("\n").map((line, li) =>
+                          line ? (
+                            <p key={li} className="whitespace-pre-line">
+                              <span
+                                dangerouslySetInnerHTML={{ __html: line }}
+                              />
+                            </p>
+                          ) : (
+                            <br key={li} />
+                          ),
+                        )}
                       </div>
-                    )}
+                      {/* Highlights */}
+                      {policy.selectionHighlight?.length > 0 && (
+                        <div className="mt-4 pt-4">
+                          <ul className="list-disc pl-5 space-y-2">
+                            {policy.selectionHighlight.map((hl, hIdx) => (
+                              <li key={hIdx}>
+                                <p className="text-md font-semibold text-heading">
+                                  {hl.highlightName}
+                                </p>
 
-                    {/* Table */}
-                    {policy.selectionTable?.length > 0 && (
-                      <div className="mt-4 pt-4 ">
-                        {policy.selectionTable.map((tbl, tIdx) => (
-                          <div key={tIdx} className="mb-4">
-                            <h5 className="text-md font-semibold text-heading mb-2">{tbl.tableName}</h5>
-                            <table className="w-full text-sm border-collapse">
-                              <tbody>
-                                {Array.from(
-                                  { length: Math.ceil((tbl.tableDesc?.length || 0) / 2) },
-                                  (_, rowIdx) => {
-                                    const col1 = tbl.tableDesc[rowIdx * 2];
-                                    const col2 = tbl.tableDesc[rowIdx * 2 + 1];
-
-                                    return (
-                                      <tr key={rowIdx} className="align-top">
-                                        {/* Left */}
-                                        <td className="w-[32%] bg-surface px-6 py-4 text-heading font-semibold border-b border-r border-heading/15">
-                                          {col1 || ""}
-                                        </td>
-
-                                        {/* Right */}
-                                        <td className="w-[68%] bg-surface px-6 py-4 text-heading font-medium border-b border-heading/15">
-                                          {col2 || ""}
-                                        </td>
-                                      </tr>
-                                    );
-                                  }
+                                {hl.highlightDesc?.length > 0 && (
+                                  <ul className="list-disc pl-5 mt-1 space-y-1">
+                                    {hl.highlightDesc.map((desc, dIdx) => (
+                                      <li
+                                        key={dIdx}
+                                        className="text-md text-muted"
+                                      >
+                                        {desc}
+                                      </li>
+                                    ))}
+                                  </ul>
                                 )}
-                              </tbody>
-                            </table>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
-                )) : (
-                  <p className="text-muted">No policies available.</p>
-                )}
+                      {/* Table */}
+                      {policy.selectionTable?.length > 0 && (
+                        <div className="mt-4 pt-4 ">
+                          {policy.selectionTable.map((tbl, tIdx) => (
+                            <div key={tIdx} className="mb-4">
+                              <h5 className="text-md font-semibold text-heading mb-2">
+                                {tbl.tableName}
+                              </h5>
+                              <table className="w-full text-sm border-collapse">
+                                <tbody>
+                                  {Array.from(
+                                    {
+                                      length: Math.ceil(
+                                        (tbl.tableDesc?.length || 0) / 2,
+                                      ),
+                                    },
+                                    (_, rowIdx) => {
+                                      const col1 = tbl.tableDesc[rowIdx * 2];
+                                      const col2 =
+                                        tbl.tableDesc[rowIdx * 2 + 1];
 
+                                      return (
+                                        <tr key={rowIdx} className="align-top">
+                                          {/* Left */}
+                                          <td className="w-[32%] bg-surface px-6 py-4 text-heading font-semibold border-b border-r border-heading/15">
+                                            {col1 || ""}
+                                          </td>
+
+                                          {/* Right */}
+                                          <td className="w-[68%] bg-surface px-6 py-4 text-heading font-medium border-b border-heading/15">
+                                            {col2 || ""}
+                                          </td>
+                                        </tr>
+                                      );
+                                    },
+                                  )}
+                                </tbody>
+                              </table>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                }
               </div>
+              </PackageAccordion>
+              </section>
             )}
 
-            {/* ---- HOTELS TAB ---- */}
-            {activeTab === "hotels" && (
+            {/* ---- HOTELS ---- */}
+            {hotels.length > 0 && (
+              <section>
+                <PackageSectionHeader eyebrow="Stay" title="Hotels" />
+              <PackageAccordion
+                title="Accommodation"
+                open={Boolean(openSections.hotels)}
+                onToggle={() => toggleSection("hotels")}
+              >
               <div className="space-y-2 md:space-y-5">
-                {hotels.length > 0 ? (
-                  <>
                     <div className="flex items-start px-2 gap-0">
                       <div className="md:w-28 w-20 shrink-0">
-                        <span className="font-bold text-heading text-sm md:text-[15px]">Tag :-</span>
+                        <span className="font-bold text-heading text-sm md:text-[15px]">
+                          Tag :-
+                        </span>
                       </div>
                       <div className="flex-1 px-4 border-l-2 border-transparent">
-                        <span className="font-bold text-heading text-sm md:text-[15px]">City :-</span>
+                        <span className="font-bold text-heading text-sm md:text-[15px]">
+                          City :-
+                        </span>
                       </div>
                       <div className="flex-1 px-1 md:px-4 border-l-2 border-transparent">
-                        <span className="font-bold text-heading text-sm md:text-[15px]">Hotel :-</span>
+                        <span className="font-bold text-heading text-sm md:text-[15px]">
+                          Hotel :-
+                        </span>
                       </div>
                     </div>
 
                     {hotels.map((hotel, i) => (
-                      <div key={i} className="flex items-center border border-border px-2 py-2 gap-0">
+                      <div
+                        key={i}
+                        className="flex items-center border border-border px-2 py-2 gap-0"
+                      >
                         {/* Day Badge */}
                         <div className="md:w-28 w-20 shrink-0">
                           <span className="bg-primary text-white text-xs font-bold px-4 py-2 rounded-full">
@@ -1116,18 +1375,18 @@ export default function PackageDetailClient({
                         </div>
                         {/* City */}
                         <div className="flex-1 flex flex-col md:flex-row items-center gap-2 px-4 border-l-2 border-border">
-                          <span className="text-heading text-xs md:text-[15px]">{hotel.cityName}</span>
+                          <span className="text-heading text-xs md:text-[15px]">
+                            {hotel.cityName}
+                          </span>
                         </div>
                         {/* Hotel */}
                         <div className="flex-1 flex flex-col md:flex-row items-center gap-1 md:gap-2 px-2 md:px-4 border-l-2 border-border">
-                          <span className="text-heading text-xs md:text-[15px] text-start md:text-center">{hotel.hotelName}</span>
+                          <span className="text-heading text-xs md:text-[15px] text-start md:text-center">
+                            {hotel.hotelName}
+                          </span>
                         </div>
                       </div>
                     ))}
-                  </>
-                ) : (
-                  <p className="text-muted py-4">No hotels available.</p>
-                )}
                 {/* Important Notes & Accommodation Policy */}
                 <div className="mt-6 bg-warning/10 border border-warning/30 rounded-lg p-5">
                   <h4 className="mb-4 flex items-center gap-2 font-heading text-xl font-medium text-heading">
@@ -1135,88 +1394,135 @@ export default function PackageDetailClient({
                   </h4>
                   <div className="space-y-3 text-md text-heading">
                     <div>
-                      <p className="font-bold  text-heading mb-1">Property Substitution:</p>
-                      <p className="">In the event of unforeseen circumstances or operational constraints, the company reserves the right to change the designated hotel to another property of a similar category, subject to availability.</p>
+                      <p className="font-bold  text-heading mb-1">
+                        Property Substitution:
+                      </p>
+                      <p className="">
+                        In the event of unforeseen circumstances or operational
+                        constraints, the company reserves the right to change
+                        the designated hotel to another property of a similar
+                        category, subject to availability.
+                      </p>
                     </div>
                     <div>
-                      <p className="font-bold  text-heading mb-1">Room Configuration:</p>
-                      <p>All tour packages are based on double-sharing accommodation only.</p>
+                      <p className="font-bold  text-heading mb-1">
+                        Room Configuration:
+                      </p>
+                      <p>
+                        All tour packages are based on double-sharing
+                        accommodation only.
+                      </p>
                     </div>
                     <div>
-                      <p className="font-bold  text-heading mb-1">Single Occupancy Surcharge:</p>
-                      <p>Guests requesting a private room (single occupancy) will incur a single supplement fee. The total amount is subject to availability and includes all applicable taxes for the duration of the stay</p>
+                      <p className="font-bold  text-heading mb-1">
+                        Single Occupancy Surcharge:
+                      </p>
+                      <p>
+                        Guests requesting a private room (single occupancy) will
+                        incur a single supplement fee. The total amount is
+                        subject to availability and includes all applicable
+                        taxes for the duration of the stay
+                      </p>
                     </div>
                     <div>
-                      <p className="font-bold  text-heading mb-1">Force Majeure Stays:</p>
-                      <p>In the event of flight cancellations or delays caused by adverse weather, technical snags, or other unavoidable situations, any costs arising from additional accommodation or meals beyond the scheduled itinerary must be borne directly by the guest at the location.</p>
+                      <p className="font-bold  text-heading mb-1">
+                        Force Majeure Stays:
+                      </p>
+                      <p>
+                        In the event of flight cancellations or delays caused by
+                        adverse weather, technical snags, or other unavoidable
+                        situations, any costs arising from additional
+                        accommodation or meals beyond the scheduled itinerary
+                        must be borne directly by the guest at the location.
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
+              </PackageAccordion>
+              </section>
             )}
 
-            {/* ---- SUMMARY TAB ---- */}
-            {activeTab === "summary" && (() => {
-              const summary = packageDetails.summary || [];
+            {/* ---- SUMMARY ---- */}
+            {Array.isArray(packageDetails.summary) &&
+              packageDetails.summary.length > 0 && (
+              <section>
+                <PackageSectionHeader eyebrow="Itinerary" title="Summary" />
+              <PackageAccordion
+                title="Trip summary"
+                open={Boolean(openSections.summary)}
+                onToggle={() => toggleSection("summary")}
+              >
+                  <div className="space-y-0">
+                      {packageDetails.summary.map((item, i) => (
+                        <div key={i} className="flex border-b border-border">
+                          {/* Left: Day + Date */}
+                          <div className="w-36 shrink-0 py-5 px-4 border-l-4 border-primary bg-surface">
+                            <p className="font-bold text-heading text-lg">
+                              {item.days}
+                            </p>
+                          </div>
 
-              return (
-                <div className="space-y-0">
-                  {summary.length > 0 ? summary.map((item, i) => (
-                    <div key={i} className="flex border-b border-border">
-                      {/* Left: Day + Date */}
-                      <div className="w-36 shrink-0 py-5 px-4 border-l-4 border-primary bg-surface">
-                        <p className="font-bold text-heading text-lg">{item.days}</p>
-                      </div>
-
-                      {/* Right: Description grid (2 per row) */}
-                      <div className="flex-1 py-5 px-4">
-                        {(() => {
-                          const descs = item.description || [];
-                          // Group descriptions into rows of 2
-                          const rows = [];
-                          for (let r = 0; r < descs.length; r += 2) {
-                            rows.push(descs.slice(r, r + 2));
-                          }
-                          return rows.map((row, ri) => (
-                            <div key={ri}>
-                              {ri > 0 && rows.length > 1 && (
-                                <hr className="border-border my-3" />
-                              )}
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-0 md:divide-x md:divide-border">
-                                {row.map((desc, di) => (
-                                  <div key={di} className="flex items-start gap-3 px-2">
-                                    <Image
-                                      className="w-6 h-6"
-                                      src="/square.png"
-                                      alt="Check"
-                                      width={20}
-                                      height={20}
-                                    />
-                                    <span className="text-sm text-heading">{desc}</span>
+                          {/* Right: Description grid (2 per row) */}
+                          <div className="flex-1 py-5 px-4">
+                            {(() => {
+                              const descs = item.description || [];
+                              // Group descriptions into rows of 2
+                              const rows = [];
+                              for (let r = 0; r < descs.length; r += 2) {
+                                rows.push(descs.slice(r, r + 2));
+                              }
+                              return rows.map((row, ri) => (
+                                <div key={ri}>
+                                  {ri > 0 && rows.length > 1 && (
+                                    <hr className="border-border my-3" />
+                                  )}
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-0 md:divide-x md:divide-border">
+                                    {row.map((desc, di) => (
+                                      <div
+                                        key={di}
+                                        className="flex items-start gap-3 px-2"
+                                      >
+                                        <Image
+                                          className="w-6 h-6"
+                                          src="/square.png"
+                                          alt="Check"
+                                          width={20}
+                                          height={20}
+                                        />
+                                        <span className="text-sm text-heading">
+                                          {desc}
+                                        </span>
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
-                            </div>
-                          ));
-                        })()}
-                      </div>
-                    </div>
-                  )) : (
-                    <p className="text-muted py-4">No summary available.</p>
-                  )}
-                </div>
-              );
-            })()}
+                                </div>
+                              ));
+                            })()}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+              </PackageAccordion>
+              </section>
+            )}
 
-            {/* ---- REVIEWS TAB ---- */}
-            {activeTab === "reviews" && (
+            {/* ---- REVIEWS ---- */}
+            <section>
+              <PackageSectionHeader eyebrow="Guests" title="Reviews" />
+            <PackageAccordion
+              title="Guest experiences"
+              open={Boolean(openSections.reviews)}
+              onToggle={() => toggleSection("reviews")}
+            >
               <div className="space-y-8">
                 <div>
                   <h3 className="mb-2 font-heading text-2xl font-medium text-heading">
                     Write a review
                   </h3>
                   <p className="mb-5 font-body text-sm text-muted">
-                    No account needed. Your review will appear after a short admin check.
+                    No account needed. Your review will appear after a short
+                    admin check.
                   </p>
                   <ReviewForm
                     packageName={packageDetails.packageName}
@@ -1260,11 +1566,14 @@ export default function PackageDetailClient({
                             </div>
                             <span className="font-ui text-xs text-muted">
                               {review.createdAt
-                                ? new Date(review.createdAt).toLocaleDateString("en-IN", {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                })
+                                ? new Date(review.createdAt).toLocaleDateString(
+                                    "en-IN",
+                                    {
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    },
+                                  )
                                 : ""}
                             </span>
                           </div>
@@ -1276,7 +1585,7 @@ export default function PackageDetailClient({
                                   "size-4",
                                   si < review.rating
                                     ? "fill-warning text-warning"
-                                    : "text-border"
+                                    : "text-border",
                                 )}
                               />
                             ))}
@@ -1292,7 +1601,9 @@ export default function PackageDetailClient({
                     ) : (
                       <div className="flex flex-col items-center rounded-card border border-dashed border-border bg-surface/50 py-14 text-center">
                         <Star className="mb-3 size-8 text-warning/60" />
-                        <p className="font-heading text-xl text-heading">No reviews yet</p>
+                        <p className="font-heading text-xl text-heading">
+                          No reviews yet
+                        </p>
                         <p className="mt-1 font-body text-sm text-muted">
                           Be the first to share your experience.
                         </p>
@@ -1301,7 +1612,9 @@ export default function PackageDetailClient({
                   </div>
                 </div>
               </div>
-            )}
+            </PackageAccordion>
+            </section>
+            </div>
 
             {/* ========== SPIRITUAL JOURNEY ========== */}
             {/* <section className="mt-12 mb-8">
@@ -1323,64 +1636,111 @@ export default function PackageDetailClient({
               {/* Main Price Card */}
               <div className="overflow-hidden rounded-card border border-border bg-white shadow-sm">
                 {/* Discount badge */}
-                {packageDetails.price > 0 && packageDetails.basicDetails?.originalPrice > packageDetails.price && (
-                  <div className="bg-success px-3 py-1.5 text-center font-ui text-xs font-semibold text-white">
-                    Flat {Math.round(((packageDetails.basicDetails.originalPrice - packageDetails.price) / packageDetails.basicDetails.originalPrice) * 100)}% off
-                  </div>
-                )}
+                {packageDetails.price > 0 &&
+                  packageDetails.basicDetails?.originalPrice >
+                    packageDetails.price && (
+                    <div className="bg-success px-3 py-1.5 text-center font-ui text-xs font-semibold text-white">
+                      Flat{" "}
+                      {Math.round(
+                        ((packageDetails.basicDetails.originalPrice -
+                          packageDetails.price) /
+                          packageDetails.basicDetails.originalPrice) *
+                          100,
+                      )}
+                      % off
+                    </div>
+                  )}
                 <div className="p-5">
-                  {packageDetails.priceUnit === "Double Occupancy Per Person Price Only" && packageDetails.doubleOccupancyPrice > 0 ? (
+                  {packageDetails.priceUnit ===
+                    "Double Occupancy Per Person Price Only" &&
+                  packageDetails.doubleOccupancyPrice > 0 ? (
                     <>
                       <div className="mb-2">
-                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Single Occupancy</p>
-                        <div className="flex flex-wrap items-baseline gap-2"> 
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">
+                          Single Occupancy
+                        </p>
+                        <div className="flex flex-wrap items-baseline gap-2">
                           {packageDetails.price === 0 ? (
-                            <span className="font-heading text-2xl font-medium text-heading">XXXX*</span>
+                            <span className="font-heading text-2xl font-medium text-heading">
+                              XXXX*
+                            </span>
                           ) : (
                             <>
-                              <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
-                              <span className="font-ui text-xl text-black">/</span>
+                              <span className="font-sans text-2xl font-medium text-heading">
+                                ₹{formatNumber(packageDetails.price)}
+                              </span>
+                              <span className="font-ui text-xl text-black">
+                                /
+                              </span>
                               {hasUsdPrice(packageDetails.priceUsd) && (
-                                <span className="font-sans text-lg font-medium text-heading">${formatUsd(packageDetails.priceUsd)}</span>
+                                <span className="font-sans text-lg font-medium text-heading">
+                                  ${formatUsd(packageDetails.priceUsd)}
+                                </span>
                               )}
-                              <span className="font-ui text-sm text-black">/Person</span>
+                              <span className="font-ui text-sm text-black">
+                                /Person
+                              </span>
                             </>
                           )}
                         </div>
                       </div>
                       <div className="mb-1 rounded-lg bg-surface/60 py-2">
-                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">Double Occupancy</p>
+                        <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">
+                          Double Occupancy
+                        </p>
                         <div className="flex flex-wrap items-baseline gap-2">
-                          <span className="font-sans text-2xl font-medium text-heading">₹{formatNumber(packageDetails.doubleOccupancyPrice)}</span>
+                          <span className="font-sans text-2xl font-medium text-heading">
+                            ₹{formatNumber(packageDetails.doubleOccupancyPrice)}
+                          </span>
                           <span className="font-ui text-xl text-black">/</span>
-                          {hasUsdPrice(packageDetails.doubleOccupancyPriceUsd) && (
-                            <span className="font-sans text-lg font-medium text-heading">${formatUsd(packageDetails.doubleOccupancyPriceUsd)}</span>
+                          {hasUsdPrice(
+                            packageDetails.doubleOccupancyPriceUsd,
+                          ) && (
+                            <span className="font-sans text-lg font-medium text-heading">
+                              $
+                              {formatUsd(
+                                packageDetails.doubleOccupancyPriceUsd,
+                              )}
+                            </span>
                           )}
-                          <span className="font-ui text-sm text-black">/Person</span>
+                          <span className="font-ui text-sm text-black">
+                            /Person
+                          </span>
                         </div>
                       </div>
                     </>
                   ) : (
                     <div className="mb-1 flex flex-wrap items-baseline gap-2">
                       {packageDetails.price === 0 ? (
-                        <span className="font-heading text-3xl font-medium text-heading">XXXX*</span>
+                        <span className="font-heading text-3xl font-medium text-heading">
+                          XXXX*
+                        </span>
                       ) : (
                         <>
-                          <span className="font-heading text-3xl font-medium text-heading">₹{formatNumber(packageDetails.price)}</span>
+                          <span className="font-heading text-3xl font-medium text-heading">
+                            ₹{formatNumber(packageDetails.price)}
+                          </span>
                           {hasUsdPrice(packageDetails.priceUsd) && (
-                            <span className="font-heading text-2xl font-medium text-heading">${formatUsd(packageDetails.priceUsd)}</span>
+                            <span className="font-heading text-2xl font-medium text-heading">
+                              ${formatUsd(packageDetails.priceUsd)}
+                            </span>
                           )}
-                          <span className="font-ui text-sm text-black">/Adult</span>
+                          <span className="font-ui text-sm text-black">
+                            /Adult
+                          </span>
                         </>
                       )}
                     </div>
                   )}
-                  {packageDetails.basicDetails?.originalPrice > packageDetails.price && (
+                  {packageDetails.basicDetails?.originalPrice >
+                    packageDetails.price && (
                     <p className="mb-1 font-ui text-sm text-black line-through">
                       ₹{formatNumber(packageDetails.basicDetails.originalPrice)}
                     </p>
                   )}
-                  <p className="mb-5 font-ui text-xs text-black">Excluding applicable taxes</p>
+                  <p className="mb-5 font-ui text-xs text-black">
+                    Excluding applicable taxes
+                  </p>
 
                   <Button
                     type="button"
@@ -1414,15 +1774,19 @@ export default function PackageDetailClient({
 
               {/* Category Type Card */}
               <div className="flex items-center gap-3 rounded-card border border-border bg-white p-4">
-                <h4 className="font-ui text-sm font-semibold text-heading">Category</h4>
+                <h4 className="font-ui text-sm font-semibold text-heading">
+                  Category
+                </h4>
                 <p className="font-body text-sm text-muted">
                   {packageDetails.basicDetails?.tourType || "Group Package"}
                 </p>
-              </div>  
+              </div>
 
               {/* Share Section */}
               <div className="rounded-card border border-border bg-white p-4">
-                <h4 className="mb-3 font-ui text-sm font-semibold text-heading">Share this package</h4>
+                <h4 className="mb-3 font-ui text-sm font-semibold text-heading">
+                  Share this package
+                </h4>
                 <div className="flex gap-2">
                   <button
                     onClick={handleShare}
@@ -1455,15 +1819,68 @@ export default function PackageDetailClient({
               )} */}
             </div>
           </div>
-
         </div>
       </div>
+
+      {/* ========== GALLERY SECTION ========== */}
+      {galleryImages.length > 0 && (
+        <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+          <div className="grid h-75 grid-cols-2 gap-3 overflow-hidden md:h-95 md:grid-cols-4">
+            {/* Main large image */}
+            <div
+              onClick={() => openGallery(0)}
+              className="group relative col-span-2 row-span-2 cursor-pointer overflow-hidden rounded-image"
+            >
+              <Image
+                src={
+                  galleryImages[0]?.url ||
+                  packageDetails.basicDetails?.thumbnail?.url ||
+                  ""
+                }
+                alt="Gallery main"
+                fill
+                loading="lazy"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-button bg-footer/80 px-4 py-2 font-ui text-xs font-semibold text-white backdrop-blur-sm">
+                <Camera className="h-3.5 w-3.5" />
+                View gallery
+              </div>
+            </div>
+            {/* Secondary images */}
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                onClick={() => galleryImages[i] && openGallery(i)}
+                className="group relative cursor-pointer overflow-hidden rounded-image"
+              >
+                {galleryImages[i] ? (
+                  <Image
+                    src={galleryImages[i]?.url}
+                    alt={`Gallery ${i}`}
+                    fill
+                    loading="lazy"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-surface">
+                    <Camera className="h-6 w-6 text-muted" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {/* ========== YOU MIGHT ALSO LIKE ========== */}
       {packages.length > 0 && (
         <div className="mx-auto mt-16 w-full max-w-7xl px-4 pb-16 md:px-8">
-          <h3 className="mb-2 font-heading text-3xl font-medium text-heading">You might also like</h3>
+          <h3 className="mb-2 font-heading text-3xl font-medium text-heading">
+            You might also like
+          </h3>
           <p className="mb-8 max-w-2xl font-body text-sm leading-relaxed text-muted">
-            Thoughtfully chosen retreats that complement this journey — calm, considered, and ready when you are.
+            Thoughtfully chosen retreats that complement this journey — calm,
+            considered, and ready when you are.
           </p>
           <PackageCarouselWrapper
             packages={JSON.parse(JSON.stringify(packages))}
@@ -1480,9 +1897,15 @@ export default function PackageDetailClient({
 
       {/* ========== GALLERY LIGHTBOX MODAL ========== */}
       {galleryOpen && galleryImages.length > 0 && (
-        <div className="fixed inset-0 z-100 bg-black/95 flex flex-col" onClick={closeGallery}>
+        <div
+          className="fixed inset-0 z-100 bg-black/95 flex flex-col"
+          onClick={closeGallery}
+        >
           {/* Top bar */}
-          <div className="flex items-center justify-between px-4 py-3 text-white" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="flex items-center justify-between px-4 py-3 text-white"
+            onClick={(e) => e.stopPropagation()}
+          >
             <span className="text-sm font-medium">
               {galleryIndex + 1} / {galleryImages.length}
             </span>
@@ -1495,7 +1918,10 @@ export default function PackageDetailClient({
           </div>
 
           {/* Main image area */}
-          <div className="flex-1 flex items-center justify-center relative px-4" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="flex-1 flex items-center justify-center relative px-4"
+            onClick={(e) => e.stopPropagation()}
+          >
             {/* Prev button */}
             <button
               onClick={prevImage}
@@ -1525,16 +1951,20 @@ export default function PackageDetailClient({
           </div>
 
           {/* Thumbnail strip */}
-          <div className="px-4 py-3 overflow-x-auto no-scrollbar" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="px-4 py-3 overflow-x-auto no-scrollbar"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex gap-2 justify-center">
               {galleryImages.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setGalleryIndex(i)}
-                  className={`relative w-16 h-12 rounded-md overflow-hidden shrink-0 border-2 transition-all ${i === galleryIndex
-                    ? "border-white opacity-100"
-                    : "border-transparent opacity-50 hover:opacity-80"
-                    }`}
+                  className={`relative w-16 h-12 rounded-md overflow-hidden shrink-0 border-2 transition-all ${
+                    i === galleryIndex
+                      ? "border-white opacity-100"
+                      : "border-transparent opacity-50 hover:opacity-80"
+                  }`}
                 >
                   <Image
                     src={img?.url}

@@ -144,7 +144,7 @@ export function HeroSection() {
 
   return (
     <section className="bg-[#fcf7f1] relative xl:h-full h-full w-full overflow-hidden z-0 group">
-      <div className="hidden xl:block w-full h-[calc(100vh-80px)]">
+      <div className="hidden xl:block w-full h-[calc(100vh-85px)]">
         <div className="hidden xl:block w-full h-full">
           <Carousel
             className="h-[calc(100vh-80px)] w-full"
@@ -198,7 +198,7 @@ export function HeroSection() {
       </div>
 
       {/* Mobile Carousel */}
-      <div className="block xl:hidden relative w-full h-[260px] sm:h-[320px] overflow-hidden">
+      <div className="block xl:hidden relative w-full h-[450px] overflow-hidden">
         <Carousel
           className="w-full h-full"
           plugins={[plugin.current]}
@@ -206,16 +206,19 @@ export function HeroSection() {
         >
           <CarouselContent className="h-full ml-0">
             {banners.map((banner, index) => (
-              <CarouselItem key={index} className="h-[260px] sm:h-[320px] pl-0">
+              <CarouselItem key={index} className="h-[450px] pl-0">
                 <Link
                   href={banner?.buttonLink || "#"}
                   className="block w-full h-full"
                 >
                   <div className="relative w-full h-full overflow-hidden bg-black">
-                    <img
-                      src={banner.mobileImg?.url || banner.frontImg?.url || " "}
-                      alt={banner.title || "Banner Image"}
-                      className="w-full h-full object-cover object-center"
+                    <Image
+                      src={banner?.mobileImg?.url || banner?.frontImg?.url || " "}
+                      alt={banner?.title || "MobileBanner Image"}
+                      fill
+                      quality={100}
+                      priority
+                      className="w-full h-full object-contain object-center"
                     />
                   </div>
                 </Link>
@@ -243,15 +246,6 @@ export function HeroSection() {
           )}
         </Carousel>
       </div>
-
-      <Button
-        type="button"
-        className="w-full h-10 absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20 rounded-button bg-primary text-white hover:bg-primary-hover"
-        onClick={() => router.push("/plan-your-own")}
-      >
-        Explore packages
-        <ArrowUpRight className="size-4" aria-hidden="true" />
-      </Button>
     </section>
   );
 }

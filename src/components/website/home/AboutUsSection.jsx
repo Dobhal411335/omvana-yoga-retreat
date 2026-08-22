@@ -56,8 +56,18 @@ export default function AboutUsSection() {
     fetchOffers();
   }, []);
 
-  const hasOffers =
-    offerDetails?.lastMinuteDeal || offerDetails?.promoBanner;
+  const hasText = (value) => typeof value === "string" && value.trim().length > 0;
+  const lastMinuteDeal = offerDetails?.lastMinuteDeal;
+  const promoBanner = offerDetails?.promoBanner;
+  const showLastMinuteDeal =
+    lastMinuteDeal &&
+    (hasText(lastMinuteDeal.heading) ||
+      hasText(lastMinuteDeal.description) ||
+      hasText(lastMinuteDeal.link));
+  const showPromoBanner =
+    promoBanner &&
+    (hasText(promoBanner.description) || hasText(promoBanner.link));
+  const hasOffers = showLastMinuteDeal || showPromoBanner;
   const showPackages = packagesLoading || featuredPackages.length > 0;
   const showBanners = bannersLoading || banners.length > 0;
 
@@ -124,7 +134,7 @@ export default function AboutUsSection() {
         <Section spacing="sm" className="bg-background pt-0">
           <Container>
             <div className="flex flex-col gap-4">
-              {offerDetails?.lastMinuteDeal && (
+              {showLastMinuteDeal && (
                 <div className="flex flex-col items-start justify-between gap-6 rounded-card border border-border bg-surface px-6 py-6 sm:flex-row sm:items-center sm:px-8">
                   <div className="flex items-start gap-5 sm:items-center">
                     <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-background">
@@ -135,19 +145,21 @@ export default function AboutUsSection() {
                       />
                     </div>
                     <div>
-                      <h4 className="font-heading text-xl text-heading md:text-2xl">
-                        {offerDetails.lastMinuteDeal.heading}
-                      </h4>
-                      {offerDetails.lastMinuteDeal.description ? (
+                      {hasText(lastMinuteDeal.heading) ? (
+                        <h4 className="font-heading text-xl text-heading md:text-2xl">
+                          {lastMinuteDeal.heading}
+                        </h4>
+                      ) : null}
+                      {hasText(lastMinuteDeal.description) ? (
                         <p className="mt-1.5 font-body text-sm leading-relaxed text-muted">
-                          {offerDetails.lastMinuteDeal.description}
+                          {lastMinuteDeal.description}
                         </p>
                       ) : null}
                     </div>
                   </div>
-                  {offerDetails.lastMinuteDeal.link ? (
+                  {hasText(lastMinuteDeal.link) ? (
                     <Link
-                      href={offerDetails.lastMinuteDeal.link}
+                      href={lastMinuteDeal.link}
                       className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-button border border-border bg-background px-7 font-body text-sm text-heading transition-colors duration-300 hover:border-heading/30 hover:bg-background sm:w-auto"
                     >
                       Know more
@@ -160,7 +172,7 @@ export default function AboutUsSection() {
                 </div>
               )}
 
-              {offerDetails?.promoBanner && (
+              {showPromoBanner && (
                 <div className="flex flex-col items-start justify-between gap-6 rounded-card border border-border bg-surface px-6 py-6 sm:flex-row sm:items-center sm:px-8">
                   <div className="flex items-start gap-5 sm:items-center">
                     <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-background">
@@ -170,15 +182,15 @@ export default function AboutUsSection() {
                         aria-hidden="true"
                       />
                     </div>
-                    {offerDetails.promoBanner.description ? (
+                    {hasText(promoBanner.description) ? (
                       <p className="font-body text-sm leading-relaxed text-foreground md:text-base">
-                        {offerDetails.promoBanner.description}
+                        {promoBanner.description}
                       </p>
                     ) : null}
                   </div>
-                  {offerDetails.promoBanner.link ? (
+                  {hasText(promoBanner.link) ? (
                     <Link
-                      href={offerDetails.promoBanner.link}
+                      href={promoBanner.link}
                       className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-button bg-primary px-7 font-body text-sm text-primary-foreground transition-colors duration-300 hover:bg-primary-hover sm:w-auto"
                     >
                       Apply

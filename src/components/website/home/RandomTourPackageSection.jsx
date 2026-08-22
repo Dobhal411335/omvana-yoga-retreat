@@ -168,10 +168,10 @@ export default function RandomTourPackageSection() {
                 {packages.map((item) => (
                   <div
                       key={item._id || item.slug}
-                      className="pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
+                      className="md:pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
                     >
                       <article className="group flex h-full flex-col justify-between rounded-card border border-border bg-white p-6">
-                        <div>
+                        <div> 
                           <div className="relative mb-6 aspect-[3/3] w-full overflow-hidden rounded-image bg-border">
                             <Image
                               src={

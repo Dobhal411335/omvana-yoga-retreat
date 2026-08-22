@@ -219,7 +219,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 border-t border-white pt-8 text-center">
+        <div className="my-5 border-t border-white pt-8 text-center">
           <p className="font-ui text-xs text-white">
             © {year} {companyName}. All rights reserved.
           </p>

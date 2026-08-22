@@ -154,7 +154,7 @@ export function PlanForm() {
   return (
     <section className="bg-background py-16">
       <div className="container">
-        <div className="mx-auto max-w-5xl rounded-[var(--radius-card)] bg-[#f3efe6] p-8 md:p-12 border border-gray-600">
+        <div className="mx-auto max-w-5xl rounded-[var(--radius-card)] bg-[#f3efe6] p-4 md:p-12 border border-gray-600">
 
           {/* Card header */}
           <div className="mb-10">

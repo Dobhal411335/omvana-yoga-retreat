@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { Logo } from "@/components/common/Logo";
 import TopAdvertisementMarquee from "@/components/admin/pages/TopAdvertisementMarquee";
 import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
+import { cn } from "@/lib/utils";
 
 const ResponsiveNavbar = ({ sections = [] }) => {
   const visibleSections = sections
@@ -16,7 +17,7 @@ const ResponsiveNavbar = ({ sections = [] }) => {
     .sort((left, right) => (left.order || 0) - (right.order || 0));
 
   return (
-    <NavigationMenu.Root className="hidden relative z-[99] isolate lg:flex w-full justify-end">
+    <NavigationMenu.Root className="hidden relative z-[99] isolate lg:flex w-full justify-end ">
       <NavigationMenu.List className="relative z-[99] flex items-center justify-center gap-1 rounded-md px-1 py-1">
         <NavigationMenu.Item>
           <Link
@@ -101,10 +102,126 @@ const ResponsiveNavbar = ({ sections = [] }) => {
   );
 };
 
+const menuEase = [0.4, 0, 0.2, 1];
+
+function getActiveSubSections(section) {
+  return (section.subSections || [])
+    .filter((item) => item?.active)
+    .sort((left, right) => (left.order || 0) - (right.order || 0));
+}
+
+function MobileNav({ sections = [], onNavigate }) {
+  const [openSectionId, setOpenSectionId] = useState(null);
+
+  const visibleSections = sections
+    .filter((section) => section?.active)
+    .sort((left, right) => (left.order || 0) - (right.order || 0));
+
+  return (
+    <nav className="flex flex-col gap-1" aria-label="Mobile navigation">
+      <Link
+        href="/"
+        className="rounded-md px-1 py-3 font-body text-sm font-medium text-foreground hover:text-primary"
+        onClick={onNavigate}
+      >
+        Home
+      </Link>
+
+      {visibleSections.map((section) => {
+        const sectionId = section._id || section.title;
+        const subSections = getActiveSubSections(section);
+        const hasSubSections = subSections.length > 0;
+
+        if (!hasSubSections) {
+          return (
+            <Link
+              key={sectionId}
+              href={section.url || "#"}
+              className="rounded-md px-1 py-3 font-body text-sm font-medium text-foreground hover:text-primary"
+              onClick={onNavigate}
+            >
+              {section.title}
+            </Link>
+          );
+        }
+
+        const isOpen = openSectionId === sectionId;
+
+        return (
+          <div key={sectionId}>
+            <button
+              type="button"
+              className="flex w-full items-center justify-between gap-3 rounded-md px-1 py-3 text-left font-body text-sm font-medium text-foreground transition-colors hover:text-primary"
+              aria-expanded={isOpen}
+              onClick={() =>
+                setOpenSectionId((current) => (current === sectionId ? null : sectionId))
+              }
+            >
+              {section.title}
+              <ChevronDown
+                className={cn(
+                  "size-4 shrink-0 text-muted transition-transform duration-(--duration-fast) ease-(--ease-smooth)",
+                  isOpen && "rotate-180",
+                )}
+                aria-hidden="true"
+              />
+            </button>
+            <AnimatePresence initial={false}>
+              {isOpen ? (
+                <motion.div
+                  key={sectionId}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: menuEase }}
+                  className="overflow-hidden"
+                >
+                  <div className="mb-2 flex flex-col gap-1 border-l border-border pl-4">
+                    {subSections.map((sub, index) => (
+                      <motion.div
+                        key={sub._id || sub.title}
+                        initial={{ opacity: 0, y: -6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: index * 0.04,
+                          duration: 0.2,
+                          ease: menuEase,
+                        }}
+                      >
+                        <Link
+                          href={sub.url || "#"}
+                          className="block rounded-md py-2.5 font-body text-sm text-foreground hover:text-primary"
+                          onClick={onNavigate}
+                        >
+                          {sub.title}
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+        );
+      })}
+
+      <Link
+        href="/contact"
+        className="mt-3 inline-flex w-fit items-center justify-center rounded-full bg-[#2c2f2c] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
+        onClick={onNavigate}
+      >
+        Reserve a stay
+      </Link>
+    </nav>
+  );
+}
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [sections, setSections] = useState([]);
   const company = useCompanyBasicInfo();
+  const menuRef = useRef(null);
+  const toggleRef = useRef(null);
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -121,84 +238,90 @@ export function Navbar() {
     fetchSections();
   }, []);
 
+  useEffect(() => {
+    if (!open) return undefined;
+
+    const handlePointerDown = (event) => {
+      const target = event.target;
+      if (menuRef.current?.contains(target)) return;
+      if (toggleRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface">
-      <TopAdvertisementMarquee />
-      <div className="container flex h-16 md:h-20 items-center justify-between md:px-10 px-2">
-        <Logo
-          name={company?.companyName}
-          imageSrc={company?.mainLogo?.url}
-        />
-        <div className="flex items-center gap-8">
-          <ResponsiveNavbar sections={sections} />
-        </div>
+      <div className="relative z-50 bg-surface">
+        <TopAdvertisementMarquee />
+        <div className="container flex h-16 md:h-20 items-center justify-between md:px-10 px-2">
+          <Logo
+            name={company?.companyName}
+            imageSrc={company?.mainLogo?.url}
+          />
+          <div className="flex items-center gap-8">
+            <ResponsiveNavbar sections={sections} />
+          </div>
 
-        <button
-          type="button"
-          className="flex size-10 items-center justify-center rounded-md text-heading transition-colors hover:bg-surface lg:hidden"
-          onClick={() => setOpen((prev) => !prev)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-        >
-          {open ? (
-            <X className="size-5" aria-hidden="true" />
-          ) : (
-            <Menu className="size-5" aria-hidden="true" />
-          )}
-        </button>
+          <button
+            ref={toggleRef}
+            type="button"
+            className="flex size-10 items-center justify-center rounded-md text-heading transition-colors hover:bg-surface lg:hidden"
+            onClick={() => setOpen((prev) => !prev)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+          >
+            {open ? (
+              <X className="size-5" aria-hidden="true" />
+            ) : (
+              <Menu className="size-5" aria-hidden="true" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {open && (
-        <div className="border-t border-border bg-surface px-6 py-6 lg:hidden">
-          <nav className="flex flex-col gap-5" aria-label="Mobile navigation">
-            <Link
-              href="/"
-              className="font-body text-sm font-medium text-foreground hover:text-primary"
-              onClick={() => setOpen(false)}
-            >
-              Home
-            </Link>
-            {sections
-              .filter((section) => section?.active)
-              .sort((left, right) => (left.order || 0) - (right.order || 0))
-              .map((section) => (
-                <div key={section._id || section.title}>
-                  <Link
-                    href={section.url || "#"}
-                    className="font-body text-sm font-medium text-foreground hover:text-primary"
-                    onClick={() => setOpen(false)}
-                  >
-                    {section.title}
-                  </Link>
-                  {Array.isArray(section.subSections) && section.subSections.length > 0 && (
-                    <div className="mt-2 flex flex-col gap-2 pl-4">
-                      {section.subSections
-                        .filter((sub) => sub?.active)
-                        .sort((left, right) => (left.order || 0) - (right.order || 0))
-                        .map((sub) => (
-                          <Link
-                            key={sub._id || sub.title}
-                            href={sub.url || "#"}
-                            className="font-body text-sm text-foreground hover:text-primary block"
-                            onClick={() => setOpen(false)}
-                          >
-                            {sub.title}
-                          </Link>
-                        ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            <Link
-              href="/contact"
-              className="mt-2 inline-flex w-fit items-center justify-center rounded-full bg-[#2c2f2c] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90"
-              onClick={() => setOpen(false)}
-            >
-              Reserve a stay
-            </Link>
-          </nav>
-        </div>
-      )}
+      <AnimatePresence>
+        {open ? (
+          <motion.button
+            key="mobile-nav-overlay"
+            type="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: menuEase }}
+            className="fixed inset-0 z-40 bg-heading/20 lg:hidden"
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+          />
+        ) : null}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            key="mobile-nav-panel"
+            ref={menuRef}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3, ease: menuEase }}
+            className="absolute inset-x-0 top-full z-50 max-h-[calc(100dvh-7rem)] overflow-y-auto overscroll-contain border-b border-t border-border bg-surface px-6 py-6 shadow-lg lg:hidden"
+          >
+            <MobileNav sections={sections} onNavigate={() => setOpen(false)} />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </header>
   );
 }

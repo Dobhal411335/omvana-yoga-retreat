@@ -1,40 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Bath,
-  Bed,
-  Coffee,
-  Loader2,
-  Luggage,
-  ParkingCircle,
-  Phone,
-  ShowerHead,
-  Snowflake,
-  Tv,
-  Utensils,
-  Wifi,
-} from "lucide-react";
+import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-
-const amenityIcons = {
-  Restaurant: Utensils,
-  Bed,
-  "Room Phone": Phone,
-  Parking: ParkingCircle,
-  Shower: ShowerHead,
-  "Towel In Room": Bath,
-  "Wi-Fi": Wifi,
-  Television: Tv,
-  "Bath Tub": Bath,
-  Elevator: Luggage,
-  Laggage: Luggage,
-  "Tea Maker": Coffee,
-  "Room AC": Snowflake,
-};
+import { getHotelAmenityIcon } from "@/lib/hotelAmenityIcons";
 
 export default function Amenities({ roomId }) {
   const [amenitiesList, setAmenitiesList] = useState([]);
@@ -138,7 +110,7 @@ export default function Amenities({ roomId }) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {amenitiesList.map((item, idx) => {
-            const Icon = amenityIcons[item.label] || SparklesFallback;
+            const Icon = getHotelAmenityIcon(item.label);
             return (
               <label
                 key={item.label}
@@ -179,8 +151,4 @@ export default function Amenities({ roomId }) {
       </Button>
     </form>
   );
-}
-
-function SparklesFallback(props) {
-  return <Bed {...props} />;
 }
