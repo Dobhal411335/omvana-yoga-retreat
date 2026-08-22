@@ -61,7 +61,7 @@ const TEMPLATE_OPTIONS = [
   { value: "design6", label: "Team Page Design" },
   { value: "design7", label: "Gallery Page Design" },
   { value: "design8", label: "Amenities Page Design" },
-  { value: "design9", label: "Content Cards Design" },
+  { value: "design9", label: "Our Philosophy Design" },
 ];
 
 const getTemplateLabel = (templateType) => {

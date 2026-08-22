@@ -1671,7 +1671,7 @@ export default function PackageDetailClient({
                           )}
                         </div>
                       </div>
-                      <div className="mb-1 rounded-lg bg-surface/60 py-2">
+                      <div className="mb-1 rounded-lg py-2">
                         <p className="font-ui text-xs font-semibold uppercase tracking-wide text-black mb-0.5">
                           Double Occupancy
                         </p>

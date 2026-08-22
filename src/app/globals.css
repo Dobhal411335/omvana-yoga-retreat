@@ -68,7 +68,7 @@
   --primary:              #78874f;  /* buttons · links · icons     */
   --primary-hover:        #5e6b3e;  /* hover state                 */
   --primary-foreground:   #ffffff;
-  --heading:              #2f322e;  /* h1–h6 — docs: #2F322E       */
+  --heading:              #000000;  /* h1–h6 — docs: #2F322E       */
   --foreground:           #6B7849;
   --muted:                #8d8d8d;  /* metadata · captions         */
   --muted-foreground:     #8d8d8d;
@@ -370,8 +370,21 @@
   font-family: inherit;
   font-size: 1.05rem;
   line-height: 1.6;
-  color: var(--heading);
+  color: #000000;
   word-break: break-word;
+}
+
+.custom-desc-list p,
+.custom-desc-list li,
+.custom-desc-list span,
+.custom-desc-list strong,
+.custom-desc-list b,
+.custom-desc-list em,
+.custom-desc-list i,
+.custom-desc-list blockquote,
+.custom-desc-list td,
+.custom-desc-list th {
+  color: #000000;
 }
 
 .custom-desc-list h1,
@@ -379,7 +392,7 @@
   font-family: var(--font-heading), Georgia, serif;
   font-size: 2em;
   font-weight: 600;
-  color: var(--heading);
+  color: #000000;
   line-height: 1.2;
   margin: 0 0 0.5em;
 }
@@ -389,7 +402,7 @@
   font-family: var(--font-heading), Georgia, serif;
   font-size: 1.5em;
   font-weight: 600;
-  color: var(--heading);
+  color: #000000;
   line-height: 1.3;
   margin: 1em 0 0.5em;
 }
@@ -399,9 +412,18 @@
   font-family: var(--font-heading), Georgia, serif;
   font-size: 1.17em;
   font-weight: 600;
-  color: var(--heading);
+  color: #000000;
   line-height: 1.3;
   margin: 0.75em 0 0.4em;
+}
+
+.custom-desc-list a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.custom-desc-list a:hover {
+  color: #2563eb;
 }
 
 .custom-desc-list u,
@@ -478,7 +500,7 @@
 .custom-desc-list th {
   background-color: #f8fafc;
   font-weight: 600;
-  color: #1a202c;
+  color: #000000;
 }
 
 /* .custom-desc-list tr:nth-child(even) {
