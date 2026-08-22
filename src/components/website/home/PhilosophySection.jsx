@@ -17,7 +17,7 @@ export function PhilosophySection() {
         <div className="grid grid-cols-1 gap-10 md:gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
             <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
-              Our Philosophy
+              Our Retreats
             </p>
             <h2 className="mt-5 font-heading text-5xl leading-[1.1] text-heading md:text-6xl">
               Yoga, Meditation &
@@ -26,21 +26,21 @@ export function PhilosophySection() {
           </div>
 
           <div className="flex flex-col justify-center">
-            <p className="font-body text-base leading-[1.9] text-black">
+            <p className="font-sans text-heading leading-[1.9]">
               Our yoga and meditation retreat is a journey into self-discovery,
               stillness, and the joy of being present. Breathe deeply, move
               mindfully, meditate, rest, and reconnect with yourself.
             </p>
-            <p className="mt-5 font-body text-base leading-[1.9] text-black">
+            <p className="mt-5 font-sans text-heading leading-[1.9]">
               But this journey is also about connection. Meet beautiful souls
               from around the world, share stories, laughter, silence, and
               meaningful moments—without judgment, expectations, or labels.
               <br />
-              Stay with us for 3 to 7 days—it’s up to your. Choose the package
-              it’s your time your space,your journey
               <br />
-              Come as you are. Connect deeply. Discover within. And leave with
-              memories, friendships, and a little more peace.
+              Stay with us for 3 to 7 days—it’s up to you. Choose the package
+              it’s your time your space,your journey Come as you are. Connect
+              deeply. Discover within. And leave with memories, friendships, and
+              a little more peace.
             </p>
 
             <div className="md:mt-10 mt-5 grid grid-cols-2 gap-6 border-t border-border pt-10 sm:grid-cols-4">

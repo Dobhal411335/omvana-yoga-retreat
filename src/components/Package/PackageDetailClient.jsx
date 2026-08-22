@@ -341,7 +341,7 @@ export default function PackageDetailClient({
       <div className="mx-auto w-full max-w-7xl px-4 pb-16 md:px-8">
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* ===== LEFT CONTENT (75%) ===== */}
-          <div className="w-full lg:w-[72%]">
+          <div className="w-full lg:w-[72%] py-5">
             {/* ========== SUMMARY BANNER ========== */}
             {/* <div className="mb-8 space-y-3 rounded-[var(--radius-card)] border border-border bg-white p-5 md:p-6">
               {packageDetails.basicDetails?.notice && packageDetails.basicDetails.notice.trim() !== "" && (
@@ -355,20 +355,7 @@ export default function PackageDetailClient({
             </div> */}
             {/* ---- OVERVIEW ---- */}
             <div className="space-y-10">
-                {/* Activities & Inclusions Highlight */}
-                {(includePackageData || inclusions.length > 0) && (
-                  <div className="rounded-[var(--radius-card)] border border-primary/20 bg-primary/8 p-5 md:p-6">
-                    <h3 className="mb-2 font-heading text-xl font-medium text-heading md:text-2xl">
-                      Activities & inclusions
-                    </h3>
-                    <p className="font-body text-sm text-muted">
-                      A calm overview of what this retreat package includes for
-                      you.
-                    </p>
-                  </div>
-                )}
-
-                {/* Included in this package */}
+              {/* Included in this package */}
                 {includePackageData && (
                   <div>
                     <PackageSectionHeader

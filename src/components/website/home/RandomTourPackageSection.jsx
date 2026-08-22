@@ -127,18 +127,16 @@ export default function RandomTourPackageSection() {
       {showPackages && (
         <Section spacing="sm" className="bg-background overflow-hidden">
           <Container>
-            <div className="mb-12 max-w-2xl">
+            <div className="mb-12">
               <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
                 Journeys
               </p>
               <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
-                Packages chosen for{" "}
-                <em className="italic text-primary">today</em>.
+              You Will 
+                <em className="italic text-primary">Experience</em>.
               </h2>
-              <p className="mt-5 max-w-xl font-body text-base leading-[1.9] text-foreground">
-                A quiet selection of stays and experiences — curated for
-                travellers who value depth over spectacle, and presence over
-                itinerary.
+              <p className="mt-5 font-body text-base leading-[1.9] text-foreground">
+              Experience the joyful spirit of Rishikesh through yoga, meditation, and soulful adventures. Witness the sacred Ganga Aarti, explore waterfalls on refreshing hikes, connect with nature, meditate beside the Ganga, and immerse yourself in healing sound vibrations. A beautiful journey of movement, connection, inner peace, and unforgettable moments.
               </p>
             </div>
 

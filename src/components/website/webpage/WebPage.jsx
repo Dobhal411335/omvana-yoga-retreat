@@ -88,9 +88,11 @@ function Linkedin({ className }) {
     </svg>
   );
 }
-const isFilledText = (value) => typeof value === "string" && value.replace(/<[^>]*>/g, "").trim().length > 0;
+const isFilledText = (value) =>
+  typeof value === "string" && value.replace(/<[^>]*>/g, "").trim().length > 0;
 
-const cleanTextArray = (items = []) => items.filter((item) => isFilledText(item));
+const cleanTextArray = (items = []) =>
+  items.filter((item) => isFilledText(item));
 
 const cleanObjectArray = (items = [], keys = []) =>
   items.filter((item) => keys.some((key) => isFilledText(item?.[key])));
@@ -110,7 +112,7 @@ const HtmlBlock = ({ html, className = "" }) => {
   if (!isFilledText(html)) return null;
   return (
     <div
-      className={`prose custom-desc-list max-w-none leading-6 ${className}`}
+      className={`prose custom-desc-list max-w-none text-black leading-6 ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
@@ -149,19 +151,18 @@ const ImageDotsCarousel = ({ images = [], alt = "" }) => {
 
   return (
     <div>
-      <Carousel
-        className="w-full"
-        opts={{ loop: true }}
-        setApi={setApi}
-      >
-        <div className="relative overflow-hidden bg-surface">
+      <Carousel className="w-full" opts={{ loop: true }} setApi={setApi}>
+        <div className="relative overflow-hidden bg-surface rounded-image">
           <CarouselContent className="-ml-0">
             {slides.map((img, idx) => (
-              <CarouselItem key={img.key || `${img.url}-${idx}`} className="pl-0">
+              <CarouselItem
+                key={img.key || `${img.url}-${idx}`}
+                className="pl-0"
+              >
                 <img
                   src={img.url}
                   alt={`${alt} ${idx + 1}`}
-                  className="h-[240px] w-full object-cover md:h-[340px]"
+                  className="h-[240px] w-full object-cover md:h-[400px]"
                 />
               </CarouselItem>
             ))}
@@ -179,7 +180,7 @@ const ImageDotsCarousel = ({ images = [], alt = "" }) => {
             onClick={() => api?.scrollTo(idx)}
             className={cn(
               "size-2 rounded-full transition-colors",
-              idx === activeIndex ? "bg-heading" : "bg-border"
+              idx === activeIndex ? "bg-heading" : "bg-border",
             )}
           />
         ))}
@@ -195,13 +196,22 @@ const StaticSidebarCard = ({ data }) => {
   if (adImage) {
     const card = (
       <div className="overflow-hidden h-fit bg-white">
-        <img src={adImage} alt={data.title || "Advertisement"} className="h-full w-full object-contain" />
+        <img
+          src={adImage}
+          alt={data.title || "Advertisement"}
+          className="h-full w-full object-contain"
+        />
       </div>
     );
 
     if (adUrl) {
       return (
-        <a href={adUrl} target="_blank" rel="noreferrer" className="block transition hover:opacity-95">
+        <a
+          href={adUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="block transition hover:opacity-95"
+        >
           {card}
         </a>
       );
@@ -209,27 +219,43 @@ const StaticSidebarCard = ({ data }) => {
 
     return card;
   }
-
 };
 
 const AuthorCard = ({ data }) => {
   const authorName = data.sideThumbName || "";
   const authorRole = data.sideThumbDesignation || "";
   const authorDescription = data.sideThumbDescription || "";
-  const authorImage = data.sideThumbImage?.url || data.mainProfileImage?.url || data.bannerImage?.url;
+  const authorImage =
+    data.sideThumbImage?.url ||
+    data.mainProfileImage?.url ||
+    data.bannerImage?.url;
   const socials = [
-    data.facebookUrl ? { href: data.facebookUrl, label: "Facebook", icon: Facebook } : null,
-    data.instaUrl ? { href: data.instaUrl, label: "Instagram", icon: Instagram } : null,
-    data.youtubeUrl ? { href: data.youtubeUrl, label: "Website", icon: Globe } : null,
-    data.googleUrl ? { href: data.googleUrl, label: "LinkedIn", icon: Linkedin } : null,
+    data.facebookUrl
+      ? { href: data.facebookUrl, label: "Facebook", icon: Facebook }
+      : null,
+    data.instaUrl
+      ? { href: data.instaUrl, label: "Instagram", icon: Instagram }
+      : null,
+    data.youtubeUrl
+      ? { href: data.youtubeUrl, label: "Website", icon: Globe }
+      : null,
+    data.googleUrl
+      ? { href: data.googleUrl, label: "LinkedIn", icon: Linkedin }
+      : null,
   ].filter(Boolean);
 
   return (
     <div className="rounded-md border border-gray-200 bg-white p-5 shadow-sm">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400">About</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-gray-400">
+        About
+      </p>
       <div className="mt-4 flex items-start gap-3">
         {authorImage ? (
-          <img src={authorImage} alt={authorName} className="h-12 w-12 rounded-full object-cover" />
+          <img
+            src={authorImage}
+            alt={authorName}
+            className="h-12 w-12 rounded-full object-cover"
+          />
         ) : (
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ebe7ff] text-base font-bold text-[#4f46e5]">
             {authorName.charAt(0)}
@@ -237,7 +263,9 @@ const AuthorCard = ({ data }) => {
         )}
         <div>
           <h3 className="font-semibold text-gray-900">{authorName}</h3>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">{authorRole}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
+            {authorRole}
+          </p>
         </div>
       </div>
       <p className="mt-4 text-sm leading-6 text-gray-600">
@@ -259,9 +287,15 @@ const AuthorCard = ({ data }) => {
           ))
         ) : (
           <>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600"><Globe className="h-4 w-4" /></span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600"><Instagram className="h-4 w-4" /></span>
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600"><Linkedin className="h-4 w-4" /></span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600">
+              <Globe className="h-4 w-4" />
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600">
+              <Instagram className="h-4 w-4" />
+            </span>
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600">
+              <Linkedin className="h-4 w-4" />
+            </span>
           </>
         )}
       </div>
@@ -270,7 +304,8 @@ const AuthorCard = ({ data }) => {
 };
 
 const ShareCard = ({ slug }) => {
-  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/${slug}` : "";
+  const shareUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/${slug}` : "";
 
   const sharePage = async () => {
     if (!shareUrl) return;
@@ -325,29 +360,46 @@ const ShareCard = ({ slug }) => {
   );
 };
 
-
 const WebPage = ({ data }) => {
   // console.log(data)
   const [openAccordion, setOpenAccordion] = useState(0);
   const isDesignTwo = data.templateType === "design1";
   const isDesignThree = data.templateType === "design3";
 
-  const tags = useMemo(() => cleanTextArray(data.createTags), [data.createTags]);
+  const tags = useMemo(
+    () => cleanTextArray(data.createTags),
+    [data.createTags],
+  );
   const paragraphs = useMemo(
     () => cleanObjectArray(data.paragraphSections, ["title", "description"]),
-    [data.paragraphSections]
+    [data.paragraphSections],
   );
-  const tableRows = useMemo(() => cleanObjectArray(data.tableRows, ["column1", "column2"]), [data.tableRows]);
-  const highlights = useMemo(() => cleanObjectArray(data.highlights, ["title", "point"]), [data.highlights]);
+  const tableRows = useMemo(
+    () => cleanObjectArray(data.tableRows, ["column1", "column2"]),
+    [data.tableRows],
+  );
+  const highlights = useMemo(
+    () => cleanObjectArray(data.highlights, ["title", "point"]),
+    [data.highlights],
+  );
   const accordionItems = useMemo(
     () => cleanObjectArray(data.accordionTags, ["left", "right"]),
-    [data.accordionTags]
+    [data.accordionTags],
   );
-  const blockquoteTags = useMemo(() => cleanTextArray(data.blockquoteTags), [data.blockquoteTags]);
+  const blockquoteTags = useMemo(
+    () => cleanTextArray(data.blockquoteTags),
+    [data.blockquoteTags],
+  );
 
-  const paragraphImages = [data.paragraphFirstImage?.url, data.paragraphSecondImage?.url].filter(Boolean);
+  const paragraphImages = [
+    data.paragraphFirstImage?.url,
+    data.paragraphSecondImage?.url,
+  ].filter(Boolean);
   const getSectionImages = (section) => {
-    const sectionImages = [section?.firstImage?.url, section?.secondImage?.url].filter(Boolean);
+    const sectionImages = [
+      section?.firstImage?.url,
+      section?.secondImage?.url,
+    ].filter(Boolean);
     return sectionImages.length > 0 ? sectionImages : paragraphImages;
   };
   const hasTopMetaContent =
@@ -356,20 +408,30 @@ const WebPage = ({ data }) => {
     tags.length > 0;
   const hasMainTopImage = !!data.imageFirst?.url;
   const hasTopHeaderContent = hasTopMetaContent || hasMainTopImage;
-  const isBannerOnlyTop = !isDesignThree && !!data.bannerImage?.url && !hasTopHeaderContent;
-  const headerImage = data.imageFirst?.url || paragraphImages[0] || data.sideThumbImage?.url;
+  const isBannerOnlyTop =
+    !isDesignThree && !!data.bannerImage?.url && !hasTopHeaderContent;
+  const headerImage =
+    data.imageFirst?.url || paragraphImages[0] || data.sideThumbImage?.url;
   const leadParagraph = isDesignTwo ? paragraphs[0] : null;
   const contentParagraphs = isDesignTwo ? paragraphs.slice(1) : paragraphs;
-  const designOneLeadParagraph = !isDesignTwo && !isDesignThree ? paragraphs[0] : null;
-  const leadParagraphImages = leadParagraph ? getSectionImages(leadParagraph) : paragraphImages;
-  const designOneLeadParagraphImages = designOneLeadParagraph ? getSectionImages(designOneLeadParagraph) : paragraphImages;
-  const designOneRemainingParagraphs = !isDesignTwo && !isDesignThree ? paragraphs.slice(1) : contentParagraphs;
+  const designOneLeadParagraph =
+    !isDesignTwo && !isDesignThree ? paragraphs[0] : null;
+  const leadParagraphImages = leadParagraph
+    ? getSectionImages(leadParagraph)
+    : paragraphImages;
+  const designOneLeadParagraphImages = designOneLeadParagraph
+    ? getSectionImages(designOneLeadParagraph)
+    : paragraphImages;
+  const designOneRemainingParagraphs =
+    !isDesignTwo && !isDesignThree ? paragraphs.slice(1) : contentParagraphs;
   const designThreeHeroImages = [
     data.imageFirst?.url,
     data.mainProfileImage?.url,
     data.bannerImage?.url,
     ...(data.imageGallery || []).map((item) => item?.url).filter(Boolean),
-  ].filter(Boolean).slice(0, 3);
+  ]
+    .filter(Boolean)
+    .slice(0, 3);
   const introHighlight = isDesignThree ? highlights[0] : null;
   const remainingHighlights = isDesignThree ? highlights.slice(1) : highlights;
   const isDesignFour = data.templateType === "design4";
@@ -379,19 +441,24 @@ const WebPage = ({ data }) => {
   const isDesignEight = data.templateType === "design8";
   const isDesignNine = data.templateType === "design9";
 
-
   if (isDesignFour) {
     return (
       <div className="min-h-screen bg-[#fcfcfc] font-geist text-gray-900">
         {/* Top Banner */}
         <div
           className="relative h-[250px] md:h-[400px] w-full bg-cover bg-center flex items-end pb-10 pl-6 md:pl-20"
-          style={{ backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ''})` }}
+          style={{
+            backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ""})`,
+          }}
         >
           <div className="absolute inset-0 bg-black/5"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">{data.firstTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold text-white">{data.secondTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+              {data.firstTitle || ""}
+            </h1>
+            <p className="text-md md:text-lg font-semibold text-white">
+              {data.secondTitle || ""}
+            </p>
           </div>
         </div>
 
@@ -403,7 +470,10 @@ const WebPage = ({ data }) => {
             {blockquoteTags.length > 0 && (
               <div className="flex flex-wrap gap-2 justify-center">
                 {blockquoteTags.map((tag, idx) => (
-                  <span key={idx} className="bg-white text-gray-700 text-[12px] font-semibold px-5 py-2 rounded-full border border-gray-200 shadow-sm">
+                  <span
+                    key={idx}
+                    className="bg-white text-gray-700 text-[12px] font-semibold px-5 py-2 rounded-full border border-gray-200 shadow-sm"
+                  >
                     {tag}
                   </span>
                 ))}
@@ -412,7 +482,10 @@ const WebPage = ({ data }) => {
 
             {/* Heading & Paragraph (Mapped for all paragraphs) */}
             {paragraphs.map((para, paraIdx) => {
-              const paraImages = [para?.firstImage?.url, para?.secondImage?.url].filter(Boolean);
+              const paraImages = [
+                para?.firstImage?.url,
+                para?.secondImage?.url,
+              ].filter(Boolean);
 
               return (
                 <section
@@ -436,7 +509,7 @@ const WebPage = ({ data }) => {
 
                   {/* Images */}
                   {paraImages.length > 0 && (
-                    <div className="mt-8 grid grid-cols-1 gap-5">
+                    <div className="mt-8 grid grid-cols-2 gap-5">
                       {paraImages.map((imgUrl, idx) => (
                         <div
                           key={idx}
@@ -445,7 +518,7 @@ const WebPage = ({ data }) => {
                           <img
                             src={imgUrl}
                             alt={`${para.title || "Paragraph"} ${idx + 1}`}
-                            className="h-64 w-full object-cover transition-transform duration-300 hover:scale-105"
+                            className="h-fit w-full object-cover transition-transform duration-300 hover:scale-105"
                           />
                         </div>
                       ))}
@@ -470,7 +543,7 @@ const WebPage = ({ data }) => {
                                   dangerouslySetInnerHTML={{ __html: point }}
                                 />
                               </li>
-                            )
+                            ),
                         )}
                       </ul>
                     </div>
@@ -499,9 +572,7 @@ const WebPage = ({ data }) => {
                       )}
 
                       {isFilledText(item.point) && (
-                        <p className="leading-7 text-gray-600">
-                          {item.point}
-                        </p>
+                        <p className="leading-7 text-gray-600">{item.point}</p>
                       )}
                     </div>
                   ))}
@@ -567,9 +638,7 @@ const WebPage = ({ data }) => {
                               </h4>
                             )}
 
-                            <p className="leading-6">
-                              {notice.description}
-                            </p>
+                            <p className="leading-6">{notice.description}</p>
                           </div>
                         </div>
                       </div>
@@ -580,7 +649,9 @@ const WebPage = ({ data }) => {
             )}
 
             {/* Quote Block */}
-            {(isFilledText(data.blockquoteDescription) || isFilledText(data.blockquoteLeftTitle) || isFilledText(data.blockquoteMainTitle)) && (
+            {(isFilledText(data.blockquoteDescription) ||
+              isFilledText(data.blockquoteLeftTitle) ||
+              isFilledText(data.blockquoteMainTitle)) && (
               <div className="relative my-12 rounded-xl border border-gray-100 bg-[#f8f9fa] p-8 md:p-10 shadow-sm">
                 {/* Overlapping top-left quote bubble */}
                 <div className="absolute -top-5 left-6 md:left-8 flex h-10 w-10 items-center justify-center rounded-full bg-[#1e40af] text-white shadow-md">
@@ -636,8 +707,9 @@ const WebPage = ({ data }) => {
                   {tableRows.map((row, index) => (
                     <tr
                       key={index}
-                      className={`border-t border-gray-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                        } hover:bg-gray-100 transition-colors`}
+                      className={`border-t border-gray-200 ${
+                        index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                      } hover:bg-gray-100 transition-colors`}
                     >
                       <td className="border-r border-gray-200 px-6 py-5 font-semibold text-gray-900">
                         {row.column1}
@@ -656,31 +728,48 @@ const WebPage = ({ data }) => {
           {/* Right Column */}
           <div className="space-y-6">
             {/* Advertisements */}
-            {((data.advertisements && data.advertisements.length > 0) || data.advertisementImage?.url) && (
+            {((data.advertisements && data.advertisements.length > 0) ||
+              data.advertisementImage?.url) && (
               <div className="space-y-4">
                 {(data.advertisements && data.advertisements.length > 0
                   ? data.advertisements
-                  : [{ image: data.advertisementImage, url: data.advertisementUrl }]
-                ).map((ad, idx) => ad.image?.url && (
-                  <div key={idx} className="group overflow-hidden rounded-xl border border-gray-100 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg">
-                    {ad.url ? (
-                      <a href={ad.url} target="_blank" rel="noopener noreferrer" className="block relative overflow-hidden">
-                        <img
-                          src={ad.image.url}
-                          alt={`Advertisement ${idx + 1}`}
-                          className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      </a>
-                    ) : (
-                      <img
-                        src={ad.image.url}
-                        alt={`Advertisement ${idx + 1}`}
-                        className="w-full h-auto object-cover"
-                      />
-                    )}
-                  </div>
-                ))}
+                  : [
+                      {
+                        image: data.advertisementImage,
+                        url: data.advertisementUrl,
+                      },
+                    ]
+                ).map(
+                  (ad, idx) =>
+                    ad.image?.url && (
+                      <div
+                        key={idx}
+                        className="group overflow-hidden rounded-xl border border-gray-100 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-lg"
+                      >
+                        {ad.url ? (
+                          <a
+                            href={ad.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block relative overflow-hidden"
+                          >
+                            <img
+                              src={ad.image.url}
+                              alt={`Advertisement ${idx + 1}`}
+                              className="w-full h-auto object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          </a>
+                        ) : (
+                          <img
+                            src={ad.image.url}
+                            alt={`Advertisement ${idx + 1}`}
+                            className="w-full h-auto object-cover"
+                          />
+                        )}
+                      </div>
+                    ),
+                )}
               </div>
             )}
 
@@ -731,18 +820,22 @@ const WebPage = ({ data }) => {
         {/* Top Banner */}
         <div
           className="relative h-[250px] md:h-[400px] w-full bg-cover bg-center flex items-end pb-10 pl-6 md:pl-20"
-          style={{ backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ''})` }}
+          style={{
+            backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ""})`,
+          }}
         >
-          <div className="absolute inset-0 bg-black/40"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{data.secondTitle || ""}</h1>
-            <p className="text-md textw-white md:text-lg font-semibold">{data.firstTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">
+              {data.secondTitle || ""}
+            </h1>
+            <p className="text-md text-white md:text-lg font-semibold">
+              {data.firstTitle || ""}
+            </p>
           </div>
         </div>
 
         {/* Main Content Area */}
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-
           {/* Top Text Section */}
           <div className="mb-12 max-w-3xl">
             {isFilledText(data.design5Chip) && (
@@ -791,10 +884,23 @@ const WebPage = ({ data }) => {
                     </div>
 
                     {isFilledText(card.link) && (
-                      <a href={card.link} className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black mt-2">
+                      <a
+                        href={card.link}
+                        className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black mt-2"
+                      >
                         Explore More
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 8l4 4m0 0l-4 4m4-4H3"
+                          />
                         </svg>
                       </a>
                     )}
@@ -803,7 +909,6 @@ const WebPage = ({ data }) => {
               ))}
             </div>
           )}
-
         </div>
 
         {/* <PopularDestinations /> */}
@@ -817,18 +922,23 @@ const WebPage = ({ data }) => {
         {/* Top Banner */}
         <div
           className="relative h-[250px] md:h-[450px] w-full bg-center bg-no-repeat flex items-end pb-10 pl-6 md:pl-20"
-          style={{ backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ''})` }}
+          style={{
+            backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ""})`,
+          }}
         >
           <div className="absolute inset-0 bg-black/5"></div>
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{data.firstTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold text-white">{data.secondTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">
+              {data.firstTitle || ""}
+            </h1>
+            <p className="text-md md:text-lg font-semibold text-white">
+              {data.secondTitle || ""}
+            </p>
           </div>
         </div>
 
         {/* Main Content Area */}
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-
           {/* Top Section */}
           <div className="mb-12 max-w-7xl">
             <div className="flex justify-between items-start mb-6">
@@ -838,10 +948,23 @@ const WebPage = ({ data }) => {
                 </div>
               )}
               {isFilledText(data.design6ExploreLink) && (
-                <a href={data.design6ExploreLink} className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black border border-gray-200 px-4 py-1 rounded-md">
+                <a
+                  href={data.design6ExploreLink}
+                  className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black border border-gray-200 px-4 py-1 rounded-md"
+                >
                   Explore Area
-                  <svg className="w-4 h-4 ml-1 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <svg
+                    className="w-4 h-4 ml-1 transform -rotate-45"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
                   </svg>
                 </a>
               )}
@@ -854,7 +977,7 @@ const WebPage = ({ data }) => {
             )}
 
             {isFilledText(data.design6SubHeading) && (
-              <p className="text-gray-600 text-sm md:text-lg leading-relaxed mb-8 w-full text-justify font-serif">
+              <p className="text-gray-800 text-sm md:text-lg leading-relaxed mb-8 w-full text-justify">
                 {data.design6SubHeading}
               </p>
             )}
@@ -878,122 +1001,121 @@ const WebPage = ({ data }) => {
           </div>
 
           {/* Team members */}
-         {/* Team members */}
-<div className="flex flex-col gap-10">
-  {(data.teamCards || []).map((card, idx) => (
-    <div
-      key={idx}
-      className={`mx-auto flex w-full max-w-5xl flex-col gap-5 md:flex-row md:gap-6 ${
-        idx % 2 === 1 ? "md:flex-row-reverse" : ""
-      }`}
-    >
-      {/* Image */}
-      <div className="overflow-hidden rounded-2xl bg-gray-100 md:w-[42%]">
-        {card.image?.url ? (
-          <Image
-            src={card.image.url}
-            quality={90}
-            width={500}
-            height={400}
-            alt={card.name || "Team member"}
-            className="h-[320px] w-full object-cover md:h-[360px]"
-          />
-        ) : (
-          <div className="flex h-[320px] items-center justify-center text-gray-400">
-            No Image
+          {/* Team members */}
+          <div className="flex flex-col gap-10">
+            {(data.teamCards || []).map((card, idx) => (
+              <div
+                key={idx}
+                className={`mx-auto flex w-full max-w-7xl flex-col gap-5 md:flex-row md:gap-6 border border-border rounded-2xl p-5 md:p-6 ${
+                  idx % 2 === 1 ? "md:flex-row-reverse" : ""
+                }`}
+              >
+                {/* Image */}
+                <div className="overflow-hidden rounded-2xl bg-gray-100 md:w-[42%]">
+                  {card.image?.url ? (
+                    <Image
+                      src={card.image.url}
+                      quality={90}
+                      width={500}
+                      height={400}
+                      alt={card.name || "Team member"}
+                      className="h-[320px] w-full object-cover md:h-[500px]"
+                    />
+                  ) : (
+                    <div className="flex h-[320px] items-center justify-center text-gray-400">
+                      No Image
+                    </div>
+                  )}
+                </div>
+
+                {/* Content */}
+                <div className="flex flex-1 flex-col md:w-[58%]">
+                  <div className="flex-1 rounded-2xl bg-gray-100 border border-gray-200 p-5 md:p-6">
+                    {isFilledText(card.name) && (
+                      <h3 className="text-xl font-bold text-gray-900 md:text-xl">
+                        {card.name}
+                      </h3>
+                    )}
+
+                    {isFilledText(card.designation) && (
+                      <p className="mt-1 text-sm font-medium text-gray-700">
+                        {card.designation}
+                      </p>
+                    )}
+
+                    {isFilledText(card.qualification) && (
+                      <p className="mt-4 text-md leading-relaxed text-gray-700">
+                        <span className="font-bold text-gray-900">
+                          Qualification:{" "}
+                        </span>
+                        {card.qualification}
+                      </p>
+                    )}
+
+                    {isFilledText(card.specialization) && (
+                      <p className="mt-3 text-md leading-relaxed text-gray-700">
+                        <span className="font-bold text-gray-900">
+                          Specialization:{" "}
+                        </span>
+                        {card.specialization}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Bottom info */}
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-gray-500" />
+
+                      {isFilledText(card.phone) && (
+                        <a
+                          href={`tel:${card.phone.replace(/[^0-9+]/g, "")}`}
+                          className="text-md font-medium text-gray-700 hover:text-gray-900"
+                        >
+                          {card.phone}
+                        </a>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      {isFilledText(card.facebook) && (
+                        <a
+                          href={card.facebook}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          <Facebook className="h-5 w-5" />
+                        </a>
+                      )}
+
+                      {isFilledText(card.instagram) && (
+                        <a
+                          href={card.instagram}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          <Instagram className="h-5 w-5" />
+                        </a>
+                      )}
+
+                      {isFilledText(card.youtube) && (
+                        <a
+                          href={card.youtube}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          <Youtube className="h-5 w-5" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex flex-1 flex-col md:w-[58%]">
-        <div className="flex-1 rounded-2xl bg-gray-100 p-5 md:p-6">
-          {isFilledText(card.name) && (
-            <h3 className="text-xl font-bold text-gray-900 md:text-2xl">
-              {card.name}
-            </h3>
-          )}
-
-          {isFilledText(card.designation) && (
-            <p className="mt-1 text-sm font-medium text-gray-700">
-              {card.designation}
-            </p>
-          )}
-
-          {isFilledText(card.qualification) && (
-            <p className="mt-4 text-sm leading-relaxed text-gray-700">
-              <span className="font-bold text-gray-900">
-                Qualification:{" "}
-              </span>
-              {card.qualification}
-            </p>
-          )}
-
-          {isFilledText(card.specialization) && (
-            <p className="mt-3 text-sm leading-relaxed text-gray-700">
-              <span className="font-bold text-gray-900">
-                Specialization:{" "}
-              </span>
-              {card.specialization}
-            </p>
-          )}
-        </div>
-
-        {/* Bottom info */}
-        <div className="mt-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Phone className="h-4 w-4 text-gray-500" />
-
-            {isFilledText(card.phone) && (
-              <a
-                href={`tel:${card.phone.replace(/[^0-9+]/g, "")}`}
-                className="text-sm font-medium text-gray-700 hover:text-gray-900"
-              >
-                {card.phone}
-              </a>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1">
-            {isFilledText(card.facebook) && (
-              <a
-                href={card.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-            )}
-
-            {isFilledText(card.instagram) && (
-              <a
-                href={card.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
-            )}
-
-            {isFilledText(card.youtube) && (
-              <a
-                href={card.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
-              >
-                <Youtube className="h-4 w-4" />
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
-
         </div>
 
         {/* <PopularDestinations /> */}
@@ -1007,18 +1129,23 @@ const WebPage = ({ data }) => {
         {/* Top Banner */}
         <div
           className="relative h-[250px] md:h-[400px] w-full bg-cover bg-no-repeat bg-center flex items-end pb-10 pl-6 md:pl-20"
-          style={{ backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ''})` }}
+          style={{
+            backgroundImage: `url(${data.bannerImage?.url || data.imageFirst?.url || ""})`,
+          }}
         >
           {/* <div className="absolute inset-0 bg-black/40"></div> */}
           <div className="relative z-10 text-white">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">{data.secondTitle || ""}</h1>
-            <p className="text-md md:text-lg font-semibold text-white">{data.firstTitle || ""}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-white">
+              {data.secondTitle || ""}
+            </h1>
+            <p className="text-md md:text-lg font-semibold text-white">
+              {data.firstTitle || ""}
+            </p>
           </div>
         </div>
 
         {/* Main Content Area */}
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-
           {/* Top Section */}
           <div className="mb-12 max-w-7xl">
             <div className="flex justify-between items-start mb-6">
@@ -1028,10 +1155,23 @@ const WebPage = ({ data }) => {
                 </div>
               )}
               {isFilledText(data.design7ExploreLink) && (
-                <a href={data.design7ExploreLink} className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black border border-gray-900 px-6 py-2 rounded-md">
+                <a
+                  href={data.design7ExploreLink}
+                  className="flex items-center gap-1 text-sm font-semibold text-gray-700 hover:text-black border border-gray-900 px-6 py-2 rounded-md"
+                >
                   Explore Area
-                  <svg className="w-4 h-4 ml-1 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <svg
+                    className="w-4 h-4 ml-1 transform -rotate-45"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
                   </svg>
                 </a>
               )}
@@ -1044,14 +1184,16 @@ const WebPage = ({ data }) => {
             )}
 
             <hr className="my-10 border-gray-300" />
-
           </div>
 
           {/* Gallery Grid */}
           {data.gridCards?.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {data.gridCards.map((card, idx) => (
-                <div key={idx} className="relative group overflow-hidden bg-gray-100 aspect-3/4">
+                <div
+                  key={idx}
+                  className="relative group overflow-hidden bg-gray-100 aspect-3/4"
+                >
                   {card.image?.url ? (
                     <img
                       src={card.image.url}
@@ -1072,7 +1214,14 @@ const WebPage = ({ data }) => {
                       </div>
                     )}
                     {isFilledText(card.title) && (
-                      <a href={(card.gallerySlug ? `/gallery/${card.gallerySlug}` : '#')} className="block text-lg font-serif text-[#3b438c] hover:text-black">
+                      <a
+                        href={
+                          card.gallerySlug
+                            ? `/gallery/${card.gallerySlug}`
+                            : "#"
+                        }
+                        className="block text-lg font-serif text-[#3b438c] hover:text-black"
+                      >
                         {card.title}
                       </a>
                     )}
@@ -1081,7 +1230,6 @@ const WebPage = ({ data }) => {
               ))}
             </div>
           )}
-
         </div>
 
         {/* <PopularDestinations /> */}
@@ -1091,7 +1239,9 @@ const WebPage = ({ data }) => {
 
   if (isDesignEight) {
     const hotelAmenities = cleanTextArray(data.design8HotelAmenities);
-    const selectedRoomAmenities = new Set(cleanTextArray(data.design8RoomAmenities));
+    const selectedRoomAmenities = new Set(
+      cleanTextArray(data.design8RoomAmenities),
+    );
     const roomAmenityGroups = ROOM_AMENITY_CATEGORIES.map((cat) => ({
       ...cat,
       items: cat.items.filter((item) => selectedRoomAmenities.has(item)),
@@ -1123,41 +1273,47 @@ const WebPage = ({ data }) => {
           )}
 
           {hotelAmenities.length > 0 && (
-            <div className="mt-14 grid gap-3 sm:grid-cols-2">
+            <div className="mt-14 grid gap-3 sm:grid-cols-3">
               {hotelAmenities.map((label) => {
                 const Icon = getHotelAmenityIcon(label);
                 return (
                   <div
                     key={label}
-                    className="flex items-center justify-between gap-3 rounded-card border border-border bg-surface px-4 py-3"
+                    className="flex items-center justify-between gap-3 rounded-card border hover:border-primary hover:shadow-md border-border bg-surface px-4 py-3"
                   >
                     <span className="flex items-center gap-3">
                       <span className="flex size-10 items-center justify-center rounded-full bg-card text-primary">
                         <Icon className="size-5" />
                       </span>
-                      <span className="font-body text-sm font-medium text-heading">{label}</span>
+                      <span className="font-body text-sm font-medium text-heading">
+                        {label}
+                      </span>
                     </span>
-                    <span className="size-4 rounded-full border border-border" />
                   </div>
                 );
               })}
             </div>
           )}
 
-
           {roomAmenityGroups.length > 0 && (
-            <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-16 mb-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {roomAmenityGroups.map((cat) => {
                 const Icon = getRoomAmenityCategoryIcon(cat.category);
                 return (
-                  <div key={cat.category} className="rounded-card border border-border bg-card p-5">
-                    <div className="mb-4 flex items-center gap-2 font-heading text-lg text-primary">
+                  <div
+                    key={cat.category}
+                    className="rounded-card border border-border bg-card p-5"
+                  >
+                    <div className="mb-4 flex items-center gap-2 font-heading text-lg text-black">
                       <Icon className="size-5" />
                       {cat.category}
                     </div>
                     <ul className="space-y-2">
                       {cat.items.map((item) => (
-                        <li key={item} className="flex items-start gap-2 font-body text-sm text-heading">
+                        <li
+                          key={item}
+                          className="flex items-start gap-2 font-body text-sm text-heading"
+                        >
                           <Check className="mt-0.5 size-4 shrink-0 text-primary" />
                           <span>{item}</span>
                         </li>
@@ -1178,7 +1334,7 @@ const WebPage = ({ data }) => {
       (card) =>
         isFilledText(card?.heading) ||
         isFilledText(card?.description) ||
-        (Array.isArray(card?.images) && card.images.some((img) => img?.url))
+        (Array.isArray(card?.images) && card.images.some((img) => img?.url)),
     );
 
     return (
@@ -1221,10 +1377,15 @@ const WebPage = ({ data }) => {
               {contentCards.map((card, idx) => {
                 const reverse = idx % 2 === 1;
                 return (
-                  <section key={`${card.heading}-${idx}`} className="grid items-center gap-5 lg:grid-cols-2 lg:gap-16">
+                  <section
+                    key={`${card.heading}-${idx}`}
+                    className="grid items-center gap-5 lg:grid-cols-2 lg:gap-16"
+                  >
                     <div className={reverse ? "lg:order-2" : undefined}>
                       {isFilledText(card.heading) && (
-                        <h2 className="font-heading text-3xl text-heading">{card.heading}</h2>
+                        <h2 className="font-heading text-3xl text-heading">
+                          {card.heading}
+                        </h2>
                       )}
                       {isFilledText(card.description) && (
                         <HtmlBlock
@@ -1234,7 +1395,10 @@ const WebPage = ({ data }) => {
                       )}
                     </div>
                     <div className={reverse ? "lg:order-1" : undefined}>
-                      <ImageDotsCarousel images={card.images} alt={card.heading || data.title || "Section image"} />
+                      <ImageDotsCarousel
+                        images={card.images}
+                        alt={card.heading || data.title || "Section image"}
+                      />
                     </div>
                   </section>
                 );
@@ -1248,36 +1412,56 @@ const WebPage = ({ data }) => {
 
   return (
     <div className="min-h-screen bg-white font-geist font-semibold text-gray-900">
-      <div className={`w-full border-b border-[#ece7df] ${!isDesignThree ? "bg-[#efefef]" : "bg-[#f7f3ed]"}`}>
-        <div className="mx-auto max-w-7xl md:px-4 md:py-5 sm:px-6 lg:px-8">
-          <div className={`grid gap-2 ${isDesignThree ? "grid-cols-1" : isBannerOnlyTop ? "grid-cols-1" : "lg:grid-cols-[520px_minmax(0,1fr)] lg:items-center"}`}>
+      <div
+        className={`w-full border-b border-[#ece7df] ${!isDesignThree ? "bg-[#efefef]" : "bg-[#f7f3ed]"}`}
+      >
+        <div className="w-full md:px-4 md:py-5 sm:px-6 lg:px-8">
+          <div
+            className={`grid gap-2 ${isDesignThree ? "grid-cols-1" : isBannerOnlyTop ? "grid-cols-1" : "lg:grid-cols-[520px_minmax(0,1fr)] lg:items-center"}`}
+          >
             {isDesignThree ? (
               <div className="flex items-center">
                 {designThreeHeroImages[0] && (
-                  <img src={designThreeHeroImages[0]} alt={data.title} className="md:h-[350px] w-full object-contain" />
+                  <img
+                    src={designThreeHeroImages[0]}
+                    alt={data.title}
+                    className="md:h-[350px] w-full object-contain"
+                  />
                 )}
               </div>
             ) : isBannerOnlyTop ? (
               <div className="overflow-hidden">
-                <img src={data.bannerImage.url} alt={data.title} className="h-[240px] md:h-[350px] w-full object-cover" />
+                <img
+                  src={data.bannerImage.url}
+                  alt={data.title}
+                  className="h-[240px] md:h-[350px] w-full object-cover"
+                />
               </div>
             ) : (
               <div className="overflow-hidden">
                 {headerImage && (
-                  <img src={headerImage} alt={data.title} className="h-[220px] w-full object-contain md:h-[250px]" />
+                  <img
+                    src={headerImage}
+                    alt={data.title}
+                    className="h-[220px] w-full object-contain md:h-[250px]"
+                  />
                 )}
               </div>
             )}
             {!isDesignThree && (
               <div className="px-5 md:px-2 py-2 md:py-0">
                 {isFilledText(data.firstTitle) && (
-                  <span className="hidden text-md my-3 font-medium text-gray-600 md:block">{data.firstTitle}</span>
+                  <span className="hidden text-md my-3 font-medium text-gray-600 md:block">
+                    {data.firstTitle}
+                  </span>
                 )}
                 <h1 className="max-w-4xl text-2xl font-geist font-semibold leading-[1.05] tracking-tight text-black sm:text-5xl">
                   {data.title}
                 </h1>
                 {isFilledText(data.secondTitle) && (
-                  <p className="mt-2 max-w-3xl text-md leading-8 text-gray-700">{data.secondTitle}</p>
+                  <p className="mt-2 max-w-3xl text-md leading-8 text-gray-700">
+                    {data.secondTitle}
+                  </p>
                 )}
                 {tags.length > 0 && (
                   <div className="mt-2 flex flex-wrap gap-2">
@@ -1296,10 +1480,14 @@ const WebPage = ({ data }) => {
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#e8e4ff] text-sm font-bold text-[#4f46e5]">
                       {(data.sideThumbName || "E").charAt(0)}
                     </span>
-                    <span className="text-sm">{data.sideThumbName || "Editorial Team"}</span>
+                    <span className="text-sm">
+                      {data.sideThumbName || "Editorial Team"}
+                    </span>
                   </div>
                   <span className="h-6 w-px bg-gray-400" />
-                  <span className="text-sm">{formatDate(data.updatedAt || data.createdAt) || ""}</span>
+                  <span className="text-sm">
+                    {formatDate(data.updatedAt || data.createdAt) || ""}
+                  </span>
                 </div>
               </div>
             )}
@@ -1311,11 +1499,19 @@ const WebPage = ({ data }) => {
           {isDesignThree && (
             <section className="grid gap-6 py-4 md:px-5 md:py-8 sm:px-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">{data.title}</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-gray-950 sm:text-4xl">
+                  {data.title}
+                </h1>
                 <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                  <span>{data.postedBy?.admin ? "By Admin" : data.sideThumbName || "By Admin"}</span>
+                  <span>
+                    {data.postedBy?.admin
+                      ? "By Admin"
+                      : data.sideThumbName || "By Admin"}
+                  </span>
                   <span className="h-1 w-1 rounded-full bg-gray-300" />
-                  <span>{formatDate(data.updatedAt || data.createdAt) || ""}</span>
+                  <span>
+                    {formatDate(data.updatedAt || data.createdAt) || ""}
+                  </span>
                 </div>
                 {tags.length > 0 && (
                   <div className="mt-5 flex flex-wrap gap-2">
@@ -1339,41 +1535,60 @@ const WebPage = ({ data }) => {
           {designOneLeadParagraph && (
             <section className="space-y-5 md:px-5 py-4 md:py-4 sm:px-8">
               {isFilledText(designOneLeadParagraph.title) && (
-                <h2 className="text-3xl font-bold leading-tight text-gray-950">{designOneLeadParagraph.title}</h2>
+                <h2 className="text-3xl font-bold leading-tight text-gray-950">
+                  {designOneLeadParagraph.title}
+                </h2>
               )}
               <HtmlBlock html={designOneLeadParagraph.description} />
               {designOneLeadParagraphImages.length > 0 && (
                 <div className="space-y-4">
-                  <div className={`grid gap-4 ${designOneLeadParagraphImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}>
+                  <div
+                    className={`grid gap-4 ${designOneLeadParagraphImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}
+                  >
                     {designOneLeadParagraphImages.map((image, index) => (
-                      <div key={`${image}-${index}`} className="overflow-hidden rounded-md bg-[#f8f5ef]">
+                      <div
+                        key={`${image}-${index}`}
+                        className="overflow-hidden rounded-md bg-[#f8f5ef]"
+                      >
                         <img
                           src={image}
-                          alt={designOneLeadParagraph.title || `Lead image ${index + 1}`}
+                          alt={
+                            designOneLeadParagraph.title ||
+                            `Lead image ${index + 1}`
+                          }
                           className="md:h-[350px] w-full object-cover sm:h-[200px]"
                         />
                       </div>
                     ))}
                   </div>
                   {/* Bullet Points Section */}
-                  {designOneLeadParagraph.bulletPoints && designOneLeadParagraph.bulletPoints.length > 0 && designOneLeadParagraph.bulletPoints.some(point => isFilledText(point)) && (
-                    <div className="space-y-3 mt-4">
-                      {designOneLeadParagraph.bulletPoints.map((point, bulletIdx) => (
-                        isFilledText(point) && (
-                          <div key={bulletIdx} className="flex gap-3">
-                            <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
-                            <p className="text-md leading-6 text-gray-600">{point}</p>
-                          </div>
-                        )
-                      ))}
-                    </div>
-                  )}
+                  {designOneLeadParagraph.bulletPoints &&
+                    designOneLeadParagraph.bulletPoints.length > 0 &&
+                    designOneLeadParagraph.bulletPoints.some((point) =>
+                      isFilledText(point),
+                    ) && (
+                      <div className="space-y-3 mt-4">
+                        {designOneLeadParagraph.bulletPoints.map(
+                          (point, bulletIdx) =>
+                            isFilledText(point) && (
+                              <div key={bulletIdx} className="flex gap-3">
+                                <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
+                                <p className="text-md leading-6 text-gray-600">
+                                  {point}
+                                </p>
+                              </div>
+                            ),
+                        )}
+                      </div>
+                    )}
                 </div>
               )}
             </section>
           )}
 
-          <div className={`grid gap-10 md:p-5 sm:px-8 ${isDesignThree ? "grid-cols-1" : isDesignTwo ? "lg:grid-cols-[330px_minmax(0,1fr)] lg:items-start" : "lg:grid-cols-[400px_1fr]"}`}>
+          <div
+            className={`grid gap-10 md:p-5 sm:px-8 ${isDesignThree ? "grid-cols-1" : isDesignTwo ? "lg:grid-cols-[330px_minmax(0,1fr)] lg:items-start" : "lg:grid-cols-[400px_1fr]"}`}
+          >
             {isDesignThree ? (
               <>
                 <main className="space-y-10">
@@ -1381,36 +1596,53 @@ const WebPage = ({ data }) => {
                     contentParagraphs.map((section, index) => {
                       const sectionImages = getSectionImages(section);
                       return (
-                        <section key={`${section.title}-${index}`} className="space-y-3">
+                        <section
+                          key={`${section.title}-${index}`}
+                          className="space-y-3"
+                        >
                           {isFilledText(section.title) && (
-                            <h2 className="text-2xl font-bold leading-tight text-gray-950">{section.title}</h2>
+                            <h2 className="text-2xl font-bold leading-tight text-gray-950">
+                              {section.title}
+                            </h2>
                           )}
                           <HtmlBlock html={section.description} />
                           {sectionImages.length > 0 && (
-                            <div className={`grid gap-4 ${sectionImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}>
+                            <div
+                              className={`grid gap-4 ${sectionImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}
+                            >
                               {sectionImages.map((image, imgIndex) => (
-                                <div key={`${image}-${imgIndex}`} className="overflow-hidden rounded-[10px] bg-[#f8f5ef]">
-                                  <img
-                                    src={image}
-                                    alt={section.title || `Section image ${imgIndex + 1}`}
-                                    className="md:h-[300px] w-full object-cover h-fit"
-                                  />
-                                </div>
+                                <img
+                                  key={`${image}-${imgIndex}`}
+                                  src={image}
+                                  alt={
+                                    section.title ||
+                                    `Section image ${imgIndex + 1}`
+                                  }
+                                  className="h-[280px] w-full rounded-image object-contain sm:h-[320px] md:h-[600px]"
+                                />
                               ))}
                             </div>
                           )}
                           {section.bulletPoints &&
                             section.bulletPoints.length > 0 &&
-                            section.bulletPoints.some((point) => isFilledText(point)) && (
+                            section.bulletPoints.some((point) =>
+                              isFilledText(point),
+                            ) && (
                               <div className="space-y-3 py-3">
-                                {section.bulletPoints.map((point, bulletIdx) => (
-                                  isFilledText(point) && (
-                                    <div key={bulletIdx} className="flex gap-3">
-                                      <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-[#6156b0]" />
-                                      <p className="text-md leading-6 text-gray-600">{point}</p>
-                                    </div>
-                                  )
-                                ))}
+                                {section.bulletPoints.map(
+                                  (point, bulletIdx) =>
+                                    isFilledText(point) && (
+                                      <div
+                                        key={bulletIdx}
+                                        className="flex gap-3"
+                                      >
+                                        <span className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-[#6156b0]" />
+                                        <p className="text-md leading-6 text-gray-600">
+                                          {point}
+                                        </p>
+                                      </div>
+                                    ),
+                                )}
                               </div>
                             )}
                         </section>
@@ -1419,21 +1651,28 @@ const WebPage = ({ data }) => {
 
                   {tableRows.length > 0 && (
                     <section className="space-y-4">
-                      <h2 className="text-xl font-bold text-gray-950">{data.tableTitle || "Table Information"}</h2>
+                      <h2 className="text-xl font-bold text-gray-950">
+                        {data.tableTitle || "Table Information"}
+                      </h2>
                       <div className="overflow-hidden bg-white">
                         <table className="w-full text-left text-sm">
                           <tbody>
                             {tableRows.map((row, index) => (
                               <tr
                                 key={`${row.column1}-${row.column2}-${index}`}
-                                className={`border-b border-[#ece7df] last:border-b-0 ${index % 2 === 0 ? "bg-gray-200" : "bg-gray-50"
-                                  }`}
+                                className={`border-b border-[#ece7df] last:border-b-0 ${
+                                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-50"
+                                }`}
                               >
                                 <td className="w-1/2 px-4 py-3 text-black border-b border-r border-black">
                                   {row.column1 || "-"}
                                 </td>
                                 <td className="w-1/2 px-4 py-3 text-gray-600 border-b border-black">
-                                  {row.column2 || "-"}
+                                  {isFilledText(row.column2) ? (
+                                    <HtmlBlock html={row.column2} className="text-sm" />
+                                  ) : (
+                                    "-"
+                                  )}
                                 </td>
                               </tr>
                             ))}
@@ -1443,19 +1682,30 @@ const WebPage = ({ data }) => {
                     </section>
                   )}
 
-                  {(isFilledText(data.blockquoteDescription) || isFilledText(data.blockquoteMainTitle)) && (
-                    <section className={`rounded bg-gray-100 px-2 gap-2 flex flex-col py-5 text-black ${isDesignTwo ? "max-w-3xl" : ""}`}>
-                      <div className={`rounded-[24px] bg-[linear-gradient(135deg,#3f3a7a,#4c4489,#6156b0)] px-6 py-7 text-white shadow-[0_25px_60px_rgba(79,70,229,0.2)]`}>
-
-                        <Quote className="h-7 w-7 text-white/80" />
+                  {(isFilledText(data.blockquoteDescription) ||
+                    isFilledText(data.blockquoteMainTitle)) && (
+                    <section
+                      className={`rounded px-2 gap-2 flex flex-col py-5 text-black ${isDesignTwo ? "max-w-3xl" : ""}`}
+                    >
+                      <div
+                        className="rounded-[24px] border border-border bg-[linear-gradient(135deg,#fcfaf6,#f7f4ec,#e8efe0)] px-6 py-7 text-heading shadow-[0_20px_50px_rgba(120,135,79,0.12)]"
+                      >
+                        <Quote className="h-7 w-7 text-primary" />
                         {isFilledText(data.blockquoteMainTitle) && (
-                          <h2 className="mt-3 text-2xl font-bold leading-tight mb-2">{data.blockquoteMainTitle}</h2>
+                          <h2 className="mt-3 text-2xl font-bold leading-tight mb-2 text-heading">
+                            {data.blockquoteMainTitle}
+                          </h2>
                         )}
-                        {isFilledText(data.blockquoteLeftTitle) && <span>{data.blockquoteLeftTitle}</span>}
+                        {isFilledText(data.blockquoteLeftTitle) && (
+                          <span className="text-muted">{data.blockquoteLeftTitle}</span>
+                        )}
                       </div>
                       <div className="px-1">
                         <div className="my-4 text-black">
-                          <HtmlBlock html={data.blockquoteDescription} className="!text-black" />
+                          <HtmlBlock
+                            html={data.blockquoteDescription}
+                            className="text-black"
+                          />
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {blockquoteTags.map((tag) => (
@@ -1475,10 +1725,14 @@ const WebPage = ({ data }) => {
                       {introHighlight && (
                         <div className="rounded-md border border-[#e6dccf] bg-[#f4ede3] px-5 py-6 shadow-sm">
                           {isFilledText(introHighlight.title) && (
-                            <h2 className="text-2xl font-bold leading-tight text-gray-950">{introHighlight.title}</h2>
+                            <h2 className="text-2xl font-bold leading-tight text-gray-950">
+                              {introHighlight.title}
+                            </h2>
                           )}
                           {isFilledText(introHighlight.point) && (
-                            <p className="mt-3 max-w-3xl text-base leading-7 text-gray-600">{introHighlight.point}</p>
+                            <p className="mt-3 max-w-3xl text-base leading-7 text-gray-600">
+                              {introHighlight.point}
+                            </p>
                           )}
                         </div>
                       )}
@@ -1489,10 +1743,14 @@ const WebPage = ({ data }) => {
                             className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm"
                           >
                             {isFilledText(item.title) && (
-                              <h3 className="text-xl font-bold leading-tight text-gray-950">{item.title}</h3>
+                              <h3 className="text-xl font-bold leading-tight text-gray-950">
+                                {item.title}
+                              </h3>
                             )}
                             {isFilledText(item.point) && (
-                              <p className="mt-2 text-sm leading-7 text-gray-600">{item.point}</p>
+                              <p className="mt-2 text-sm leading-7 text-gray-600">
+                                {item.point}
+                              </p>
                             )}
                           </div>
                         ))}
@@ -1513,32 +1771,52 @@ const WebPage = ({ data }) => {
                   {isDesignTwo && leadParagraph && (
                     <section className="space-y-5">
                       {isFilledText(leadParagraph.description) && (
-                        <HtmlBlock html={leadParagraph.description} className="max-w-none text-left" />
+                        <HtmlBlock
+                          html={leadParagraph.description}
+                          className="max-w-none text-left"
+                        />
                       )}
                       {isFilledText(leadParagraph.title) && (
-                        <h2 className="text-4xl font-bold leading-tight text-gray-950">{leadParagraph.title}</h2>
+                        <h2 className="text-4xl font-bold leading-tight text-gray-950">
+                          {leadParagraph.title}
+                        </h2>
                       )}
 
                       {/* Bullet Points Section */}
-                      {leadParagraph.bulletPoints && leadParagraph.bulletPoints.length > 0 && leadParagraph.bulletPoints.some(point => isFilledText(point)) && (
-                        <div className="space-y-3 mt-4">
-                          {leadParagraph.bulletPoints.map((point, bulletIdx) => (
-                            isFilledText(point) && (
-                              <div key={bulletIdx} className="flex gap-3">
-                                <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
-                                <p className="text-sm leading-6 text-gray-600">{point}</p>
-                              </div>
-                            )
-                          ))}
-                        </div>
-                      )}
+                      {leadParagraph.bulletPoints &&
+                        leadParagraph.bulletPoints.length > 0 &&
+                        leadParagraph.bulletPoints.some((point) =>
+                          isFilledText(point),
+                        ) && (
+                          <div className="space-y-3 mt-4">
+                            {leadParagraph.bulletPoints.map(
+                              (point, bulletIdx) =>
+                                isFilledText(point) && (
+                                  <div key={bulletIdx} className="flex gap-3">
+                                    <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
+                                    <p className="text-sm leading-6 text-gray-600">
+                                      {point}
+                                    </p>
+                                  </div>
+                                ),
+                            )}
+                          </div>
+                        )}
                       {leadParagraphImages.length > 0 && (
-                        <div className={`grid gap-4 ${leadParagraphImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}>
+                        <div
+                          className={`grid gap-4 ${leadParagraphImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}
+                        >
                           {leadParagraphImages.map((image, index) => (
-                            <div key={`${image}-${index}`} className="overflow-hidden rounded-md bg-[#f8f5ef]">
+                            <div
+                              key={`${image}-${index}`}
+                              className="overflow-hidden rounded-md bg-[#f8f5ef]"
+                            >
                               <img
                                 src={image}
-                                alt={leadParagraph.title || `Lead image ${index + 1}`}
+                                alt={
+                                  leadParagraph.title ||
+                                  `Lead image ${index + 1}`
+                                }
                                 className="md:h-[250px] w-full object-cover sm:h-[200px]"
                               />
                             </div>
@@ -1548,24 +1826,43 @@ const WebPage = ({ data }) => {
                     </section>
                   )}
 
-                  {(isDesignTwo ? contentParagraphs : designOneRemainingParagraphs).length > 0 &&
-                    (isDesignTwo ? contentParagraphs : designOneRemainingParagraphs).map((section, index) => {
+                  {(isDesignTwo
+                    ? contentParagraphs
+                    : designOneRemainingParagraphs
+                  ).length > 0 &&
+                    (isDesignTwo
+                      ? contentParagraphs
+                      : designOneRemainingParagraphs
+                    ).map((section, index) => {
                       const sectionImages = getSectionImages(section);
                       return (
-                        <section key={`${section.title}-${index}`} className="space-y-5">
+                        <section
+                          key={`${section.title}-${index}`}
+                          className="space-y-5"
+                        >
                           {isFilledText(section.title) && (
-                            <h2 className={`${isDesignTwo ? "text-2xl" : "text-3xl"} font-bold leading-tight text-gray-950`}>
+                            <h2
+                              className={`${isDesignTwo ? "text-2xl" : "text-3xl"} font-bold leading-tight text-gray-950`}
+                            >
                               {section.title}
                             </h2>
                           )}
                           <HtmlBlock html={section.description} />
                           {sectionImages.length > 0 && (
-                            <div className={`grid gap-4 ${sectionImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}>
+                            <div
+                              className={`grid gap-4 ${sectionImages.length > 1 ? "sm:grid-cols-[2fr_1fr]" : "grid-cols-1"}`}
+                            >
                               {sectionImages.map((image, imageIndex) => (
-                                <div key={`${image}-${imageIndex}`} className="overflow-hidden rounded-md bg-[#f8f5ef]">
+                                <div
+                                  key={`${image}-${imageIndex}`}
+                                  className="overflow-hidden rounded-md bg-[#f8f5ef]"
+                                >
                                   <img
                                     src={image}
-                                    alt={section.title || `Section image ${imageIndex + 1}`}
+                                    alt={
+                                      section.title ||
+                                      `Section image ${imageIndex + 1}`
+                                    }
                                     className="md:h-[250px] w-full object-cover sm:h-[200px]"
                                   />
                                 </div>
@@ -1573,36 +1870,57 @@ const WebPage = ({ data }) => {
                             </div>
                           )}
                           {/* Bullet Points Section */}
-                          {section.bulletPoints && section.bulletPoints.length > 0 && section.bulletPoints.some(point => isFilledText(point)) && (
-                            <div className="space-y-3 mt-4">
-                              {section.bulletPoints.map((point, bulletIdx) => (
-                                isFilledText(point) && (
-                                  <div key={bulletIdx} className="flex gap-3">
-                                    <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
-                                    <p className="text-sm leading-6 text-gray-600">{point}</p>
-                                  </div>
-                                )
-                              ))}
-                            </div>
-                          )}
+                          {section.bulletPoints &&
+                            section.bulletPoints.length > 0 &&
+                            section.bulletPoints.some((point) =>
+                              isFilledText(point),
+                            ) && (
+                              <div className="space-y-3 mt-4">
+                                {section.bulletPoints.map(
+                                  (point, bulletIdx) =>
+                                    isFilledText(point) && (
+                                      <div
+                                        key={bulletIdx}
+                                        className="flex gap-3"
+                                      >
+                                        <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
+                                        <p className="text-sm leading-6 text-gray-600">
+                                          {point}
+                                        </p>
+                                      </div>
+                                    ),
+                                )}
+                              </div>
+                            )}
                         </section>
                       );
                     })}
 
                   {tableRows.length > 0 && (
                     <section className="space-y-4">
-                      <h2 className="text-2xl font-bold text-gray-950">{data.tableTitle || "Table Information"}</h2>
+                      <h2 className="text-2xl font-bold text-gray-950">
+                        {data.tableTitle || "Table Information"}
+                      </h2>
                       <div className="overflow-hidden  border-[#ddd5ca] bg-white">
                         <table className="w-full text-left text-sm">
                           <tbody>
                             {tableRows.map((row, index) => (
                               <tr
                                 key={`${row.column1}-${row.column2}-${index}`}
-                                className={`border-b border-[#ece7df] last:border-b-0 ${index % 2 === 0 ? "bg-gray-200" : "bg-gray-50"
-                                  }`}
+                                className={`border-b border-[#ece7df] last:border-b-0 ${
+                                  index % 2 === 0 ? "bg-background" : ""
+                                }`}
                               >
-                                <td className="w-1/2 px-4 py-3 font-medium text-black border-r border-b border-gray-400">{row.column1 || "-"}</td>
-                                <td className="w-1/2 px-4 py-3 text-black font-medium border-b border-gray-400">{row.column2 || "-"}</td>
+                                <td className="w-1/2 px-4 py-3 font-medium text-black border-r border-b border-gray-400">
+                                  {row.column1 || "-"}
+                                </td>
+                                <td className="w-1/2 px-4 py-3 text-black font-medium border-b border-gray-400">
+                                  {isFilledText(row.column2) ? (
+                                    <HtmlBlock html={row.column2} className="text-sm font-medium" />
+                                  ) : (
+                                    "-"
+                                  )}
+                                </td>
                               </tr>
                             ))}
                           </tbody>
@@ -1611,20 +1929,30 @@ const WebPage = ({ data }) => {
                     </section>
                   )}
 
-
-                  {(isFilledText(data.blockquoteDescription) || isFilledText(data.blockquoteMainTitle)) && (
-                    <section className={`rounded bg-gray-100 px-2 gap-2 flex flex-col py-5 text-black ${isDesignTwo ? "max-w-3xl" : ""}`}>
-                      <div className={`rounded-[24px] bg-[linear-gradient(135deg,#3f3a7a,#4c4489,#6156b0)] px-6 py-7 text-white shadow-[0_25px_60px_rgba(79,70,229,0.2)]`}>
-
-                        <Quote className="h-7 w-7 text-white/80" />
+                  {(isFilledText(data.blockquoteDescription) ||
+                    isFilledText(data.blockquoteMainTitle)) && (
+                    <section
+                      className={`rounded px-2 gap-2 flex flex-col py-5 text-black ${isDesignTwo ? "max-w-3xl" : ""}`}
+                    >
+                      <div
+                        className="rounded-[24px] border border-border bg-[linear-gradient(135deg,#fcfaf6,#f7f4ec,#e8efe0)] px-6 py-7 text-heading shadow-[0_20px_50px_rgba(120,135,79,0.12)]"
+                      >
+                        <Quote className="h-7 w-7 text-primary" />
                         {isFilledText(data.blockquoteMainTitle) && (
-                          <h2 className="mt-3 text-2xl font-bold leading-tight mb-2">{data.blockquoteMainTitle}</h2>
+                          <h2 className="mt-3 text-2xl font-bold leading-tight mb-2 text-heading">
+                            {data.blockquoteMainTitle}
+                          </h2>
                         )}
-                        {isFilledText(data.blockquoteLeftTitle) && <span>{data.blockquoteLeftTitle}</span>}
+                        {isFilledText(data.blockquoteLeftTitle) && (
+                          <span className="text-muted">{data.blockquoteLeftTitle}</span>
+                        )}
                       </div>
                       <div className="px-1">
                         <div className="my-4 text-black">
-                          <HtmlBlock html={data.blockquoteDescription} className="!text-black" />
+                          <HtmlBlock
+                            html={data.blockquoteDescription}
+                            className="!text-black"
+                          />
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {blockquoteTags.map((tag) => (
@@ -1642,12 +1970,25 @@ const WebPage = ({ data }) => {
 
                   {highlights.length > 0 && (
                     <section className="space-y-4">
-                      <h2 className="text-2xl font-bold text-gray-950">More details</h2>
+                      <h2 className="text-2xl font-bold text-gray-950">
+                        More details
+                      </h2>
                       <div className="grid gap-4 md:grid-cols-1">
                         {highlights.map((item, index) => (
-                          <div key={`${item.title}-${index}`} className="rounded-md border border-gray-800 bg-[#fcfaf6] p-5">
-                            {isFilledText(item.title) && <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>}
-                            {isFilledText(item.point) && <p className="mt-2 text-sm leading-7 text-gray-600">{item.point}</p>}
+                          <div
+                            key={`${item.title}-${index}`}
+                            className="rounded-md border border-gray-800 bg-[#fcfaf6] p-5"
+                          >
+                            {isFilledText(item.title) && (
+                              <h3 className="text-lg font-semibold text-gray-900">
+                                {item.title}
+                              </h3>
+                            )}
+                            {isFilledText(item.point) && (
+                              <p className="mt-2 text-sm leading-7 text-gray-600">
+                                {item.point}
+                              </p>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -1656,41 +1997,56 @@ const WebPage = ({ data }) => {
 
                   {accordionItems.length > 0 && (
                     <section className="space-y-6">
-                      <h2 className="text-3xl font-bold text-gray-950">Special Note</h2>
+                      <h2 className="text-3xl font-bold text-gray-950">
+                        Special Note
+                      </h2>
                       <div className="space-y-2.5">
                         {accordionItems.map((item, index) => {
                           const isOpen = openAccordion === index;
                           return (
                             <div
                               key={`${item.left}-${index}`}
-                              className={`overflow-hidden rounded-lg border transition-all duration-300 ${isOpen
-                                ? "border-[#6156b0] bg-gradient-to-br from-[#f9f8fd] to-[#fcfaf6]"
-                                : "border-[#e6dccf] bg-white"
-                                }`}
+                              className={`overflow-hidden rounded-lg border transition-all duration-300 ${
+                                isOpen
+                                  ? "border-[#060606] bg-linear-to-br from-bg-background to-bg-background"
+                                  : "border-[#e6dccf] bg-white"
+                              }`}
                               style={{
                                 transformOrigin: "top",
-                                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                                transition:
+                                  "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                               }}
                             >
                               <button
                                 type="button"
-                                onClick={() => setOpenAccordion(isOpen ? -1 : index)}
-                                className={`flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-all duration-300 ${isOpen
-                                  ? "bg-gradient-to-r from-[#6156b0]/5 to-transparent"
-                                  : "hover:bg-[#faf8f5]"
-                                  }`}
+                                onClick={() =>
+                                  setOpenAccordion(isOpen ? -1 : index)
+                                }
+                                className={`flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-all duration-300 ${
+                                  isOpen
+                                    ? "bg-linear-to-r from-bg-background to-bg-background"
+                                    : "hover:bg-bg-background"
+                                }`}
                               >
-                                <span className={`font-semibold transition-colors duration-300 ${isOpen ? "text-[#6156b0]" : "text-gray-900 group-hover:text-gray-950"}`}>
+                                <span
+                                  className={`font-semibold transition-colors duration-300 ${isOpen ? "text-primary" : "text-gray-900 group-hover:text-gray-950"}`}
+                                >
                                   {item.left || `Question ${index + 1}`}
                                 </span>
                                 <ChevronDown
-                                  className={`h-5 w-5 shrink-0 transition-all duration-500 ${isOpen ? "rotate-180 text-[#6156b0]" : "text-gray-500"
-                                    }`}
-                                />
+                                  className={`h-5 w-5 shrink-0 transition-all duration-500 ${
+                                    isOpen
+                                      ? "rotate-180 text-primary"
+                                      : "text-gray-500"
+                                  }`}
+                                />  
                               </button>
                               <div
-                                className={`grid transition-all duration-500 ease-in-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                                  }`}
+                                className={`grid transition-all duration-500 ease-in-out ${
+                                  isOpen
+                                    ? "grid-rows-[1fr] opacity-100"
+                                    : "grid-rows-[0fr] opacity-0"
+                                }`}
                               >
                                 <div className="overflow-hidden">
                                   <div className="border-t border-[#e6dccf] px-6 py-5 text-sm leading-7 text-gray-700">
