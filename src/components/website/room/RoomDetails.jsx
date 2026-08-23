@@ -621,8 +621,8 @@ export default function RoomDetailView({ data }) {
                             </CarouselItem>
                           ))}
                         </CarouselContent>
-                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-8" />
-                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-8" />
+                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-8 rounded-full border border-white bg-white/30 text-black backdrop-blur-sm hover:bg-white/50" />
+                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-8 rounded-full border border-white bg-white/30 text-black backdrop-blur-sm hover:bg-white/50" />
                       </Carousel>
                     </div>
 
