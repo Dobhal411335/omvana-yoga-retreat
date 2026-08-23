@@ -4,7 +4,12 @@ import { usePathname } from 'next/navigation';
 import React, { useEffect } from 'react'
 
 const OverlayButton = () => {
+    const pathname = usePathname();
+    const isExcluded = pathname?.startsWith('/admin') || pathname?.includes('/invoice') || pathname?.includes('/package/calculator/pdf');
+
     useEffect(() => {
+        if (isExcluded) return;
+
         const options = {
             call: "+919762240419", // Call phone number
             whatsapp: "+919762240419", // WhatsApp number
@@ -31,14 +36,16 @@ const OverlayButton = () => {
         document.body.appendChild(s);
 
         return () => {
-            document.body.removeChild(s)
+            if (document.body.contains(s)) {
+                document.body.removeChild(s);
+            }
+            // Cleanup the actual widget DOM element if it was injected
+            const widget = document.getElementById('wh-widget-send-button');
+            if (widget) widget.remove();
         };
-    }, []);
-    const pathname = usePathname()
+    }, [isExcluded]);
 
-    if (pathname.includes('/admin') || pathname.includes('/invoice') || pathname.includes('/package/calculator/pdf')) {
-        return null
-    }
+    return null;
 }
 
 export default OverlayButton

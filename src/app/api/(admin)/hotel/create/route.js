@@ -23,12 +23,14 @@ export async function POST(req) {
       );
     }
 
-    const createdRooms = [];
+    const roomIdsToSave = [];
 
-    // Create each room and attach hotelId
+    // Create or update each room and attach hotelId
     for (const roomData of rooms) {
       const {
+        _id,
         title,
+        name,
         code,
         slug,
         titleLine,
@@ -41,29 +43,57 @@ export async function POST(req) {
         amenities
       } = roomData;
 
-      const room = await Room.create({
-        title,
-        code: code || slug || Math.random().toString(36).substring(7),
-        slug: slug || Math.random().toString(36).substring(7),
-        titleLine,
-        keywords,
-        paragraph,
-        mainPhoto,
-        relatedPhotos,
-        singleOccupancyPrice,
-        doubleOccupancyPrice,
-        amenities,
-        hotelId
-      });
-
-      createdRooms.push(room._id);
+      if (_id) {
+        // Update existing room
+        console.log("Updating room with ID:", _id);
+        const updated = await Room.findByIdAndUpdate(_id, {
+          title,
+          name,
+          titleLine,
+          keywords,
+          paragraph,
+          mainPhoto,
+          relatedPhotos,
+          singleOccupancyPrice,
+          doubleOccupancyPrice,
+          amenities,
+        });
+        console.log("Updated room result:", updated ? "Success" : "Not Found");
+        roomIdsToSave.push(_id);
+      } else {
+        console.log("Creating new room because no _id provided.");
+        // Create new room
+        const room = await Room.create({
+          title,
+          name,
+          code: code || slug || Math.random().toString(36).substring(7),
+          slug: slug || Math.random().toString(36).substring(7),
+          titleLine,
+          keywords,
+          paragraph,
+          mainPhoto,
+          relatedPhotos,
+          singleOccupancyPrice,
+          doubleOccupancyPrice,
+          amenities,
+          hotelId
+        });
+        roomIdsToSave.push(room._id.toString());
+      }
     }
 
-    // Add room references to the hotel
-    hotel.rooms.push(...createdRooms);
+    // Identify rooms that were removed and delete them from the database
+    const currentRoomIds = hotel.rooms.map(id => id.toString());
+    const roomsToDelete = currentRoomIds.filter(id => !roomIdsToSave.includes(id));
+    if (roomsToDelete.length > 0) {
+      await Room.deleteMany({ _id: { $in: roomsToDelete } });
+    }
+
+    // Set hotel.rooms to exactly the saved rooms
+    hotel.rooms = roomIdsToSave;
     await hotel.save();
 
-    return new Response(JSON.stringify({ message: "Rooms created successfully", rooms: createdRooms }), { status: 201 });
+    return new Response(JSON.stringify({ message: "Rooms saved successfully", rooms: roomIdsToSave }), { status: 201 });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,

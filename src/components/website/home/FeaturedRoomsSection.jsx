@@ -71,8 +71,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
   if (!rooms.length) return null;
 
   return (
-    <Carousel opts={{ align: "start", loop: false }} className="w-full">
-      <CarouselContent className="-ml-5">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {rooms.map((item, idx) => {
           const imageUrl = item.mainPhoto?.url || "/placeholder.png";
           const priceList = getPriceList(item);
@@ -85,11 +84,8 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
           );
 
           return (
-            <CarouselItem
-              key={item._id || idx}
-              className="basis-full pl-5 py-1 sm:basis-1/2 lg:basis-1/3"
-            >
               <Link
+                key={item._id || idx}
                 href={`/hotel/${item.slug}`}
                 className="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-surface transition-colors duration-[var(--duration-fast)] hover:border-heading/20"
               >
@@ -113,7 +109,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
 
                     {amenities.length > 0 ? (
                       <div>
-                        <p className="mb-2 font-ui text-[10px] uppercase tracking-[0.2em] text-muted">
+                        <p className="mb-2 font-ui text-[10px] uppercase tracking-[0.2em] text-black">
                           Amenities
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -138,7 +134,7 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
                       </div>
                     ) : null}
 
-                    <div className="flex flex-wrap gap-x-4 gap-y-1 font-ui text-xs text-muted">
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 font-ui text-xs text-black">
                       {occupancy ? (
                         <span>Max occupancy: {occupancy}</span>
                       ) : null}
@@ -174,12 +170,8 @@ export default function FeaturedRoomsSection({ rooms = [] }) {
                   </div>
                 </div>
               </Link>
-            </CarouselItem>
           );
         })}
-      </CarouselContent>
-      <CarouselPrevious className="left-2 hidden size-12 border border-black bg-white text-heading shadow-md hover:bg-background md:flex xl:-left-6" />
-      <CarouselNext className="right-2 hidden size-12 border border-black bg-white text-heading shadow-md hover:bg-background md:flex xl:-right-6" />
-    </Carousel>
+    </div>
   );
 }

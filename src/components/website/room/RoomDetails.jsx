@@ -127,7 +127,7 @@ function PaxLabel({ value, className }) {
     <span className={className}>
       {match[1]}
       {match[2]}
-      <span className="text-primary">{match[3]}</span>
+      <span className="text-heading">{match[3]}</span>
     </span>
   );
 }
@@ -253,10 +253,10 @@ export default function RoomDetailView({ data }) {
     <div className="min-h-screen bg-background font-body">
       <Section spacing="sm">
         <Container>
-          <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_0.95fr] lg:gap-10">
+          <div className="grid items-start gap-8 lg:grid-cols-[1.35fr_0.95fr] lg:gap-10 min-w-0">
             {/* Gallery — left */}
-            <div>
-              <div className="relative overflow-hidden rounded-image bg-surface">
+            <div className="min-w-0 w-full overflow-hidden">
+              <div className="relative overflow-hidden rounded-image bg-surface w-full">
                 {gallery.length > 0 ? (
                   <Carousel
                     className="w-full"
@@ -267,7 +267,7 @@ export default function RoomDetailView({ data }) {
                     <CarouselContent>
                       {gallery.map((img, idx) => (
                         <CarouselItem key={`${img}-${idx}`}>
-                          <div className="relative aspect-[4/3] w-full">
+                          <div className="relative aspect-square md:aspect-[4/3] w-full">
                             <Image
                               src={img}
                               alt={`${data.title} image ${idx + 1}`}
@@ -322,33 +322,38 @@ export default function RoomDetailView({ data }) {
             </div>
 
             {/* Details — right */}
-            <aside className="space-y-4 lg:sticky lg:top-24">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <h1 className="font-heading text-3xl font-medium leading-tight text-heading md:text-4xl">
-                  {data?.title}
-                </h1>
-                {data?.code ? (
-                  <span className="shrink-0 rounded-button border border-border bg-card px-3 py-1.5 font-ui text-xs tracking-wide text-muted">
-                    Code: {data.code}
-                  </span>
-                ) : null}
+            <aside className="space-y-4 lg:sticky lg:top-24 min-w-0">
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <h1 className="font-heading text-3xl font-medium leading-tight text-heading md:text-4xl">
+                    {data?.title}
+                  </h1>
+                  {data?.code ? (
+                    <span className="shrink-0 rounded-full border border-border bg-white px-3 py-1 font-ui text-xs tracking-wider uppercase text-muted shadow-sm">
+                      Code: {data.code}
+                    </span>
+                  ) : null}
+                </div>
+                {data?.name && (
+                  <h2 className="font-body text-lg text-muted">{data.name}</h2>
+                )}
               </div>
 
               {data?.heading ? (
-                <p className="font-body text-sm text-muted md:text-base">
+                <p className="font-body text-base text-muted md:text-md">
                   {data.heading}
                 </p>
               ) : null}
 
               {data?.paragraph ? (
-                <div className="font-body text-sm leading-relaxed text-muted">
+                <div className="font-body text-sm leading-relaxed text-heading">
                   {showFullDesc || !isTruncated ? (
                     <div
-                      className="prose prose-neutral max-w-none text-sm"
+                      className="prose custom-desc-list max-w-none font-body text-sm leading-relaxed text-heading [&_li]:text-heading [&_p]:text-heading [&_span]:text-heading"
                       dangerouslySetInnerHTML={{ __html: data.paragraph }}
                     />
                   ) : (
-                    <p>{preview}</p>
+                    <p className="prose custom-desc-list max-w-none font-body text-sm leading-relaxed text-heading [&_li]:text-heading [&_p]:text-heading [&_span]:text-heading">{preview}</p>
                   )}
                   {isTruncated ? (
                     <button
@@ -363,7 +368,7 @@ export default function RoomDetailView({ data }) {
               ) : (
                 <p className="font-body text-sm text-muted">No Description</p>
               )}
-              <p className="font-body text-base font-semibold text-primary md:text-lg">
+              <p className="font-heading text-lg font-medium text-black md:text-xl">
                 {baseRate ? (
                   <>
                     Room Base Rate for{" "}
@@ -375,14 +380,14 @@ export default function RoomDetailView({ data }) {
                 )}
               </p>
 
-              <div className="overflow-hidden rounded-card border border-border">
-                <table className="w-full text-left">
+              <div className="overflow-hidden rounded-2xl border border-border bg-surface/50">
+                <table className="w-full text-left border-collapse">
                   <thead className="bg-surface">
                     <tr>
-                      <th className="px-3 py-2.5 font-ui text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">
+                      <th className="border-b border-r border-border px-4 py-3 font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-700">
                         Person
                       </th>
-                      <th className="px-3 py-2.5 font-ui text-[11px] font-semibold uppercase tracking-[0.1em] text-primary">
+                      <th className="border-b border-border px-4 py-3 font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-700">
                         Price For Night
                       </th>
                     </tr>
@@ -392,11 +397,11 @@ export default function RoomDetailView({ data }) {
                       const row = priceRows.find((p) => p.type === type);
                       if (!row) return null;
                       return (
-                        <tr key={type} className="border-t border-border/60 bg-card">
-                          <td className="px-3 py-2.5 font-body text-sm text-heading">
+                        <tr key={type} className="border-b border-border bg-transparent last:border-b-0">
+                          <td className="border-r border-border px-4 py-3 font-body text-sm font-medium text-gray-800">
                             <PaxLabel value={type} />
                           </td>
-                          <td className="px-3 py-2.5 font-body text-sm text-heading">
+                          <td className="px-4 py-3 font-body text-sm font-medium text-gray-800">
                             {formatPrice(row.amount)}
                           </td>
                         </tr>
@@ -417,7 +422,7 @@ export default function RoomDetailView({ data }) {
               </div>
 
               {(data.amenities || []).length > 0 ? (
-                <div>
+                <div className="pt-2">
                   <h2 className="font-heading text-lg font-medium text-heading">
                     Room Amenities
                   </h2>
@@ -427,10 +432,10 @@ export default function RoomDetailView({ data }) {
                         const Icon = amenityIcons[am.label] || Bed;
                         return (
                           <Tooltip key={am._id || i}>
-                            <TooltipTrigger className="inline-flex size-10 items-center justify-center rounded-md border border-border bg-surface text-muted transition-colors hover:text-primary">
-                              <Icon className="size-4" />
+                            <TooltipTrigger className="bg-white size-[42px] rounded-2xl flex items-center justify-center cursor-default border border-border transition-colors hover:border-primary/50 shadow-sm text-heading">
+                              <Icon className="size-4 text-muted" />
                             </TooltipTrigger>
-                            <TooltipContent>{am.label}</TooltipContent>
+                            <TooltipContent className="font-body text-xs">{am.label}</TooltipContent>
                           </Tooltip>
                         );
                       })}
@@ -439,23 +444,23 @@ export default function RoomDetailView({ data }) {
                 </div>
               ) : null}
 
-              <div className="space-y-1 font-body text-sm text-heading">
+              <div className="space-y-1 font-body text-sm text-muted pt-2">
                 <p>
                   Max occupancy:{" "}
-                  <PaxLabel value={maxOccupancy} className="font-medium" />
+                  <PaxLabel value={maxOccupancy} className="font-medium text-heading" />
                 </p>
-                <p>Extra bed available: {extraBed ? "Yes" : "No"}</p>
+                <p>Extra bed available: <span className="text-heading">{extraBed ? "Yes" : "No"}</span></p>
               </div>
 
-              <div className="space-y-2 pt-1">
+              <div className="space-y-2 pt-2">
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 rounded-full text-black border-gray-700 hover:bg-white transition-colors"
                     nativeButton={false}
                     render={
                       <a
-                        href={`https://wa.me/918006000325?text=${encodeURIComponent(whatsappMessage)}`}
+                        href={`https://wa.me/${(companyInfo?.contactNumbers?.[0] || "").replace(/\D/g, "")}?text=${encodeURIComponent(whatsappMessage)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       />
@@ -469,6 +474,7 @@ export default function RoomDetailView({ data }) {
                       type="button"
                       variant="outline"
                       size="icon"
+                      className="rounded-full bg-surface/50 border-border hover:bg-white transition-colors"
                       onClick={() => setShowShareBox((prev) => !prev)}
                       aria-label="Share room"
                     >
@@ -477,7 +483,7 @@ export default function RoomDetailView({ data }) {
                     {showShareBox ? (
                       <div
                         id="share-popover"
-                        className="absolute right-0 z-20 mt-2 w-72 rounded-card border border-border bg-card p-4 shadow-sm"
+                        className="absolute right-0 z-20 mt-2 w-72 rounded-2xl border border-border bg-white p-4 shadow-md"
                       >
                         <p className="font-ui text-xs font-semibold uppercase tracking-[0.12em] text-muted">
                           Share room
@@ -513,7 +519,7 @@ export default function RoomDetailView({ data }) {
       <Section spacing="md" className="bg-surface">
         <Container>
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-card border border-border bg-card p-6">
+            <div className="rounded-card border border-gray-500 bg-card p-6">
               <h3 className="font-heading text-xl font-medium text-heading">
                 Stay notes
               </h3>
@@ -544,7 +550,7 @@ export default function RoomDetailView({ data }) {
                 </div>
               </div>
             </div>
-            <div className="rounded-card border border-border bg-card p-6">
+            <div className="rounded-card border border-gray-500 bg-card p-6">
               <h3 className="font-heading text-xl font-medium text-heading">
                 Timings
               </h3>
@@ -582,102 +588,110 @@ export default function RoomDetailView({ data }) {
             <p className="mt-2 font-body text-sm text-muted mb-8">
               Explore the rooms available at {data?.title || companyInfo?.companyName || "our retreat"}.
             </p>
-            <div className="w-full flex flex-col gap-6 lg:w-[90%] mx-auto">
+            <div className="w-full flex flex-col gap-6">
               {rooms.map((room, idx) => {
-                  const imageUrls = [
-                      ...(room.mainPhoto?.url ? [room.mainPhoto.url] : []),
-                      ...(room.relatedPhotos?.length ? room.relatedPhotos.map(photo => photo.url) : [])
-                  ];
-                  if (imageUrls.length === 0) imageUrls.push('');
-                  
-                  return (
-                      <div key={room._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 md:items-center gap-6 shadow-lg border border-gray-200">
-                          {/* Image Carousel */}
-                          <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
-                              <Carousel className="w-full h-full" opts={{ loop: true }}>
-                                  <CarouselContent>
-                                      {imageUrls.map((img, i) => (
-                                          <CarouselItem key={i} className="w-full h-full flex items-center justify-center">
-                                              {img ? (
-                                                  <Image
-                                                      src={img}
-                                                      alt={room.title || 'Room'}
-                                                      width={420}
-                                                      height={290}
-                                                      className="object-cover w-full h-full rounded-xl"
-                                                      priority={i === 0}
-                                                  />
-                                              ) : (
-                                                  <div className="flex w-full h-full items-center justify-center text-muted">
-                                                      <Loader2 className="animate-spin mr-2" /> No Image Available
-                                                  </div>
-                                              )}
-                                          </CarouselItem>
-                                      ))}
-                                  </CarouselContent>
-                                  <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-8" />
-                                  <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-8" />
-                              </Carousel>
-                          </div>
-                          
-                          {/* Details */}
-                          <div className="flex-1 flex flex-col gap-3 justify-between relative min-h-[260px]">
-                              <div>
-                                <h3 className="md:text-2xl text-xl font-bold text-gray-900">{room.title || "Room"}</h3>
-                                {room.code && <p className="text-xs text-muted mt-1">Code: {room.code}</p>}
-                              </div>
-                              
-                              {room.paragraph && (
-                                <div className="text-gray-800 text-sm mb-1" dangerouslySetInnerHTML={{ __html: room.paragraph }} />
-                              )}
-                              
-                              {room.amenities?.length > 0 && (
-                                <>
-                                  <div className="font-semibold text-gray-800 text-sm mt-1">Room Amenities</div>
-                                  <TooltipProvider>
-                                      <div className="flex gap-2 flex-wrap mb-2">
-                                          {room.amenities.map((am, i) => {
-                                              const label = typeof am === 'string' ? am : am.label;
-                                              const Icon = amenityIcons[label] || Bed;
-                                              return (
-                                              <Tooltip key={i}>
-                                                  <TooltipTrigger className="bg-gray-100 px-2 py-1.5 rounded-md text-xs flex items-center justify-center cursor-default border border-border gap-1.5 transition-colors hover:text-primary">
-                                                      <Icon className="size-3.5" />
-                                                      {label}
-                                                  </TooltipTrigger>
-                                                  <TooltipContent side="top">
-                                                      {label}
-                                                  </TooltipContent>
-                                              </Tooltip>
-                                          )})}
-                                      </div>
-                                  </TooltipProvider>
-                                </>
-                              )}
+                const imageUrls = [
+                  ...(room.mainPhoto?.url ? [room.mainPhoto.url] : []),
+                  ...(room.relatedPhotos?.length ? room.relatedPhotos.map(photo => photo.url) : [])
+                ];
+                if (imageUrls.length === 0) imageUrls.push('');
 
-                              <div className="flex gap-8 text-sm py-2">
-                                  <span>
-                                      Single Occupancy: <strong>{formatPrice(room.singleOccupancyPrice)}</strong>
-                                  </span>
-                                  <span>
-                                      Double Occupancy: <strong>{formatPrice(room.doubleOccupancyPrice)}</strong>
-                                  </span>
-                              </div>
+                return (
+                  <div key={room._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 md:items-start gap-6 shadow-lg border border-gray-200">
+                    {/* Image Carousel */}
+                    <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 shrink-0 flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
+                      <Carousel className="w-full h-full" opts={{ loop: true }}>
+                        <CarouselContent>
+                          {imageUrls.map((img, i) => (
+                            <CarouselItem key={i} className="w-full h-full flex items-center justify-center">
+                              {img ? (
+                                <Image
+                                  src={img}
+                                  alt={room.title || 'Room'}
+                                  width={420}
+                                  height={290}
+                                  className="object-cover w-full h-full rounded-xl"
+                                  priority={i === 0}
+                                />
+                              ) : (
+                                <div className="flex w-full h-full items-center justify-center text-muted">
+                                  <Loader2 className="animate-spin mr-2" /> No Image Available
+                                </div>
+                              )}
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 size-8" />
+                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 size-8" />
+                      </Carousel>
+                    </div>
 
-                              <div className="mt-auto pt-4 flex items-center justify-end border-t border-border/50 gap-2">
-                                  <Button
-                                      className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-2 rounded-md transition-colors"
-                                      onClick={() => {
-                                        setSelectedRoom(room);
-                                        setBookingOpen(true);
-                                      }}
-                                  >
-                                      Book Room
-                                  </Button>
-                              </div>
+                    {/* Details */}
+                    <div className="flex-1 flex flex-col gap-3 justify-between relative min-h-[260px]">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex flex-col gap-1">
+                          <h3 className="font-heading text-2xl font-medium text-heading md:text-3xl">{room.title || "Room"}</h3>
+                          {room.name && <h4 className="font-body text-lg text-muted">{room.name}</h4>}
+                        </div>
+                        {room.code && (
+                          <div className="shrink-0 rounded-full border border-border bg-white px-3 py-1 font-ui text-xs uppercase tracking-wider text-muted shadow-sm">
+                            Code: {room.code}
                           </div>
+                        )}
                       </div>
-                  );
+
+                      {room.paragraph && (
+                        <div className="prose custom-desc-list max-w-none font-body text-sm leading-relaxed text-heading [&_li]:text-heading [&_p]:text-heading [&_span]:text-heading mt-2" dangerouslySetInnerHTML={{ __html: room.paragraph }} />
+                      )}
+
+                      {room.amenities?.length > 0 && (
+                        <>
+                          <div className="mt-4 font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">Room Amenities</div>
+                          <TooltipProvider>
+                            <div className="flex gap-2 flex-wrap mt-2">
+                              {room.amenities.map((am, i) => {
+                                const label = typeof am === 'string' ? am : am.label;
+                                const Icon = amenityIcons[label] || Bed;
+                                return (
+                                  <Tooltip key={i}>
+                                    <TooltipTrigger className="bg-white px-3 py-1.5 rounded-full font-body text-xs flex items-center justify-center cursor-default border border-border gap-1.5 transition-colors hover:border-primary/50 shadow-sm text-heading">
+                                      <Icon className="size-3.5" />
+                                      {label}
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top">
+                                      {label}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                )
+                              })}
+                            </div>
+                          </TooltipProvider>
+                        </>
+                      )}
+
+                      <div className="mt-4 flex flex-col gap-1 border-t border-border pt-4 sm:flex-row sm:gap-6">
+                        <span className="font-body text-sm text-muted">
+                          Single Occupancy: <strong className="font-heading text-lg font-medium text-heading">{formatPrice(room.singleOccupancyPrice)}</strong>
+                        </span>
+                        <span className="font-body text-sm text-muted">
+                          Double Occupancy: <strong className="font-heading text-lg font-medium text-heading">{formatPrice(room.doubleOccupancyPrice)}</strong>
+                        </span>
+                      </div>
+
+                      <div className="mt-auto pt-4 flex items-center justify-end gap-2">
+                        <Button
+                          className="rounded-button"
+                          onClick={() => {
+                            setSelectedRoom(room);
+                            setBookingOpen(true);
+                          }}
+                        >
+                          Book Room
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                );
               })}
             </div>
           </Container>

@@ -112,7 +112,7 @@ const BookingDetails = ({ hotel, room, onClose }) => {
   const [showInvoice, setShowInvoice] = useState(false);
   const [bookingDate, setBookingDate] = useState(null);
 
-  const roomName = room?.title || "Room";
+  const roomName = room?.name || room?.title || "Room";
   const roomImg = room?.mainPhoto?.url || " ";
   const roomCode = room?.code || "";
   const price = useMemo(() => fromPrice(room), [room]);

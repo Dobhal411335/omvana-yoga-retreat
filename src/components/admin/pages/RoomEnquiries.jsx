@@ -283,7 +283,7 @@ export default function RoomEnquiries() {
                         {enquiry.hotelName || enquiry.hotel?.title || "—"}
                       </TableCell>
                       <TableCell className="max-w-[180px] truncate font-body text-sm text-heading">
-                        {enquiry.roomName || enquiry.room?.title || "—"}
+                        {enquiry.room?.name || enquiry.roomName || enquiry.room?.title || "—"}
                       </TableCell>
                       <TableCell className="font-body text-sm text-heading">
                         {enquiry.firstName} {enquiry.lastName}
@@ -398,7 +398,7 @@ export default function RoomEnquiries() {
                   Room
                 </p>
                 <h3 className="mt-1 font-heading text-xl font-medium text-heading">
-                  {selectedEnquiry.roomName || selectedEnquiry.room?.title || "—"}
+                  {selectedEnquiry.room?.name || selectedEnquiry.roomName || selectedEnquiry.room?.title || "—"}
                 </h3>
                 {selectedEnquiry.roomSnapshot?.code ? (
                   <p className="mt-1 font-ui text-xs text-muted">

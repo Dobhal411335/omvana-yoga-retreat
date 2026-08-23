@@ -102,7 +102,7 @@ const Accommodation = () => {
         );
     }
     return (
-        <div className="w-full min-h-screen bg-white " ref={gridRef}>
+        <div className="w-full min-h-screen bg-background " ref={gridRef}>
             <BannerSection />
             {/* Below banner: left text, right carousel */}
             <div className="w-full md:max-w-[1500px] mx-auto ">
@@ -120,20 +120,20 @@ const Accommodation = () => {
                                     ];
                                     if (imageUrls.length === 0) imageUrls.push('');
                                     return (
-                                        <div key={item._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 my-2 md:items-center gap-6 shadow-lg md:px-5 mx-auto border border-gray-200">
+                                        <div key={item._id || idx} className="relative flex flex-col md:flex-row bg-[#f8f5ef] rounded-2xl p-5 my-2 md:items-start gap-6 shadow-lg md:px-5 mx-auto border border-gray-800">
                                             {/* Image Carousel */}
-                                            <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 md:px-0 flex-shrink-0 flex items-center justify-center rounded-xl overflow-hidden">
+                                            <div className="relative md:w-[420px] md:h-[290px] h-[250px] py-2 md:px-0 flex-shrink-0 flex items-start justify-start flex-col rounded-xl overflow-hidden">
                                                 <Carousel className="w-full h-full" opts={{ loop: true }}>
                                                     <CarouselContent>
                                                         {imageUrls.map((img, i) => (
-                                                            <CarouselItem key={i} className="w-full h-full flex items-center justify-center bg-gray-100 rounded-xl">
+                                                            <CarouselItem key={i} className="w-full h-full flex items-center justify-center bg-gray-100 rounded-image">
                                                                 {img ? (
                                                                     <Image
                                                                         src={img}
                                                                         alt={item.title || 'Room'}
                                                                         width={420}
                                                                         height={420}
-                                                                        className="object-contain object-top w-[420px] h-[500px] rounded-xl"
+                                                                        className="object-contain object-top w-[420px] h-fit rounded-image"
                                                                         priority={i === 0}
                                                                     />
                                                                 ) : (
@@ -151,7 +151,7 @@ const Accommodation = () => {
                                             {/* Details */}
                                             <div className="flex-1 md:p-5 p-2 flex flex-col gap-2 justify-between min-h-[260px] relative">
                                                 <div className="flex items-start justify-between">
-                                                    <h3 className="md:text-2xl text-md font-bold text-gray-900">{item.title || "Room Name"}</h3>
+                                                    <h3 className="md:text-3xl text-md font-bold text-gray-900">{item.title || "Room Name"}</h3>
 
                                                 </div>
                                                 <div className="text-gray-800 text-xs md:text-sm mb-1" dangerouslySetInnerHTML={{ __html: item.paragraph }} />

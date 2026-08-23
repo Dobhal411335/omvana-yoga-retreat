@@ -197,7 +197,7 @@ export function Footer() {
               </ul>
             ) : null}
             {socialItems.length > 0 ? (
-              <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <ul className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-5 mb-2">
                 {socialItems.map((item) => (
                   <li key={item.text}>
                     <a
@@ -219,7 +219,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="my-5 border-t border-white pt-8 text-center">
+        <div className="my-5 md:my-2 border-t border-white pt-8 text-center">
           <p className="font-ui text-xs text-white">
             © {year} {companyName}. All rights reserved.
           </p>

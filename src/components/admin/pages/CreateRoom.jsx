@@ -169,7 +169,7 @@ const RoomFormEntry = ({ room, index, handleChange, handleRemoveRoom, toggleAmen
       <div className="flex justify-between items-center border-b border-border pb-4">
         <h3 className="font-heading text-lg font-semibold">Room {index + 1}</h3>
         {showRemoveButton && (
-          <Button type="button" variant="destructive" size="sm" onClick={() => handleRemoveRoom(index)}>
+          <Button type="button" variant="destructive" size="sm" className="text-black" onClick={() => handleRemoveRoom(index)}>
             <Trash2 className="w-4 h-4 mr-2" /> Remove Room
           </Button>
         )}
@@ -185,6 +185,18 @@ const RoomFormEntry = ({ room, index, handleChange, handleRemoveRoom, toggleAmen
             value={roomData.title}
             disabled
             readOnly
+            className="bg-surface"
+          />
+        </div>
+          <div className="space-y-2">
+          <label className="font-ui text-[11px] font-semibold uppercase tracking-[0.12em] text-muted">
+            Room name
+          </label>
+          <Input
+            type="text"
+            value={room.name}
+            onChange={e => handleChange(index, 'name', e.target.value)}
+            placeholder="Enter Room Name Here"
             className="bg-surface"
           />
         </div>
@@ -383,6 +395,7 @@ const CreateRoom = ({ hotelId, roomData, roomId }) => {
   const [rooms, setRooms] = useState([{
     id: Date.now(),
     title: '',
+    name: '',
     singleOccupancyPrice: '',
     doubleOccupancyPrice: '',
     amenities: [],
@@ -402,7 +415,9 @@ const CreateRoom = ({ hotelId, roomData, roomId }) => {
         if (res.ok && data.hotel && data.hotel.rooms && data.hotel.rooms.length > 0) {
           const fetchedRooms = data.hotel.rooms.map((r, index) => ({
             id: r._id || Date.now() + index,
+            _id: r._id,
             title: r.title || '',
+            name: r.name || '',
             singleOccupancyPrice: r.singleOccupancyPrice || '',
             doubleOccupancyPrice: r.doubleOccupancyPrice || '',
             amenities: r.amenities || [],
@@ -423,6 +438,7 @@ const CreateRoom = ({ hotelId, roomData, roomId }) => {
     setRooms([...rooms, {
       id: Date.now(),
       title: '',
+      name: '',
       singleOccupancyPrice: '',
       doubleOccupancyPrice: '',
       amenities: [],
@@ -467,7 +483,9 @@ const CreateRoom = ({ hotelId, roomData, roomId }) => {
       const payload = {
         hotelId,
         rooms: rooms.map(r => ({
+          _id: r._id,
           title: roomData?.title,
+          name: r.name,
           singleOccupancyPrice: Number(r.singleOccupancyPrice) || 0,
           doubleOccupancyPrice: Number(r.doubleOccupancyPrice) || 0,
           amenities: r.amenities,
@@ -486,6 +504,24 @@ const CreateRoom = ({ hotelId, roomData, roomId }) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to save');
       toast.success('Rooms added successfully!');
+      
+      // Re-fetch rooms to ensure all rooms have _id from backend
+      const fetchRes = await fetch(`/api/hotel/create?hotelId=${hotelId}`);
+      const fetchData = await fetchRes.json();
+      if (fetchRes.ok && fetchData.hotel && fetchData.hotel.rooms) {
+        setRooms(fetchData.hotel.rooms.map((r, index) => ({
+          id: r._id || Date.now() + index,
+          _id: r._id,
+          title: r.title || '',
+          name: r.name || '',
+          singleOccupancyPrice: r.singleOccupancyPrice || '',
+          doubleOccupancyPrice: r.doubleOccupancyPrice || '',
+          amenities: r.amenities || [],
+          paragraph: r.paragraph || '',
+          mainPhoto: r.mainPhoto || null,
+          relatedPhotos: r.relatedPhotos || []
+        })));
+      }
     } catch (err) {
       toast.error(err.message);
     } finally {
