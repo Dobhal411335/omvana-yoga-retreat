@@ -34,10 +34,15 @@ export const adminNavSections = [
         icon: Share2,
       },
       {
-        label: "Manage Webpages",
+        label: "Create Webpages",
         href: "/admin/create_webpage",
         icon: FileStack,
+      },     {
+        label: "Manage Webpage",
+        href: "/admin/manage_webpage",
+        icon: FileStack,
       },
+
       {
         label: "Room Enquiry Page",
         href: "/admin/room_enquiries",

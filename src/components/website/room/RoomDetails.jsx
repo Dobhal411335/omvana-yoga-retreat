@@ -630,8 +630,8 @@ export default function RoomDetailView({ data }) {
                     <div className="flex-1 flex flex-col gap-3 justify-between relative min-h-[260px]">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex flex-col gap-1">
-                          <h3 className="font-heading text-2xl font-medium text-heading md:text-3xl">{room.title || "Room"}</h3>
-                          {room.name && <h4 className="font-body text-lg text-muted">{room.name}</h4>}
+                          <h3 className="font-heading text-2xl font-medium text-heading md:text-4xl">{room.name || "Room"}</h3>
+                          {room.name && <h4 className="font-body text-md text-muted">{room.title}</h4>}
                         </div>
                         {room.code && (
                           <div className="shrink-0 rounded-full border border-border bg-white px-3 py-1 font-ui text-xs uppercase tracking-wider text-muted shadow-sm">

@@ -106,14 +106,14 @@ export default function RandomTourPackageSection() {
                       />
                     ) : null}
                   </div>
-                  <div className="relative h-[350px] w-full md:hidden">
+                  <div className="relative h-[500px] w-full md:hidden">
                     {(item.mobileImage?.url || item.image?.url) ? (
                       <Image
                         src={item.mobileImage?.url || item.image.url}
                         alt={item.title || "Promotional banner"}
                         fill
                         sizes="100vw"
-                        className="object-cover object-center transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
+                        className="object-cover object-contain transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.02]"
                       />
                     ) : null}
                   </div>

@@ -27,6 +27,7 @@ const createEmptyFormData = () => ({
   emails: [''],
   officeAddresses: [''],
   googleAddress: '',
+  googleUrl: '',
   googleLink: '',
   facebookLink: '',
   instagramLink: '',
@@ -60,6 +61,7 @@ const normalizeCompanyInfo = (record) => ({
   officeAddresses: normalizeArray(record?.officeAddresses),
   googleAddress: record?.googleAddress || '',
   googleLink: record?.googleLink || '',
+  googleUrl: record?.googleUrl || '',
   facebookLink: record?.facebookLink || '',
   instagramLink: record?.instagramLink || '',
   youtubeLink: record?.youtubeLink || '',
@@ -267,7 +269,7 @@ const CompanyBasicInformation = () => {
   return (
     <div className="w-full max-w-6xl mx-auto space-y-8 p-6 font-sans pb-24">
       <form onSubmit={handleSubmit} className="space-y-8">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
           <div>
@@ -285,7 +287,7 @@ const CompanyBasicInformation = () => {
 
         {/* Basic Info & Branding Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left Column: Basic Details */}
           <div className="lg:col-span-2 space-y-8">
             <Card className="rounded-[20px] border-slate-100 shadow-sm bg-white overflow-hidden">
@@ -307,7 +309,7 @@ const CompanyBasicInformation = () => {
                     <Input name="companyDomainName" value={formData.companyDomainName} onChange={handleScalarChange} placeholder="e.g. acme.com" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
                   </div>
                 </div>
-                
+
                 {/* Contact Numbers Custom List */}
                 <div className="space-y-4 pt-4 border-t border-slate-50">
                   <div className="flex items-center justify-between gap-3">
@@ -352,7 +354,7 @@ const CompanyBasicInformation = () => {
             {/* List Fields */}
             {renderListField({ field: 'emails', label: 'Email Addresses', placeholder: 'contact@acme.com', type: 'email' })}
             {renderListField({ field: 'officeAddresses', label: 'Office Addresses', placeholder: '123 Business St, Suite 100...', isTextarea: true })}
-            
+
             <Card className="rounded-[20px] border-slate-100 shadow-sm bg-white overflow-hidden">
               <CardHeader className="border-b border-slate-50 bg-white/50 pb-6">
                 <div className="flex items-center gap-2">
@@ -390,7 +392,7 @@ const CompanyBasicInformation = () => {
                       <Label className="text-sm font-semibold text-slate-700">{field.label}</Label>
                       <p className="text-xs text-slate-400">{field.desc}</p>
                     </div>
-                    
+
                     <input
                       ref={(node) => {
                         fileInputRefs.current[field.key] = node
@@ -400,7 +402,7 @@ const CompanyBasicInformation = () => {
                       className="hidden"
                       onChange={(event) => handleImageChange(field.key, event)}
                     />
-                    
+
                     {formData[field.key]?.url ? (
                       <div className="group relative h-40 w-full overflow-hidden rounded-[16px] border border-slate-200 bg-slate-50 flex items-center justify-center">
                         <Image
@@ -410,17 +412,17 @@ const CompanyBasicInformation = () => {
                           className="object-contain p-4"
                         />
                         <div className="absolute inset-0 bg-slate-900/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                           <Button
-                             type="button"
-                             size="sm"
-                             variant="secondary"
-                             className="rounded-lg shadow-sm"
-                             onClick={() => fileInputRefs.current[field.key]?.click()}
-                             disabled={uploadingField === field.key}
-                           >
-                             Replace
-                           </Button>
-                           <Button
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            className="rounded-lg shadow-sm"
+                            onClick={() => fileInputRefs.current[field.key]?.click()}
+                            disabled={uploadingField === field.key}
+                          >
+                            Replace
+                          </Button>
+                          <Button
                             type="button"
                             size="icon"
                             variant="destructive"
@@ -432,15 +434,15 @@ const CompanyBasicInformation = () => {
                         </div>
                       </div>
                     ) : (
-                      <div 
+                      <div
                         className={`flex flex-col items-center justify-center h-40 w-full rounded-[16px] border-2 border-dashed border-slate-200 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-300 transition-all cursor-pointer ${uploadingField === field.key ? 'animate-pulse' : ''}`}
                         onClick={() => !uploadingField && fileInputRefs.current[field.key]?.click()}
                       >
-                         <Upload className="h-6 w-6 text-slate-400 mb-2" />
-                         <span className="text-sm font-medium text-slate-600">
-                           {uploadingField === field.key ? 'Uploading...' : 'Click to upload'}
-                         </span>
-                         <span className="text-xs text-slate-400 mt-1">PNG, JPG up to 2MB</span>
+                        <Upload className="h-6 w-6 text-slate-400 mb-2" />
+                        <span className="text-sm font-medium text-slate-600">
+                          {uploadingField === field.key ? 'Uploading...' : 'Click to upload'}
+                        </span>
+                        <span className="text-xs text-slate-400 mt-1">PNG, JPG up to 2MB</span>
                       </div>
                     )}
                   </div>
@@ -456,7 +458,11 @@ const CompanyBasicInformation = () => {
                 </div>
               </CardHeader>
               <CardContent className="p-6 space-y-5">
-              <div className="space-y-2">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-slate-600 ml-1">Google Review Widget URL</Label>
+                  <Input name="googleUrl" value={formData.googleUrl} onChange={handleScalarChange} placeholder="https://widget.trustmary.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
+                </div>
+                <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-600 ml-1">Google</Label>
                   <Input name="googleLink" value={formData.googleLink} onChange={handleScalarChange} placeholder="https://google.com/..." type="url" className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50" />
                 </div>
@@ -496,7 +502,7 @@ const CompanyBasicInformation = () => {
                     className="h-11 rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-slate-600 ml-1">Google Tracking Tag</Label>
                   <Textarea
@@ -507,7 +513,7 @@ const CompanyBasicInformation = () => {
                     className="font-mono text-xs text-slate-600 min-h-[150px] rounded-xl border-slate-200 focus-visible:ring-slate-200 focus-visible:border-slate-400 bg-slate-50/50 transition-colors hover:bg-slate-50 resize-y"
                   />
                 </div>
-                
+
                 <div className="pt-2">
                   {renderListField({ field: 'keywords', label: 'SEO Keywords', placeholder: 'e.g. real estate, apartment rentals' })}
                 </div>

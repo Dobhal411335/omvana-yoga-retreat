@@ -16,6 +16,7 @@ import connectDB from "@/lib/connectDB"
 import Package from "@/models/Admin/Package"
 import Review from "@/models/Admin/Review"
 import ComingSoon from "@/models/Admin/ComingSoon"
+import CompanyBasicInfo from "@/models/Admin/CompanyBasicInfo"
 import ComingSoonEnquiryForm from "@/components/Package/ComingSoonEnquiries.jsx"
 import { serializePackage } from "@/lib/serializePackage"
 
@@ -133,6 +134,10 @@ const PackageDetailsPage = async ({ params }) => {
     ) || []
 
     const featuredPackages = await getFeaturedPackages()
+    const companyInfo = await CompanyBasicInfo.findOne().lean()
+    const contactNumber = companyInfo?.contactNumbers?.[0] || ""
+    const contactLink = contactNumber.replace(/\s+/g, "")
+    const whatsappLink = contactNumber.replace(/\D/g, "")
 
     const formatNumber = (number) => {
         return new Intl.NumberFormat("en-IN").format(number)
@@ -230,7 +235,7 @@ const PackageDetailsPage = async ({ params }) => {
                                 <div className="flex items-center gap-4 mt-4">
                                     <Button
                                         size="icon"
-                                        render={<Link href="tel:+918006000325" />}
+                                        render={<Link href={`tel:${contactLink}`} />}
                                         className="border-2 border-primary !p-6"
                                         variant="outline"
                                     >
@@ -239,7 +244,7 @@ const PackageDetailsPage = async ({ params }) => {
                                     <Button
                                         render={
                                             <Link
-                                                href={`https://wa.me/918006000325?text=${encodeURIComponent(`I'm interested in your package ${packageDetails?.title || ""}`)}`}
+                                                href={`https://wa.me/${whatsappLink}?text=${encodeURIComponent(`I'm interested in your package ${packageDetails?.title || ""}`)}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             />

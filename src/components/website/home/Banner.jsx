@@ -73,10 +73,10 @@ export default function Banner() {
   return (
     <>
       {showPromo && (
-        <Section spacing="sm" className="bg-background">
-          <Container>
+        <Section spacing="sm" className="bg-background w-full">
+          <div className="mx-auto w-full max-w-[2000px] px-2 md:px-8 lg:px-12">
             <div className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-gray-600">
                 Discover
               </p>
               <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
@@ -89,12 +89,12 @@ export default function Banner() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-8">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:gap-8 w-full">
               {promoLoading
                 ? Array.from({ length: 2 }).map((_, idx) => (
                   <Skeleton
                     key={idx}
-                    className="md:aspect-16/10 aspect-3/4 w-full md:rounded-image rounded-md"
+                    className="w-full aspect-[16/9] rounded-md md:rounded-image"
                   />
                 ))
                 : promotionalBanners.map((item) => (
@@ -103,15 +103,13 @@ export default function Banner() {
                     href={item.buttonLink || "#"}
                     target={item.buttonLink ? "_blank" : undefined}
                     rel={item.buttonLink ? "noopener noreferrer" : undefined}
-                    className="group relative block aspect-[16/10] overflow-hidden rounded-[var(--radius-image)] bg-border md:aspect-[4/3]"
+                    className="group relative block w-full aspect-[16/9] overflow-hidden rounded-image bg-border"
                   >
                     {item.image?.url ? (
-                      <Image
+                      <img
                         src={item.image.url}
                         alt={item.title || "Promotional banner"}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-[var(--duration-slow)] ease-[var(--ease-smooth)] group-hover:scale-[1.03]"
+                        className="block w-full h-full object-fill transition-transform duration-slow ease-smooth group-hover:scale-[1.03]"
                       />
                     ) : null}
                     <div className="absolute inset-0 flex items-end bg-image-dark/40 opacity-0 transition-opacity duration-[var(--duration-medium)] group-hover:opacity-100">
@@ -126,7 +124,7 @@ export default function Banner() {
                   </Link>
                 ))}
             </div>
-          </Container>
+          </div>
         </Section>
       )}
 

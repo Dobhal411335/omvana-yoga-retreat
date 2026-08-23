@@ -112,12 +112,12 @@ const ResponsiveCarousel = ({ packages, formatNumericStr }) => {
         <CarouselPrevious
           variant="default"
           size="icon"
-          className="!inset-y-auto top-1/2 left-0 z-10 size-10 -translate-y-1/2 rounded-full border-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover disabled:opacity-40 md:-left-3"
+          className="top-1/2 left-0 z-10 size-10 -translate-y-1/2 rounded-full border border-black bg-white text-black shadow-sm hover:bg-primary-hover disabled:opacity-40 md:-left-3"
         />
         <CarouselNext
           variant="default"
           size="icon"
-          className="!inset-y-auto top-1/2 right-0 z-10 size-10 -translate-y-1/2 rounded-full border-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary-hover disabled:opacity-40 md:-right-3"
+          className="top-1/2 right-0 z-10 size-10 -translate-y-1/2 rounded-full border border-black bg-white text-black shadow-sm hover:bg-primary-hover disabled:opacity-40 md:-right-3"
         />
       </Carousel>
     </div>

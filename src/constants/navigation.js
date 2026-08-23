@@ -1,12 +1,3 @@
-/* ── Public website navigation ───────────────────── */
-export const websiteNavigation = [
-  { label: "Home", href: "/" },
-  { label: "Plan your own", href: "/plan-your-own" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Testimonials", href: "/testimonials" },
-  { label: "Contact", href: "/contact" },
-];
-
 /* ── Admin sidebar navigation ────────────────────── */
 export const adminNavigation = [
   {

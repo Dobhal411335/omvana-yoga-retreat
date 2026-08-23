@@ -4,9 +4,9 @@ import Link from "next/link";
 import { MapPin, Phone, Mail } from "lucide-react";
 
 import { Logo } from "@/components/common/Logo";
-import { websiteNavigation } from "@/constants/navigation";
 import { site } from "@/constants/site";
 import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider";
+import { useEffect, useState } from "react";
 
 function formatPhone(number) {
   const digits = String(number || "").replace(/\D/g, "");
@@ -85,7 +85,20 @@ function Google({ className }) {
 export function Footer() {
   const year = new Date().getFullYear();
   const company = useCompanyBasicInfo();
+  const [pages, setPages] = useState([])
 
+  useEffect(() => {
+    const fetchPages = async () => {
+      try {
+        const response = await fetch("/api/getAllPages")
+        const data = await response.json()
+        setPages(data.pages)
+      } catch (error) {
+        console.error("Error fetching pages:", error)
+      }
+    }
+    fetchPages()
+  }, [])
   const companyName = company?.companyName || site.name;
   const footerLogoSrc =
     company?.footerLogo?.url || company?.mainLogo?.url || undefined;
@@ -147,15 +160,10 @@ export function Footer() {
               Explore
             </h3>
             <ul className="mt-6 space-y-4">
-              {websiteNavigation.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.href}
-                    className="font-body text-sm text-white transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
+              {pages.filter(page => !page?.link?.includes('policy')).map(page => (
+                <Link key={page._id} href={page.url} className="block text-white text-sm font-barlow transition-colors hover:underline">
+                  {page.title}
+                </Link>
               ))}
             </ul>
           </div>
@@ -183,7 +191,7 @@ export function Footer() {
                             ? "noopener noreferrer"
                             : undefined
                         }
-                        className="font-body text-sm leading-6 text-white transition-colors hover:text-surface break-all"
+                        className="font-body text-sm hover:underline leading-6 text-white transition-colors hover:text-surface break-all"
                       >
                         {item.text}
                       </a>
@@ -204,7 +212,7 @@ export function Footer() {
                       href={item.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 font-body text-sm text-white transition-colors hover:text-surface"
+                      className="flex items-center gap-2 font-body text-sm text-white transition-colors hover:text-surface hover:underline"
                     >
                       <item.icon
                         className="size-4 shrink-0 text-white"

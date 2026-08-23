@@ -251,7 +251,7 @@ const CreateWebpage = () => {
                                                 </TableCell>
                                                 <TableCell className="py-4 align-middle max-w-xs truncate">
                                                     <a 
-                                                        href={page.url?.startsWith('http') ? page.url : `/page/${page.url}`} 
+                                                        href={page.url?.startsWith('http') ? page.url : `${page.url}`} 
                                                         target="_blank" 
                                                         rel="noopener noreferrer"
                                                         className="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 hover:underline"

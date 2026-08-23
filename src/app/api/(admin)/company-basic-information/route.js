@@ -37,6 +37,7 @@ const normalizePayload = (payload) => ({
   emails: normalizeArray(payload?.emails),
   officeAddresses: normalizeArray(payload?.officeAddresses),
   googleAddress: String(payload?.googleAddress || ''),
+  googleUrl: String(payload?.googleUrl || ''),
   googleLink: String(payload?.googleLink || ''),
   facebookLink: String(payload?.facebookLink || ''),
   instagramLink: String(payload?.instagramLink || ''),

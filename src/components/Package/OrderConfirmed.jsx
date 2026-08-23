@@ -6,8 +6,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 // import ShareButton from "./ShareButton"
 import { addDays, format } from "date-fns"
+import { useCompanyBasicInfo } from "@/providers/CompanyBasicInfoProvider"
 
 export default function ConfirmationPage({ packages, session, order }) {
+    const companyInfo = useCompanyBasicInfo()
+    const contactEmail = companyInfo?.emails?.[0] || ""
+    const contactNumber = companyInfo?.contactNumbers?.[0] || ""
+    const contactLink = contactNumber.replace(/\s+/g, "")
     const travelDate = order?.travelDate ? new Date(order?.travelDate) : new Date();
     const duration = Number(packages?.basicDetails?.duration) || 0;
     const updatedDate = addDays(travelDate, duration);
@@ -123,14 +128,14 @@ export default function ConfirmationPage({ packages, session, order }) {
                                 <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <div className="flex items-center gap-2">
                                         <Mail className="h-4 w-4 text-muted-foreground" />
-                                        <a href="mailto:care@kagpremiumhomes.com" className="font-medium text-primary hover:underline">
-                                            care@kagpremiumhomes.com
+                                        <a href={`mailto:${contactEmail}`} className="font-medium text-primary hover:underline">
+                                            {contactEmail}
                                         </a>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Phone className="h-4 w-4 text-muted-foreground " />
-                                        <a href="tel:+918006000325" className="text-primary font-medium hover:underline">
-                                            +91 8006000325
+                                        <a href={`tel:${contactLink}`} className="text-primary font-medium hover:underline">
+                                            {contactNumber}
                                         </a>
                                     </div>
                                 </div>
