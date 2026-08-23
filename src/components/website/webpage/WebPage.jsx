@@ -676,7 +676,7 @@ const WebPage = ({ data }) => {
             {(isFilledText(data.blockquoteDescription) ||
               isFilledText(data.blockquoteLeftTitle) ||
               isFilledText(data.blockquoteMainTitle)) && (
-              <div className="relative my-12 rounded-xl border border-gray-100 bg-[#9cac74] p-8 md:p-10 shadow-sm">
+              <div className="relative my-12 rounded-xl border border-gray-100 bg-[#dbe7bc] p-8 md:p-10 shadow-sm">
                 {/* Overlapping top-left quote bubble */}
                 <div className="absolute -top-5 left-6 md:left-8 flex h-10 w-10 items-center justify-center rounded-full bg-[#1e40af] text-white shadow-md">
                   <Quote className="h-5 w-5 fill-current" />
@@ -1769,7 +1769,7 @@ const WebPage = ({ data }) => {
                             </h2>
                           )}
                           {isFilledText(introHighlight.point) && (
-                            <p className="mt-3 max-w-3xl text-base leading-7 text-gray-600">
+                            <p className="mt-3 text-justify text-base leading-7 text-gray-600">
                               {introHighlight.point}
                             </p>
                           )}
@@ -1782,12 +1782,12 @@ const WebPage = ({ data }) => {
                             className="rounded-md border border-gray-200 bg-white px-5 py-5 shadow-sm"
                           >
                             {isFilledText(item.title) && (
-                              <h3 className="text-xl font-bold leading-tight text-gray-950">
+                              <h3 className="text-2xl font-bold leading-tight text-gray-950">
                                 {item.title}
                               </h3>
                             )}
                             {isFilledText(item.point) && (
-                              <p className="mt-2 text-sm leading-7 text-gray-600">
+                              <p className="mt-2 text-justify text-base leading-7 text-gray-600">
                                 {item.point}
                               </p>
                             )}
@@ -1922,7 +1922,7 @@ const WebPage = ({ data }) => {
                                         key={bulletIdx}
                                         className="flex gap-3"
                                       >
-                                        <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 flex-shrink-0" />
+                                        <span className="h-2 w-2 rounded-full bg-[#6156b0] mt-2 shrink-0" />
                                         <p className="text-sm leading-6 text-gray-600">
                                           {point}
                                         </p>
@@ -1981,7 +1981,7 @@ const WebPage = ({ data }) => {
                         {isFilledText(data.blockquoteMainTitle) && (
                           <h2 className="mt-3 text-2xl font-bold leading-tight mb-2 text-heading">
                             {data.blockquoteMainTitle}
-                          </h2>
+                          </h2> 
                         )}
                         {isFilledText(data.blockquoteLeftTitle) && (
                           <span className="text-muted">
