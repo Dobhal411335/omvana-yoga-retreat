@@ -45,7 +45,6 @@ export async function POST(req) {
 
       if (_id) {
         // Update existing room
-        console.log("Updating room with ID:", _id);
         const updated = await Room.findByIdAndUpdate(_id, {
           title,
           name,
@@ -58,10 +57,8 @@ export async function POST(req) {
           doubleOccupancyPrice,
           amenities,
         });
-        console.log("Updated room result:", updated ? "Success" : "Not Found");
         roomIdsToSave.push(_id);
       } else {
-        console.log("Creating new room because no _id provided.");
         // Create new room
         const room = await Room.create({
           title,
