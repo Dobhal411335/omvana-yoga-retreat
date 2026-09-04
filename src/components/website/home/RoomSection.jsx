@@ -42,14 +42,14 @@ export default function RoomSection() {
       <Container>
         <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="">
-            <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+            <p className="font-ui text-xs uppercase tracking-[0.25em] text-black">
               Stay
             </p>
             <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
               Comfort that feels like{" "}
               <em className="italic text-primary">stillness</em>.
             </h2>
-            <p className="mt-5 font-body text-base leading-[1.9] text-foreground">
+            <p className="mt-5 font-body text-base leading-[1.9] text-black">
               Rooms shaped for rest — soft light, thoughtful amenities, and
               easy access to yoga halls and quiet common spaces. A stay that
               feels like home, without asking anything of you.

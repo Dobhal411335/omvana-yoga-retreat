@@ -19,7 +19,7 @@ const EnrollNow = () => {
   }, []);
 
   // Hide on admin pages and while printing
-  const isAdminPage = pathname?.startsWith("/admin") || pathname?.startsWith("/package") || pathname?.startsWith("/plan-your-own") || pathname?.startsWith("/contact") || pathname?.startsWith("/rooms");
+  const isAdminPage = pathname?.startsWith("/admin");
 
   if (isAdminPage || !showPopup) return null;
 

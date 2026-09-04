@@ -128,14 +128,14 @@ export default function RandomTourPackageSection() {
         <Section spacing="sm" className="bg-background overflow-hidden">
           <Container>
             <div className="mb-12">
-              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-black">
                 Journeys
               </p>
               <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
               You Will 
                 <em className="italic text-primary">Experience</em>.
               </h2>
-              <p className="mt-5 font-body text-base leading-[1.9] text-foreground">
+              <p className="mt-5 font-body text-base leading-[1.9] text-black">
               Experience the joyful spirit of Rishikesh through yoga, meditation, and soulful adventures. Witness the sacred Ganga Aarti, explore waterfalls on refreshing hikes, connect with nature, meditate beside the Ganga, and immerse yourself in healing sound vibrations. A beautiful journey of movement, connection, inner peace, and unforgettable moments.
               </p>
             </div>
@@ -223,14 +223,14 @@ export default function RandomTourPackageSection() {
         <Section spacing="sm" className="bg-background overflow-hidden">
           <Container>
             <div className="mx-auto mb-12 max-w-2xl text-center">
-              <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+              <p className="font-ui text-xs uppercase tracking-[0.25em] text-black">
                 Guidance
               </p>
               <h2 className="mt-5 font-heading text-4xl leading-[1.15] text-heading md:text-5xl">
                 Rooted in{" "}
                 <em className="italic text-primary">authenticity</em>.
               </h2>
-              <p className="mx-auto mt-5 max-w-lg font-body text-base leading-[1.9] text-foreground">
+              <p className="mx-auto mt-5 max-w-lg font-body text-base leading-[1.9] text-black">
                 Thoughtful guidance shaped by tradition — never hurried,
                 never mass-produced. Space to ask, listen, and arrive at
                 your own pace.

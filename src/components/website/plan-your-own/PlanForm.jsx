@@ -36,17 +36,6 @@ const schema = z.object({
   budget: z.string().optional(),
   hopes: z.string().optional(),
 });
-
-/* ── Experience options ─────────────────────────────── */
-const experiences = [
-  ["Daily yoga & pranayama", "Meditation & silence"],
-  ["Ganga Aarti at Parmarth", "Sunrise hike (Kunjapuri)"],
-  ["Neelkanth Mahadev temple", "Beatles Ashram visit"],
-  ["River rafting / nature walk", "Ayurvedic consult / therapy"],
-  ["Sound healing", "Cooking class (sattvic)"],
-  ["Vedic chanting & philosophy", "Journaling & solo time"],
-];
-
 const guestOptions = ["1 guest", "2 guests", "3 guests", "4 guests", "5 guests", "6+ guests"];
 const accommodationOptions = [
   "1 room - single occupancy",
@@ -287,30 +276,6 @@ export function PlanForm() {
                   />
                 </div>
               </div>
-
-              {/* Row 4 — Experience checkboxes */}
-              <div>
-                <FieldLabel>What would you like to weave in?</FieldLabel>
-                <p className="mt-1 font-body text-xs text-black">
-                  Pick as few or as many as you&apos;d like.
-                </p>
-                <div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
-                  {experiences.flat().map((exp) => (
-                    <label
-                      key={exp}
-                      className="flex cursor-pointer items-center gap-3 font-body text-sm text-black"
-                    >
-                      <Checkbox
-                        checked={selectedExperiences.includes(exp)}
-                        onCheckedChange={() => toggleExperience(exp)}
-                        className="rounded-full border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                      />
-                      {exp}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
               {/* Row 5 — Accommodation + Dietary + Budget */}
               <div className="grid gap-6 sm:grid-cols-3">
                 <div>

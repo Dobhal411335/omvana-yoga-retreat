@@ -16,7 +16,7 @@ export function PhilosophySection() {
       <Container>
         <div className="grid grid-cols-1 gap-10 md:gap-16 lg:grid-cols-2 lg:gap-24">
           <div>
-            <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+            <p className="font-ui text-xs uppercase tracking-[0.25em] text-black">
               Our Retreats
             </p>
             <h2 className="mt-5 font-heading text-5xl leading-[1.1] text-heading md:text-6xl">
@@ -26,12 +26,12 @@ export function PhilosophySection() {
           </div>
 
           <div className="flex flex-col justify-center">
-            <p className="font-sans text-heading leading-[1.9]">
+            <p className="font-sans text-black leading-[1.9]">
               Our yoga and meditation retreat is a journey into self-discovery,
               stillness, and the joy of being present. Breathe deeply, move
               mindfully, meditate, rest, and reconnect with yourself.
             </p>
-            <p className="mt-5 font-sans text-heading leading-[1.9]">
+            <p className="mt-5 font-sans text-black leading-[1.9]">
               But this journey is also about connection. Meet beautiful souls
               from around the world, share stories, laughter, silence, and
               meaningful moments—without judgment, expectations, or labels.

@@ -11,15 +11,15 @@ export function CtaSection() {
       <Container>
         <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
           <div>
-            <p className="font-ui text-xs uppercase tracking-[0.25em] text-muted">
+            <p className="font-ui text-xs uppercase tracking-[0.25em] text-black">
               Ready when you are
             </p>
-            <h2 className="mt-5 font-heading text-5xl leading-[1.1] text-heading md:text-6xl">
+            <h2 className="mt-5 font-heading text-5xl leading-[1.1] text-black md:text-6xl">
               Why choose
               <br />
               <em className="italic text-primary">Omvana.</em>
             </h2>
-            <p className="mt-7 text-justify text-sm leading-[1.9] text-foreground font-ui">
+            <p className="mt-7 text-justify text-sm leading-[1.9] text-black font-ui">
               Omvana isn&apos;t seasonal, and it isn&apos;t complicated. There&apos;s no &quot;batch&quot; to wait for, you choose your dates, any month of the year, and we make the space ready.
               <br />
               What you&apos;ll find here: real yoga and meditation practice, food made with care, a room that feels like your own, and prices that don&apos;t ask you to choose between a retreat and a holiday. No performance, no polish for its own sake just what a good retreat actually needs.
