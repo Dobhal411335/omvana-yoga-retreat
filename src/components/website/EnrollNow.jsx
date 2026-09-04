@@ -27,10 +27,9 @@ const EnrollNow = () => {
     <div className="fixed top-1/2 left-0 z-40 -translate-y-1/2 print:hidden">
       <button
         onClick={() => router.push("/plan-your-own")}
-        className="flex items-center justify-center rounded-r-2xl bg-foreground px-4 py-3 font-semibold text-white shadow-lg transition-all cursor-pointer hover:scale-110"
+        className="flex items-center justify-center rounded-r-2xl bg-foreground px-4 py-3 font-semibold text-white text-sm shadow-lg transition-all cursor-pointer hover:scale-110"
       >
-        Enroll Now                <ArrowUpRight className="size-4" aria-hidden="true" />
-
+        Enroll Now<ArrowUpRight className="size-4 ml-2" aria-hidden="true" />
       </button>
     </div>
   );

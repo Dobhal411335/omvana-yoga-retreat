@@ -159,10 +159,10 @@ export function PlanForm() {
           {/* Card header */}
           <div className="mb-10">
             <h2 className="font-heading text-4xl text-heading">
-              Sketch your stay
+              Make an Enquiry
             </h2>
             <p className="mt-2 font-body text-sm text-black">
-              Fill what you know. Leave the rest to us.
+              Check availability by filling the form below.
             </p>
           </div>
 

@@ -778,7 +778,7 @@ export default function PackageDetailClient({
               <section>
                 <PackageSectionHeader
                   eyebrow="Package"
-                  title="Include / Exclude"
+                  title="Package Benefits & Limitations"
                 />
               <PackageAccordion
                 title="Inclusions and exclusions"

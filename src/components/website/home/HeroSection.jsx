@@ -198,7 +198,7 @@ export function HeroSection() {
       </div>
 
       {/* Mobile Carousel */}
-      <div className="block xl:hidden relative w-full h-[450px] overflow-hidden">
+      <div className="block xl:hidden relative w-full h-[510px] overflow-hidden">
         <Carousel
           className="w-full h-full"
           plugins={[plugin.current]}
@@ -206,7 +206,7 @@ export function HeroSection() {
         >
           <CarouselContent className="h-full ml-0">
             {banners.map((banner, index) => (
-              <CarouselItem key={index} className="h-[450px] pl-0">
+              <CarouselItem key={index} className="h-[510px] pl-0">
                 <Link
                   href={banner?.buttonLink || "#"}
                   className="block w-full h-full"
