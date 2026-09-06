@@ -13,11 +13,11 @@ const OverlayButton = () => {
         const options = {
             call: "+919762240419", // Call phone number
             whatsapp: "+919762240419", // WhatsApp number
-            call_to_action: "Omvana Yoga Retreat", // Call to action
-            button_color: "#FF6550", // Color of button
+            call_to_action: "Ektham Hotels", // Call to action
+            button_color: "#78874f", // Color of button
             position: "right", // Position may be 'right' or 'left'
             order: "call,whatsapp", // Order of buttons
-            pre_filled_message:"Dear Team Omvana Yoga Retreat Greetings We are interested in+visiting Rishikesh in the coming days and would+like+to+check+your+Retreats+availability. Could you please share your current availability, along with the best available offers, seasonal packages, or group rates for our dates? Providing these details at your earliest convenience will help us finalize our travel plans ",
+            pre_filled_message: "Dear Omvana Yoga Retreat Team, Please share your current availability, best rates, seasonal packages, and group offers for an upcoming visit to Rishikesh in the coming days to help us finalize our travel plans.", // WhatsApp pre-filled message
         };
         const proto = "https:",
             host = "getbutton.io",
