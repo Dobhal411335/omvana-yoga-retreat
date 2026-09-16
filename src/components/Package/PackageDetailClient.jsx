@@ -298,7 +298,7 @@ export default function PackageDetailClient({
     <div className="min-h-screen w-full bg-background font-body">
       {/* ========== HEADER: Package Name + Tags + Itinerary ========== */}
       <div className="w-full border-b border-border/60 bg-background">
-        <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-4 md:px-8">
           <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-black">
             Retreat package
           </p>
@@ -306,34 +306,120 @@ export default function PackageDetailClient({
             {packageDetails.packageName}
           </h1>
 
-          {/* Tags row */}
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            {/* {packageDetails.basicDetails?.tourType && (
-              <span className="rounded-button border border-border bg-white px-3.5 py-1.5 font-ui text-sm font-medium text-heading">
-                {packageDetails.basicDetails.tourType}
-              </span>
-            )}
-            <span className="rounded-button bg-primary px-3.5 py-1.5 font-ui text-sm font-semibold text-primary-foreground">
-              {packageDetails.basicDetails?.duration || "7N/8D"} Days
-            </span> */}
-
-            {/* Night stops */}
-            {nightStops.length > 0 && (
-              <div className="ml-1 flex flex-wrap items-center gap-2">
-                {nightStops.map((stop, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-1.5 rounded-button border border-border bg-surface px-3 py-2"
-                  >
-                    <span className="font-ui text-sm text-black">•</span>
-                    <span className="font-ui text-sm font-medium text-heading">
-                      {stop}
-                    </span>
+          {/* Mobile pricing summary */}
+          <div className="mb-2 md:hidden">
+  
+            <div className="border-l-[3px] border-heading pl-4">
+              {packageDetails.priceUnit ===
+                "Double Occupancy Per Person Price Only" &&
+              packageDetails.doubleOccupancyPrice > 0 ? (
+                <div className="space-y-4">
+                  <div>
+                    <p className="mb-0.5 font-ui text-xs font-semibold uppercase tracking-wide text-heading">
+                      Single Occupancy
+                    </p>
+                    <div className="flex flex-wrap items-baseline gap-x-1.5">
+                      {packageDetails.price === 0 ? (
+                        <span className="font-sans text-2xl font-semibold text-heading">
+                          XXXX*
+                        </span>
+                      ) : (
+                        <>
+                          <span className="font-sans text-2xl font-semibold text-heading">
+                            ₹{formatNumber(packageDetails.price)}
+                          </span>
+                          {hasUsdPrice(packageDetails.priceUsd) && (
+                            <>
+                              <span className="font-ui text-base text-black">
+                                /
+                              </span>
+                              <span className="font-sans text-xl font-semibold text-heading">
+                                ${formatUsd(packageDetails.priceUsd)}
+                              </span>
+                            </>
+                          )}
+                          <span className="font-ui text-sm text-black">
+                            /Person
+                          </span>
+                        </>
+                      )}
+                    </div>
                   </div>
-                ))}
-              </div>
-            )}
+                  <div>
+                    <p className="mb-0.5 font-ui text-xs font-semibold uppercase tracking-wide text-heading">
+                      Double Occupancy
+                    </p>
+                    <div className="flex flex-wrap items-baseline gap-x-1.5">
+                      <span className="font-sans text-2xl font-semibold text-heading">
+                        ₹{formatNumber(packageDetails.doubleOccupancyPrice)}
+                      </span>
+                      {hasUsdPrice(packageDetails.doubleOccupancyPriceUsd) && (
+                        <>
+                          <span className="font-ui text-base text-black">/</span>
+                          <span className="font-sans text-xl font-semibold text-heading">
+                            $
+                            {formatUsd(
+                              packageDetails.doubleOccupancyPriceUsd,
+                            )}
+                          </span>
+                        </>
+                      )}
+                      <span className="font-ui text-sm text-black">/Person</span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-baseline gap-x-1.5">
+                  {packageDetails.price === 0 ? (
+                    <span className="font-sans text-2xl font-semibold text-heading">
+                      XXXX*
+                    </span>
+                  ) : (
+                    <>
+                      <span className="font-sans text-2xl font-semibold text-heading">
+                        ₹{formatNumber(packageDetails.price)}
+                      </span>
+                      {hasUsdPrice(packageDetails.priceUsd) && (
+                        <>
+                          <span className="font-ui text-base text-black">/</span>
+                          <span className="font-sans text-xl font-semibold text-heading">
+                            ${formatUsd(packageDetails.priceUsd)}
+                          </span>
+                        </>
+                      )}
+                      <span className="font-ui text-sm text-black">/Adult</span>
+                    </>
+                  )}
+                </div>
+              )}
+              {packageDetails.basicDetails?.originalPrice >
+                packageDetails.price && (
+                <p className="mt-1 font-ui text-sm text-black line-through">
+                  ₹{formatNumber(packageDetails.basicDetails.originalPrice)}
+                </p>
+              )}
+              <p className="mt-3 font-ui text-xs text-black">
+                Excluding applicable taxes
+              </p>
+            </div>
           </div>
+
+          {/* Night stops — desktop */}
+          {nightStops.length > 0 && (
+            <div className="mb-2 hidden flex-wrap items-center gap-2 md:flex">
+              {nightStops.map((stop, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-1.5 rounded-button border border-border bg-surface px-3 py-2"
+                >
+                  <span className="font-ui text-sm text-black">•</span>
+                  <span className="font-ui text-sm font-medium text-heading">
+                    {stop}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -1812,7 +1898,7 @@ export default function PackageDetailClient({
       {/* ========== GALLERY SECTION ========== */}
       {galleryImages.length > 0 && (
         <div className="mx-auto max-w-7xl px-4 py-8 md:px-8">
-          <div className="grid h-75 grid-cols-2 gap-3 overflow-hidden md:h-95 md:grid-cols-4">
+          <div className="grid h-96 grid-cols-2 gap-3 overflow-hidden md:h-95 md:grid-cols-4">
             {/* Main large image */}
             <div
               onClick={() => openGallery(0)}

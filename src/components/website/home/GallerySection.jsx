@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const IMAGES_PER_SLIDE = 5;
+const IMAGES_PER_SLIDE = 10;
 
 function chunkImages(images, size) {
   const chunks = [];
@@ -32,76 +32,67 @@ function chunkImages(images, size) {
 }
 
 function GallerySlide({ images, slideIndex, allImages }) {
-  const [hero, ...rest] = images;
-  const secondary = rest.slice(0, 4);
+  const slideImages = images.slice(0, IMAGES_PER_SLIDE);
 
-  if (!hero) return null;
+  if (slideImages.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-      <div className="relative aspect-4/5 overflow-hidden rounded-image md:aspect-auto md:min-h-112">
-        <Image
-          src={hero.url}
-          alt={`Gallery image ${slideIndex * IMAGES_PER_SLIDE + 1}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
-        />
-        <Dialog>
-          <DialogTrigger className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-button bg-heading/80 px-4 py-2 font-body text-sm text-white transition-opacity hover:bg-heading">
-            <Camera className="size-4" />
-            View gallery
-          </DialogTrigger>
-          <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto sm:max-w-5xl">
-            <DialogHeader>
-              <DialogTitle className="font-heading text-2xl text-heading">
-                Gallery
-              </DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-              {allImages.map((image, index) => (
-                <div
-                  key={image.key || index}
-                  className="relative aspect-4/3 overflow-hidden rounded-image"
-                >
-                  <Image
-                    src={image.url}
-                    alt={`Gallery detail ${index + 1}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 md:gap-4">
-        {secondary.map((image, index) => (
+    <div className="relative">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:gap-4">
+        {slideImages.map((image, index) => (
           <div
             key={image.key || index}
-            className="relative aspect-4/3 overflow-hidden rounded-image"
+            className="relative aspect-square overflow-hidden rounded-image"
           >
             <Image
               src={image.url}
-              alt={`Gallery image ${slideIndex * IMAGES_PER_SLIDE + index + 2}`}
+              alt={`Gallery image ${slideIndex * IMAGES_PER_SLIDE + index + 1}`}
               fill
-              sizes="(max-width: 768px) 50vw, 25vw"
+              loading="lazy"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
               className="object-cover"
             />
           </div>
         ))}
-        {Array.from({ length: Math.max(0, 4 - secondary.length) }).map(
-          (_, index) => (
-            <div
-              key={`placeholder-${index}`}
-              className="aspect-4/3 rounded-image bg-surface"
-            />
-          )
-        )}
+        {Array.from({
+          length: Math.max(0, IMAGES_PER_SLIDE - slideImages.length),
+        }).map((_, index) => (
+          <div
+            key={`placeholder-${index}`}
+            className="aspect-square rounded-image bg-surface"
+          />
+        ))}
       </div>
+
+      <Dialog>
+        <DialogTrigger className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-button bg-heading/80 px-4 py-2 font-body text-sm text-white transition-opacity hover:bg-heading">
+          <Camera className="size-4" />
+          View gallery
+        </DialogTrigger>
+        <DialogContent className="max-h-[90vh] max-w-5xl overflow-y-auto sm:max-w-5xl">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-2xl text-heading">
+              Gallery
+            </DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {allImages.map((image, index) => (
+              <div
+                key={image.key || index}
+                className="relative aspect-4/3 overflow-hidden rounded-image"
+              >
+                <Image
+                  src={image.url}
+                  alt={`Gallery detail ${index + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -141,16 +132,10 @@ export default function HomeGallerySection() {
     <section className="w-full overflow-hidden bg-surface py-10">
       <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
         {isLoading ? (
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-            <Skeleton className="aspect-4/5 rounded-image md:min-h-112" />
-            <div className="grid grid-cols-2 gap-3 md:gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton
-                  key={index}
-                  className="aspect-4/3 rounded-image"
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5 md:gap-4">
+            {Array.from({ length: IMAGES_PER_SLIDE }).map((_, index) => (
+              <Skeleton key={index} className="aspect-square rounded-image" />
+            ))}
           </div>
         ) : (
           <Carousel
