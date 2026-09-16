@@ -24,6 +24,11 @@ export const adminNavSections = [
         icon: Building2,
       },
       {
+        label: "Gallery Section",
+        href: "/admin/gallery_section",
+        icon: ImageIcon,
+      },
+      {
         label: "Manage Navbar",
         href: "/admin/navbar_section",
         icon: Navigation,

@@ -308,14 +308,14 @@ export default function PackageDetailClient({
 
           {/* Tags row */}
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            {packageDetails.basicDetails?.tourType && (
+            {/* {packageDetails.basicDetails?.tourType && (
               <span className="rounded-button border border-border bg-white px-3.5 py-1.5 font-ui text-sm font-medium text-heading">
                 {packageDetails.basicDetails.tourType}
               </span>
             )}
             <span className="rounded-button bg-primary px-3.5 py-1.5 font-ui text-sm font-semibold text-primary-foreground">
               {packageDetails.basicDetails?.duration || "7N/8D"} Days
-            </span>
+            </span> */}
 
             {/* Night stops */}
             {nightStops.length > 0 && (
@@ -338,7 +338,7 @@ export default function PackageDetailClient({
       </div>
 
       {/* ========== MAIN CONTENT: Left (75%) + Right Sidebar (25%) ========== */}
-      <div className="mx-auto w-full max-w-7xl px-4 pb-16 md:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-16 md:px-8 pt-5">
         <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
           {/* ===== LEFT CONTENT (75%) ===== */}
           <div className="w-full lg:w-[72%] py-5">
