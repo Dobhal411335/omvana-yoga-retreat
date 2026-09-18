@@ -13,7 +13,7 @@ const OverlayButton = () => {
         const options = {
             call: "+919762240419", // Call phone number
             whatsapp: "+919762240419", // WhatsApp number
-            call_to_action: "Ektham Hotels", // Call to action
+            call_to_action: "Omvana Yoga Retreat", // Call to action
             button_color: "#78874f", // Color of button
             position: "right", // Position may be 'right' or 'left'
             order: "call,whatsapp", // Order of buttons
