@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 import { Container } from "@/components/common/Container";
@@ -42,22 +41,24 @@ export function CtaSection() {
           </div>
 
           <div className="relative h-96 lg:h-[400px]">
-            {/* Photo 1 */}
-            <div className="absolute left-0 top-0 h-72 w-52 overflow-hidden rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-64">
-              <Image
-                src="/sunset.png"
-                alt="Sunrise landscape"
-                fill
-                className="object-cover"
+            {/* YouTube Short 1 */}
+            <div className="absolute left-[12%] top-0 h-72 w-48 overflow-hidden rounded-[var(--radius-image)] bg-border lg:h-80 lg:w-56">
+              <iframe
+                src="https://www.youtube.com/embed/X8UrBz_7wOE"
+                title="Omvana yoga retreat short"
+                className="h-full w-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
               />
             </div>
-            {/* Photo 2 */}
-            <div className="absolute bottom-0 right-0 h-64 w-52 overflow-hidden rounded-[var(--radius-image)] bg-muted/20 lg:h-72 lg:w-60">
-              <Image
-                src="/yoga.png"
-                alt="Warmth close-up"
-                fill
-                className="object-cover"
+            {/* YouTube Short 2 */}
+            <div className="absolute bottom-0 right-[12%] h-72 w-48 overflow-hidden rounded-[var(--radius-image)] bg-muted/20 lg:h-80 lg:w-56">
+              <iframe
+                src="https://www.youtube.com/embed/iOtok5BJ1s8"
+                title="Omvana yoga retreat second short"
+                className="h-full w-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
               />
             </div>
           </div>

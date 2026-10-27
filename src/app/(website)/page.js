@@ -39,9 +39,9 @@ export default function HomePage() {
       <Banner />
       <RandomTourPackageSection />
       <RoomSection />
-      <RetreatsSection/>
       <CtaSection />
       <InstaBlog />
+      <RetreatsSection/>
     </>
   );
 }
